@@ -1,10 +1,18 @@
 {% extends "base.html" %}
 
-<h1>Name Story</h1>
-<p>This is inspired by Benedetto Cotrugli who probably wrote the first manual on double entry book keeping.  The method
-may have arisen independently around the world.  Luca Pacioli often gets the credit as his was the first book to be
-printed in 1494 although he references Cotrugli's work of 40 years prior.  See
-<a href="https://en.wikipedia.org/wiki/Benedetto_Cotrugli">Wikipedia</a>.
-    <img href="static/images/Cotrugli_-_Della_mercatura,_1602_-_122.tif.jpg">
-</p>
+{% block content %}
+    <h1>Name Story</h1>
+    <p>
+        This is inspired by Benedetto Cotrugli who probably wrote the first manual on double entry book keeping. The
+        method
+        may have arisen independently around the world. Luca Pacioli often gets the credit as his was the first book to
+        be
+        printed in 1494 although he references Cotrugli's work of 40 years prior. See
+        <a href="https://en.wikipedia.org/wiki/Benedetto_Cotrugli">Wikipedia</a>.
+    </p>
+    <p>
+        <img src="/static/images/Cotrugli.jpg" alt="Manuscript copy"
+             style="width:50%;height:50%;">
+    </p>
+{% endblock content %}
 
