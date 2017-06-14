@@ -21,4 +21,5 @@ pytest-sugar==0.8.0
 # my scripts
 boto3==1.4.4
 Fabric3==1.13.1.post1
+python-dotenv
 unipath
