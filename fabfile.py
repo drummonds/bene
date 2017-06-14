@@ -38,4 +38,9 @@ def first_publish():
     local('heroku run python manage.py migrate')
     local('heroku run python manage.py check --deploy') # make sure all ok
     local('heroku run python manage.py opbeat test')  # Test that opbeat is working
+    local('heroku run echo "from django.contrib.auth import get_user_model; User = get_user_model(); '
+        + 'User.objects.filter(email=''admin@example.com'', is_superuser=True).delete(); '
+        + 'User.objects.create_superuser(''{}'', ''admin@example.com'', ''nimda'')" | python manage.py shell'
+          .format(os.environ['SUPERUSER_NAME'], os.environ['SUPERUSER_EMAIL'], os.environ['SUPERUSER_PASSWORD']))
+    local('heroku open')
 
