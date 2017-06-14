@@ -9,7 +9,7 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 def first_publish():
-    """Publish to production via rsync"""
+    """Publish to production.  THIS DESTROYS THE OLD BUILD."""
     heroku_app = '{0}-prod'.format(os.environ['HEROKU_PREFIX'])
     local('heroku destroy {0} --confirm {0}'.format(heroku_app))
     local('heroku create {0} --buildpack https://github.com/heroku/heroku-buildpack-python --region eu'
@@ -35,4 +35,7 @@ def first_publish():
 
     local('heroku git:remote -a {}'.format(heroku_app))
     local('git push heroku master')
+    local('heroku run python manage.py migrate')
+    local('heroku run python manage.py check --deploy') # make sure all ok
+    local('heroku run python manage.py opbeat test')  # Test that opbeat is working
 
