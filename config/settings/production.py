@@ -8,8 +8,6 @@ Production Configurations
 - Use sentry for error logging
 
 
-- Use opbeat for error reporting
-
 """
 
 # not sure OrdinaryCallingFormat is in boto3
