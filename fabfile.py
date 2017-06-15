@@ -18,7 +18,7 @@ def first_publish():
     local('heroku pg:wait --app {0}'.format(heroku_app))
     local('heroku pg:backups:schedule --at 04:00 --app {0}'.format(heroku_app))
     # Already promoted as new local('heroku pg:promote DATABASE_URL --app bene-prod')
-    # Leaving out mailgun and aws and reddis
+    # Leaving out and aws and reddis
     #local('heroku config:set DJANGO_ADMIN_URL="$(openssl rand -base64 32)" --app bene-prod')
     secret = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(20))
     print('Secret key = {}'.format(secret))
@@ -26,8 +26,9 @@ def first_publish():
     local("heroku config:set DJANGO_SETTINGS_MODULE=config.settings.production --app {}".format(heroku_app))
     local('heroku config:set PYTHONHASHSEED=random --app {}"'.format(heroku_app))
     local('heroku config:set DJANGO_ADMIN_URL=\^bene_admin/ --app {}"'.format(heroku_app))
-    for config in ('DJANGO_ALLOWED_HOSTS'
-        ,'DJANGO_OPBEAT_ORGANIZATION_ID', 'DJANGO_OPBEAT_APP_ID', 'DJANGO_OPBEAT_SECRET_TOKEN'
+    local('heroku config:set DJANGO_ALLOWED_HOSTS="{}" --app {}'.format(os.environ['DJANGO_ALLOWED_HOSTS'], heroku_app))
+    for config in (
+        'DJANGO_OPBEAT_ORGANIZATION_ID', 'DJANGO_OPBEAT_APP_ID', 'DJANGO_OPBEAT_SECRET_TOKEN'
         ,'DJANGO_AWS_ACCESS_KEY_ID', 'DJANGO_AWS_SECRET_ACCESS_KEY', 'DJANGO_AWS_STORAGE_BUCKET_NAME'
         ,'DJANGO_MAILGUN_API_KEY', 'DJANGO_SERVER_EMAIL', 'MAILGUN_SENDER_DOMAIN'
         ,'DJANGO_ACCOUNT_ALLOW_REGISTRATION', 'DJANGO_SENTRY_DSN'):
@@ -39,8 +40,8 @@ def first_publish():
     local('heroku run python manage.py check --deploy') # make sure all ok
     local('heroku run python manage.py opbeat test')  # Test that opbeat is working
     local('heroku run echo "from django.contrib.auth import get_user_model; User = get_user_model(); '
-        + 'User.objects.filter(email=''admin@example.com'', is_superuser=True).delete(); '
-        + 'User.objects.create_superuser(''{}'', ''admin@example.com'', ''nimda'')" | python manage.py shell'
+        + 'User.objects.filter(email=''{1}'', is_superuser=True).delete(); '
+    + 'User.objects.create_superuser(''{0}'', ''{1}'', ''{2}'')" | python manage.py shell'
           .format(os.environ['SUPERUSER_NAME'], os.environ['SUPERUSER_EMAIL'], os.environ['SUPERUSER_PASSWORD']))
     local('heroku open')
 
