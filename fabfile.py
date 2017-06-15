@@ -19,16 +19,11 @@ def first_publish():
     local('heroku pg:backups:schedule --at 04:00 --app {0}'.format(heroku_app))
     # Already promoted as new local('heroku pg:promote DATABASE_URL --app bene-prod')
     # Leaving out and aws and reddis
-    #local('heroku config:set DJANGO_ADMIN_URL="$(openssl rand -base64 32)" --app bene-prod')
-    secret = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(20))
-    print('Secret key = {}'.format(secret))
-    local('heroku config:set DJANGO_SECRET_KEY="{}" --app {}'.format(secret, heroku_app))
     local("heroku config:set DJANGO_SETTINGS_MODULE=config.settings.production --app {}".format(heroku_app))
     local('heroku config:set PYTHONHASHSEED=random --app {}"'.format(heroku_app))
-    local('heroku config:set DJANGO_ADMIN_URL=\^bene_admin/ --app {}"'.format(heroku_app))
     local('heroku config:set DJANGO_ALLOWED_HOSTS="{}" --app {}'.format(os.environ['DJANGO_ALLOWED_HOSTS'], heroku_app))
-    for config in (
-        'DJANGO_OPBEAT_ORGANIZATION_ID', 'DJANGO_OPBEAT_APP_ID', 'DJANGO_OPBEAT_SECRET_TOKEN'
+    for config in ( 'DJANGO_SECRET_KEY', 'DJANGO_ADMIN_URL'
+        ,'DJANGO_OPBEAT_ORGANIZATION_ID', 'DJANGO_OPBEAT_APP_ID', 'DJANGO_OPBEAT_SECRET_TOKEN'
         ,'DJANGO_AWS_ACCESS_KEY_ID', 'DJANGO_AWS_SECRET_ACCESS_KEY', 'DJANGO_AWS_STORAGE_BUCKET_NAME'
         ,'DJANGO_MAILGUN_API_KEY', 'DJANGO_SERVER_EMAIL', 'MAILGUN_SENDER_DOMAIN'
         ,'DJANGO_ACCOUNT_ALLOW_REGISTRATION', 'DJANGO_SENTRY_DSN'):
