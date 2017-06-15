@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static from staticfiles %}
 {% block content %}
     <h1>Name Story</h1>
     <p>
@@ -11,8 +11,8 @@
         <a href="https://en.wikipedia.org/wiki/Benedetto_Cotrugli">Wikipedia</a>.
     </p>
     <p>
-        <img src="/static/images/Cotrugli.jpg" alt="Manuscript copy"
-             style="width:50%;height:50%;">
+        <img src="{% static 'images/Cotrugli.jpg' %}" alt="Manuscript copy"
+             style="width:50%;height:50%;"/>
     </p>
 {% endblock content %}
 
