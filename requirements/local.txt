@@ -22,3 +22,5 @@ pytest-sugar==0.8.0
 Fabric3==1.13.1.post1
 python-dotenv
 unipath
+
+psycopg2

@@ -50,3 +50,5 @@ redis>=2.10.5
 # AWS
 boto3==1.4.4
 
+# Reporting
+django-sql-explorer

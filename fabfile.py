@@ -11,6 +11,7 @@ load_dotenv(find_dotenv())
 def first_publish():
     """Publish to production.  THIS DESTROYS THE OLD BUILD."""
     heroku_app = '{0}-prod'.format(os.environ['HEROKU_PREFIX'])
+    os.environ.setdefault('HEROKU_APP', heroku_app)
     local('heroku destroy {0} --confirm {0}'.format(heroku_app))
     local('heroku create {0} --buildpack https://github.com/heroku/heroku-buildpack-python --region eu'
           .format(heroku_app))
@@ -34,9 +35,13 @@ def first_publish():
     local('heroku run python manage.py migrate')
     local('heroku run python manage.py check --deploy') # make sure all ok
     local('heroku run python manage.py opbeat test')  # Test that opbeat is working
-    local('heroku run echo "from django.contrib.auth import get_user_model; User = get_user_model(); '
-        + 'User.objects.filter(email=''{1}'', is_superuser=True).delete(); '
-    + 'User.objects.create_superuser(''{0}'', ''{1}'', ''{2}'')" | python manage.py shell'
-          .format(os.environ['SUPERUSER_NAME'], os.environ['SUPERUSER_EMAIL'], os.environ['SUPERUSER_PASSWORD']))
-    local('heroku open')
+    su_name = os.environ['SUPERUSER_NAME']
+    su_email = os.environ['SUPERUSER_EMAIL']
+    su_password = os.environ['SUPERUSER_PASSWORD']
+    cmd = ('heroku run "echo \'from django.contrib.auth import get_user_model; User = get_user_model(); '
+        + f'User.objects.filter(email="""{su_email}""", is_superuser=True).delete(); '
+        + f'User.objects.create_superuser("""{su_name}""", """{su_email}""", """{su_password}""")\' '
+        + f' | python manage.py shell"' )
+    local(cmd)
+    # local('heroku open')  # opens the web site in a browser window.
 
