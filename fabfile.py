@@ -46,18 +46,22 @@ def create_staging(env_prefix='test'):
         + f'User.objects.create_superuser("""{su_name}""", """{su_email}""", """{su_password}""")\' '
         + f' | python manage.py shell"' )
     local(cmd)
-    # Old code
-    # subprocess.call('git remote add {0} git@heroku.com:{0}.git'.format(staging), shell=True)
-    # a=subprocess.check_output('heroku addons:add heroku-postgresql:standard-0 --app {} '.format(staging),
-    #                           shell=True )
-    # print("DB build result = |{}|".format(a))
-    # subprocess.call('heroku pg --app {}'.format(staging), shell=True)
-    #
-    #  # Get backup from production to test
-    #  ## First make sure they have the backup addon
-    # subprocess.call('heroku addons:add pgbackups --app {} '.format(staging), shell=True )
-    #
-    # subprocess.call('heroku pg:wait --app {} '.format(staging), shell=True )
+
+def transfer_database_from_production(env_prefix='test', db_name='postgresql-round-94934'):
+    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
+    # Put the heroku app in maintenance move
+    try:
+        local('heroku maintenance:on --app {} '.format(heroku_app) )
+
+      ## Don't need to scale workers down as not using eg heroku ps:scale worker=0
+      ##
+        local('heroku pgbackups:transfer {0}-prod::postgresql-lively-50121 ' +
+              ' {1} -a {2} --confirm {2}'.format(
+                  os.environ['HEROKU_PREFIX'],
+                    db_name,
+                    heroku_app))
+    finally:
+        local('heroku maintenance:off --app {} '.format(heroku_app))
 
 def kill_staging(env_prefix, safety_on = True):
     if not (env_prefix == 'prod' and safety_on):  # Safety check - remove when you need to
