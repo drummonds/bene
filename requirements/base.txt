@@ -52,3 +52,4 @@ boto3==1.4.4
 
 # Reporting
 django-sql-explorer
+XlsxWriter==0.9.6

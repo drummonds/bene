@@ -6,6 +6,9 @@ A reporting sytem and interface to Xero
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
      :alt: Built with Cookiecutter Django
+.. image:: https://travis-ci.org/drummonds/bene.svg?branch=master
+    :target: https://travis-ci.org/drummonds/bene
+    :alt: Travis CI
 
 
 :License: GPLv3
