@@ -25,7 +25,7 @@ class Item(models.Model):
     code = models.CharField('Item Code', blank=True, max_length=255)
     name = models.CharField('Item Name', blank=True, max_length=255)
     cost_price = models.DecimalField('Cost Price', max_digits=16, decimal_places=4)  # Could be part price
-    sales_price = models.DecimalField('Cost Price', max_digits=16, decimal_places=4)  # Could be part price
+    sales_price = models.DecimalField('Sales Price', max_digits=16, decimal_places=4)  # Could be part price
 
     def __str__(self):
         return self.name
@@ -44,15 +44,11 @@ class Invoice(models.Model):
 
 class LineItem(models.Model):
     id = models.UUIDField(primary_key=True)
-    invoice_id = models.ForeignKey('Invoice', on_delete=models.CASCADE)
-    items_id = models.ForeignKey('Item', on_delete=models.CASCADE)
+    invoice = models.ForeignKey('Invoice', on_delete=models.CASCADE)
+    item = models.ForeignKey('Item', on_delete=models.CASCADE)
     quantity  = models.DecimalField('Qty', max_digits=16, decimal_places=4)  # Could be part price
     price = models.DecimalField('Price', max_digits=16, decimal_places=4)  # Could be part price
-    code = models.CharField('Item Code', blank=True, max_length=255)
-    name = models.CharField('Item Name', blank=True, max_length=255)
-    cost_price = models.DecimalField('Cost Price', max_digits=16, decimal_places=4)  # Could be part price
-    sales_price = models.DecimalField('Cost Price', max_digits=16, decimal_places=4)  # Could be part price
 
     def __str__(self):
-        return self.name
+        return f'{self.quantity} of {self.item.name} for {self.price}'
 

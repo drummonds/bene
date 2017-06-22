@@ -135,7 +135,7 @@ def update_app(env_prefix='uat', branch='uat'):
         local(f'git push heroku {branch}:master')
         # local(f'git push heroku {branch}')
         # makemigrations should be run locally and the results checked into git
-        local('heroku run "yes \"yes\" | python manage.py migrate"')  # Force deletion of stale content types
+        local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
     finally:
         local('heroku maintenance:off --app {} '.format(heroku_app))
 
