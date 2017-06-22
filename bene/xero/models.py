@@ -5,7 +5,7 @@ class ContactGroup(models.Model):
 
     # First Name and Last Name do not cover name patterns
     # around the globe.
-    xero_id = models.CharField('', blank=True, max_length=255)  # store the guid
+    xero_id = models.CharField('', blank=True, max_length=255, primary_key=True)  # store the guid
     name = models.CharField('Name of ContactGroup', blank=True, max_length=255)
 
     def __str__(self):
@@ -18,7 +18,7 @@ class Contact(models.Model):
 
     # First Name and Last Name do not cover name patterns
     # around the globe.
-    xero_id = models.CharField('', blank=True, max_length=255)  # store the guid
+    xero_id = models.CharField('', blank=True, max_length=255, primary_key=True)  # store the guid
     name = models.CharField('Name of Contact', blank=True, max_length=255)
     number = models.CharField('Account number', blank=True, max_length=50)
 
@@ -26,11 +26,11 @@ class Contact(models.Model):
         return self.name
 
 
-class Inventory(models.Model):
+class Items(models.Model):
 
     # First Name and Last Name do not cover name patterns
     # around the globe.
-    xero_id = models.CharField('', blank=True, max_length=255)  # store the guid
+    xero_id = models.CharField('', blank=True, max_length=255, primary_key=True)  # store the guid
     code = models.CharField('Item Code', blank=True, max_length=255)
     name = models.CharField('Item Name', blank=True, max_length=255)
     cost_price = models.DecimalField('Cost Price', max_digits=16, decimal_places=4)  # Could be part price
@@ -44,10 +44,27 @@ class Inventory(models.Model):
 
 
 class Invoice(models.Model):
+    # First Name and Last Name do not cover name patterns
+    # around the globe.
+    xero_id = models.CharField('', blank=True, max_length=255, primary_key=True)  # store the guid
+    contact_id = models.ForeignKey('Contact', on_delete=models.CASCADE)
+    code = models.CharField('Item Code', blank=True, max_length=255)
+    name = models.CharField('Item Name', blank=True, max_length=255)
+    cost_price = models.DecimalField('Cost Price', max_digits=16, decimal_places=4)  # Could be part price
+    sales_price = models.DecimalField('Cost Price', max_digits=16, decimal_places=4)  # Could be part price
+
+    def __str__(self):
+        return self.name
+
+class LineItem(models.Model):
 
     # First Name and Last Name do not cover name patterns
     # around the globe.
-    xero_id = models.CharField('', blank=True, max_length=255)  # store the guid
+    id = models.UUIDField(primary_key=True)
+    invoice_id = models.ForeignKey('Invoice', on_delete=models.CASCADE)
+    items_id = models.ForeignKey('Item', on_delete=models.CASCADE)
+    quantity  = models.DecimalField('Qty', max_digits=16, decimal_places=4)  # Could be part price
+    price = models.DecimalField('Price', max_digits=16, decimal_places=4)  # Could be part price
     code = models.CharField('Item Code', blank=True, max_length=255)
     name = models.CharField('Item Name', blank=True, max_length=255)
     cost_price = models.DecimalField('Cost Price', max_digits=16, decimal_places=4)  # Could be part price
