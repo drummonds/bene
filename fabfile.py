@@ -1,14 +1,15 @@
 from fabric.api import *
+import json
 import os
-import random
-import string
+import re
 
 # .Env
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
-def create_staging(env_prefix='test'):
+
+def create_newbuild(env_prefix='test', branch='master'):
     """This builds the database and waits for it be ready.  It is is safe to run and won't
     destroy any existing infrastructure."""
     # subprocess.call('heroku create --app {} --region eu'.format(staging), shell=True)
@@ -34,7 +35,8 @@ def create_staging(env_prefix='test'):
         local('heroku config:set {}={} --app {}'.format(config, os.environ[config], heroku_app))
 
     local('heroku git:remote -a {}'.format(heroku_app))
-    local('git push heroku master')
+    local(f'git push heroku {branch}')
+    local('heroku run python manage.py makemigrations')
     local('heroku run python manage.py migrate')
     local('heroku run python manage.py check --deploy') # make sure all ok
     local('heroku run python manage.py opbeat test')  # Test that opbeat is working
@@ -47,23 +49,61 @@ def create_staging(env_prefix='test'):
         + f' | python manage.py shell"' )
     local(cmd)
 
-def transfer_database_from_production(env_prefix='test', db_name='postgresql-round-94934'):
+
+
+def create_new_db(env_prefix='uat'):
+    """Just creates a new database for this instance."""
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
+    # Put the heroku app in maintenance move
+    m = local('heroku addons:create heroku-postgresql:hobby-dev --app {0}'.format(heroku_app), capture=True)
+    m1 = m.replace('\n',' ')  # Convert to a single string
+    print(f'>>>{m1}<<<')
+    found = re.search('Created\w*(.*)\w*as\w*(.*)\w* Use', m1)
+    db_name = found.group(1)
+    colour = found.group(2)
+    print(f'DB colour = {colour}, {db_name}')
+    local('heroku pg:wait')  # It takes some time for DB so wait for it
+    return (colour, db_name)
+
+
+def remove_unused_db(env_prefix='uat'):
+    """List all databases in use for app, find the main one and remove all the others"""
+    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
+    data = json.loads(local(f'heroku config --json --app {heroku_app}', capture=True))
+    for k,v in data.items():
+        if k.find('HEROKU_POSTGRESQL_') == 0:
+            if v != data['DATABASE_URL']:
+                local(f'heroku addons:destroy {k} --app {heroku_app} --confirm {heroku_app}')
+
+def default_db_colour(app_name):
+    """Return the default database colour of heroku application"""
+    data = json.loads(local('heroku config --json --app {0}'.format(app_name), capture=True))
+    result = ''
+    for k,v in data.items():
+        if k.find('HEROKU_POSTGRESQL_') == 0:
+            if v == data['DATABASE_URL']:
+                return k
+    # if no colour found then try the long name in database_url
+    # raise Exception(f'No color database names found for app {app_name} - create an extra one and it should be ok.')
+    return data['DATABASE_URL']
+
+def transfer_database_from_production(env_prefix='test', clean=True):
+    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
+    heroku_app_prod = '{0}-prod'.format(os.environ['HEROKU_PREFIX'])
     # Put the heroku app in maintenance move
     try:
         local('heroku maintenance:on --app {} '.format(heroku_app) )
-
-      ## Don't need to scale workers down as not using eg heroku ps:scale worker=0
-      ##
-        local('heroku pgbackups:transfer {0}-prod::postgresql-lively-50121 ' +
-              ' {1} -a {2} --confirm {2}'.format(
-                  os.environ['HEROKU_PREFIX'],
-                    db_name,
-                    heroku_app))
+        colour, db_name = create_new_db(env_prefix)  # color is ?
+        # Don't need to scale workers down as not using eg heroku ps:scale worker=0
+        local(f'heroku pg:copy {heroku_app_prod}::DATABASE_URL {colour} --app {heroku_app} --confirm {heroku_app}')
+        local(f'heroku pg:promote {colour}')
+        if clean:
+            remove_unused_db(env_prefix)
     finally:
         local('heroku maintenance:off --app {} '.format(heroku_app))
 
-def kill_staging(env_prefix, safety_on = True):
+
+def kill_app(env_prefix, safety_on = True):
     if not (env_prefix == 'prod' and safety_on):  # Safety check - remove when you need to
         heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
         local('heroku destroy {0} --confirm {0}'.format(heroku_app))
@@ -73,11 +113,36 @@ def first_publish(env_prefix='prod'):
     """Publish to production.  THIS DESTROYS THE OLD BUILD."""
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
     os.environ.setdefault('HEROKU_APP', heroku_app)
-    kill_staging(env_prefix, safety_on=False)
-    create_staging(env_prefix=env_prefix)
+    kill_app(env_prefix, safety_on=False)
+    create_newbuild(env_prefix=env_prefix)
     # local('heroku open')  # opens the web site in a browser window.
 
 #from build.new_db import create_staging, build_staging, update, kill_staging
+
+def update_app(env_prefix='uat', branch='uat'):
+    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
+    # Put the heroku app in maintenance move
+    try:
+        local('heroku maintenance:on --app {} '.format(heroku_app) )
+        local('heroku git:remote -a {}'.format(heroku_app))
+        local(f'git push heroku {branch}')
+        local('heroku run python manage.py makemigrations')
+        local('heroku run python manage.py migrate')
+    finally:
+        local('heroku maintenance:off --app {} '.format(heroku_app))
+
+
+def build_staging(env_prefix='uat'):
+    """THIS DESTROYS THE OLD BUILD. It builds a new environment with the uat branch."""
+    first_publish(env_prefix)
+    transfer_database_from_production(env_prefix)
+
+    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
+    os.environ.setdefault('HEROKU_APP', heroku_app)
+    kill_app(env_prefix, safety_on=False)
+    create_newbuild(env_prefix=env_prefix)
+    update_app(env_prefix)
+    # local('heroku open')  # opens the web site in a browser window.
 
 
 #if __name__ == "__main__":

@@ -57,6 +57,7 @@ LOCAL_APPS = [
     'bene.users.apps.UsersConfig',
     # Your stuff: custom apps go here
     'bene.xero.apps.XeroConfig',
+    'bene.product.apps.ProductConfig',
     'explorer',
 ]
 
