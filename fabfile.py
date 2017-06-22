@@ -9,6 +9,19 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 
+def set_environment_variables(env_prefix):
+    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
+    local("heroku config:set DJANGO_SETTINGS_MODULE=config.settings.production --app {}".format(heroku_app))
+    local('heroku config:set PYTHONHASHSEED=random --app {}"'.format(heroku_app))
+    local('heroku config:set DJANGO_ALLOWED_HOSTS="{1}.herokuapp.com" --app {1}'.format(os.environ['DJANGO_ALLOWED_HOSTS'], heroku_app))
+    for config in ( 'DJANGO_SECRET_KEY', 'DJANGO_ADMIN_URL'
+        ,'DJANGO_OPBEAT_ORGANIZATION_ID', 'DJANGO_OPBEAT_APP_ID', 'DJANGO_OPBEAT_SECRET_TOKEN'
+        ,'DJANGO_AWS_ACCESS_KEY_ID', 'DJANGO_AWS_SECRET_ACCESS_KEY', 'DJANGO_AWS_STORAGE_BUCKET_NAME'
+        ,'DJANGO_MAILGUN_API_KEY', 'DJANGO_SERVER_EMAIL', 'MAILGUN_SENDER_DOMAIN'
+        ,'DJANGO_ACCOUNT_ALLOW_REGISTRATION', 'DJANGO_SENTRY_DSN'):
+        local('heroku config:set {}={} --app {}'.format(config, os.environ[config], heroku_app))
+
+
 def create_newbuild(env_prefix='test', branch='master'):
     """This builds the database and waits for it be ready.  It is is safe to run and won't
     destroy any existing infrastructure."""
@@ -24,16 +37,7 @@ def create_newbuild(env_prefix='test', branch='master'):
     local('heroku pg:backups:schedule --at 04:00 --app {0}'.format(heroku_app))
     # Already promoted as new local('heroku pg:promote DATABASE_URL --app bene-prod')
     # Leaving out and aws and reddis
-    local("heroku config:set DJANGO_SETTINGS_MODULE=config.settings.production --app {}".format(heroku_app))
-    local('heroku config:set PYTHONHASHSEED=random --app {}"'.format(heroku_app))
-    local('heroku config:set DJANGO_ALLOWED_HOSTS="{1}.herokuapp.com" --app {1}'.format(os.environ['DJANGO_ALLOWED_HOSTS'], heroku_app))
-    for config in ( 'DJANGO_SECRET_KEY', 'DJANGO_ADMIN_URL'
-        ,'DJANGO_OPBEAT_ORGANIZATION_ID', 'DJANGO_OPBEAT_APP_ID', 'DJANGO_OPBEAT_SECRET_TOKEN'
-        ,'DJANGO_AWS_ACCESS_KEY_ID', 'DJANGO_AWS_SECRET_ACCESS_KEY', 'DJANGO_AWS_STORAGE_BUCKET_NAME'
-        ,'DJANGO_MAILGUN_API_KEY', 'DJANGO_SERVER_EMAIL', 'MAILGUN_SENDER_DOMAIN'
-        ,'DJANGO_ACCOUNT_ALLOW_REGISTRATION', 'DJANGO_SENTRY_DSN'):
-        local('heroku config:set {}={} --app {}'.format(config, os.environ[config], heroku_app))
-
+    set_environment_variables(env_prefix)
     local('heroku git:remote -a {}'.format(heroku_app))
     local(f'git push heroku {branch}')
     local('heroku run python manage.py makemigrations')
@@ -124,6 +128,7 @@ def update_app(env_prefix='uat', branch='uat'):
     # Put the heroku app in maintenance move
     try:
         local('heroku maintenance:on --app {} '.format(heroku_app) )
+        set_environment_variables(env_prefix)  # In case anything has changed
         # connect git to the correct remote repository
         local('heroku git:remote -a {}'.format(heroku_app))
         # Need to push the branch in git to the master branch in the remote heroku repository
