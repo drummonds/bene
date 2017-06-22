@@ -124,8 +124,11 @@ def update_app(env_prefix='uat', branch='uat'):
     # Put the heroku app in maintenance move
     try:
         local('heroku maintenance:on --app {} '.format(heroku_app) )
+        # connect git to the correct remote repository
         local('heroku git:remote -a {}'.format(heroku_app))
-        local(f'git push heroku {branch}')
+        # Need to push the branch in git to the master branch in the remote heroku repository
+        local(f'git push heroku {branch}:master')
+        # local(f'git push heroku {branch}')
         local('heroku run python manage.py makemigrations')
         local('heroku run python manage.py migrate')
     finally:
@@ -134,13 +137,11 @@ def update_app(env_prefix='uat', branch='uat'):
 
 def build_staging(env_prefix='uat'):
     """THIS DESTROYS THE OLD BUILD. It builds a new environment with the uat branch."""
-    first_publish(env_prefix)
-    transfer_database_from_production(env_prefix)
-
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
     os.environ.setdefault('HEROKU_APP', heroku_app)
-    kill_app(env_prefix, safety_on=False)
-    create_newbuild(env_prefix=env_prefix)
+    first_publish(env_prefix)
+    transfer_database_from_production(env_prefix)
+    # At this stage should have a copy of the master production system
     update_app(env_prefix)
     # local('heroku open')  # opens the web site in a browser window.
 
