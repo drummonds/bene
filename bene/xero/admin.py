@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import ContactGroup, Contact, Item, Invoice
+
+admin.site.register(ContactGroup)
+admin.site.register(Contact)
+admin.site.register(Item)
+admin.site.register(Invoice)

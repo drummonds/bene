@@ -41,7 +41,7 @@ def create_newbuild(env_prefix='test', branch='master'):
     local('heroku git:remote -a {}'.format(heroku_app))
     local(f'git push heroku {branch}')
     local('heroku run python manage.py makemigrations')
-    local('heroku run python manage.py migrate')
+    local('heroku run yes "yes" | python manage.py migrate')  # Force deletion of stale content types
     local('heroku run python manage.py check --deploy') # make sure all ok
     local('heroku run python manage.py opbeat test')  # Test that opbeat is working
     su_name = os.environ['SUPERUSER_NAME']
@@ -135,7 +135,7 @@ def update_app(env_prefix='uat', branch='uat'):
         local(f'git push heroku {branch}:master')
         # local(f'git push heroku {branch}')
         # makemigrations should be run locally and the results checked into git
-        local('heroku run python manage.py migrate')
+        local('heroku run "yes \"yes\" | python manage.py migrate"')  # Force deletion of stale content types
     finally:
         local('heroku maintenance:off --app {} '.format(heroku_app))
 
