@@ -129,7 +129,7 @@ def update_app(env_prefix='uat', branch='uat'):
         # Need to push the branch in git to the master branch in the remote heroku repository
         local(f'git push heroku {branch}:master')
         # local(f'git push heroku {branch}')
-        local('heroku run python manage.py makemigrations')
+        # makemigrations should be run locally and the results checked into git
         local('heroku run python manage.py migrate')
     finally:
         local('heroku maintenance:off --app {} '.format(heroku_app))
