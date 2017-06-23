@@ -37,11 +37,7 @@ def create_newbuild(env_prefix='test', branch='master'):
     local('heroku pg:backups:schedule --at 04:00 --app {0}'.format(heroku_app))
     # Already promoted as new local('heroku pg:promote DATABASE_URL --app bene-prod')
     # Leaving out and aws and reddis
-    set_environment_variables(env_prefix)
-    local('heroku git:remote -a {}'.format(heroku_app))
-    local(f'git push heroku {branch}')
-    local('heroku run python manage.py makemigrations')
-    local('heroku run yes "yes" | python manage.py migrate')  # Force deletion of stale content types
+    raw_update_app(env_prefix)
     local('heroku run python manage.py check --deploy') # make sure all ok
     local('heroku run python manage.py opbeat test')  # Test that opbeat is working
     su_name = os.environ['SUPERUSER_NAME']
@@ -53,6 +49,29 @@ def create_newbuild(env_prefix='test', branch='master'):
         + f' | python manage.py shell"' )
     local(cmd)
 
+def raw_update_app(env_prefix='uat', branch='uat'):
+    """Update of app to latest version"""
+    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
+    # Put the heroku app in maintenance move
+    set_environment_variables(env_prefix)  # In case anything has changed
+    # connect git to the correct remote repository
+    local('heroku git:remote -a {}'.format(heroku_app))
+    # Need to push the branch in git to the master branch in the remote heroku repository
+    local(f'git push heroku {branch}:master')
+    # local(f'git push heroku {branch}')
+    # makemigrations should be run locally and the results checked into git
+    local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
+
+
+def update_app(env_prefix='uat', branch='uat'):
+    """Protected update with maintenance on"""
+    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
+    # Put the heroku app in maintenance move
+    try:
+        local('heroku maintenance:on --app {} '.format(heroku_app) )
+        raw_update_app(env_prefix)
+    finally:
+        local('heroku maintenance:off --app {} '.format(heroku_app))
 
 
 def create_new_db(env_prefix='uat'):
@@ -122,23 +141,6 @@ def first_publish(env_prefix='prod'):
     # local('heroku open')  # opens the web site in a browser window.
 
 #from build.new_db import create_staging, build_staging, update, kill_staging
-
-def update_app(env_prefix='uat', branch='uat'):
-    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
-    # Put the heroku app in maintenance move
-    try:
-        local('heroku maintenance:on --app {} '.format(heroku_app) )
-        set_environment_variables(env_prefix)  # In case anything has changed
-        # connect git to the correct remote repository
-        local('heroku git:remote -a {}'.format(heroku_app))
-        # Need to push the branch in git to the master branch in the remote heroku repository
-        local(f'git push heroku {branch}:master')
-        # local(f'git push heroku {branch}')
-        # makemigrations should be run locally and the results checked into git
-        local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
-    finally:
-        local('heroku maintenance:off --app {} '.format(heroku_app))
-
 
 def build_staging(env_prefix='uat'):
     """THIS DESTROYS THE OLD BUILD. It builds a new environment with the uat branch."""
