@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 
 class ContactGroup(models.Model):
     xeroId = models.CharField('Xero ID', blank=True, max_length=255, primary_key=True)  # store the guid
@@ -34,10 +34,15 @@ class Item(models.Model):
 class Invoice(models.Model):
     xeroId = models.CharField('Xero ID', blank=True, max_length=255, primary_key=True)  # store the guid
     contact_id = models.ForeignKey('Contact', on_delete=models.CASCADE)
-    code = models.CharField('Item Code', blank=True, max_length=255)
-    name = models.CharField('Item Name', blank=True, max_length=255)
-    cost_price = models.DecimalField('Cost Price', max_digits=16, decimal_places=4)  # Could be part price
-    sales_price = models.DecimalField('Cost Price', max_digits=16, decimal_places=4)  # Could be part price
+    currency_code = models.CharField('Currency Code', blank=True, max_length=3)
+    currency_rate = models.DecimalField('CurrencyRate', blank=True, default=0, max_digits=16, decimal_places=8)
+    date = models.DateTimeField('Date', default=timezone.now)
+    nett = models.DecimalField('Nett', max_digits=16, decimal_places=2, default=0)
+    gross = models.DecimalField('Gross', max_digits=16, decimal_places=2, default=0)
+    tax = models.DecimalField('Tax', max_digits=16, decimal_places=2, default=0)
+    status = models.CharField('Status', blank=True, max_length=255, default='')
+    invoice_type = models.CharField('Invoice Type', blank=True, max_length=255, default='')
+    updated_date_utc = models.DateTimeField('UpdatedDateUTC', default=timezone.now)
 
     def __str__(self):
         return self.name
