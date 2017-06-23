@@ -12,13 +12,13 @@ class SkuInline(admin.StackedInline):
 
 
 class SizeAdmin(admin.ModelAdmin):
-    product_display = ['variant', 'sage_size', 'bed_size', 'imperial_width', 'imperial_length',
+    list_display = ['variant', 'sage_size', 'bed_size', 'imperial_width', 'imperial_length',
                     'metric_width', 'metric_length',
                     'amazon', 'description_long', ]
 
 
 class ProductAdmin(admin.ModelAdmin):
-    product_display = ['descriptive_content', 'id', 'product_type', 'product_code_root', 'bullet_point_1', 'bullet_point_2', 'bullet_point_3']
+    list_display = ['descriptive_content', 'id', 'product_type', 'product_code_root', 'bullet_point_1', 'bullet_point_2', 'bullet_point_3']
     inlines = [SkuInline]
     formfield_overrides = {
         models.CharField: {'widget': TextInput(attrs={'size':'100'})},
@@ -56,10 +56,10 @@ class ProductAdmin(admin.ModelAdmin):
     )
 
 class SpecAdmin(admin.ModelAdmin):
-    product_display = ['quilting_pattern', 'fixing']
+    list_display = ['quilting_pattern', 'fixing']
 
 class MaterialAdmin(admin.ModelAdmin):
-    product_display = ['description', 'material', 'thread_count', 'weight']
+    list_display = ['description', 'material', 'thread_count', 'weight']
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Size, SizeAdmin)

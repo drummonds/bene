@@ -79,3 +79,5 @@ staticfiles/
 
 .cache/
 
+# Temporary workspace
+playpen

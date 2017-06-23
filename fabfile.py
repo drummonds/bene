@@ -153,6 +153,20 @@ def build_staging(env_prefix='uat'):
     # local('heroku open')  # opens the web site in a browser window.
 
 
+def load_local_data(env_prefix='uat'):
+    """Adapt this for own use.  This takes a data file in the local playpen directory (not in git)
+    adds it temporarily to local git, pushes it to heroku and uploads.  Then removes the file from git.
+    Assumes that the master branch is being used and is uptodate.
+    Thanks to Jake Trent https://jaketrent.com/post/django-loaddata-heroku/"""
+    local('git add playpen/products.json -f')  # Need to force this as playpen is ignored in .gitignore
+    local('git commit -m "Added temporary database data"')
+    local('git push heroku master')
+    local('git reset --soft HEAD^')  # remove temporary file
+    local('git reset HEAD playpen/products.json')
+    local('git push origin master')
+    local('heroku run python manage.py loaddata playpen/products.json')
+
+
 #if __name__ == "__main__":
     # staging = 'fac-test'
     # old_staging = staging
