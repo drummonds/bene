@@ -27,7 +27,7 @@ def create_newbuild(env_prefix='test', branch='master'):
     destroy any existing infrastructure."""
     # subprocess.call('heroku create --app {} --region eu'.format(staging), shell=True)
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
-    #local('heroku create --app {} --region eu'.format(heroku_app))  # Old style
+    # local('heroku create --app {} --region eu'.format(heroku_app))  # Old style
     local('heroku create {0} --buildpack https://github.com/heroku/heroku-buildpack-python --region eu'
           .format(heroku_app))
     # This is where we create the database.  The type of database can range from hobby-dev for small
@@ -37,7 +37,7 @@ def create_newbuild(env_prefix='test', branch='master'):
     local('heroku pg:backups:schedule --at 04:00 --app {0}'.format(heroku_app))
     # Already promoted as new local('heroku pg:promote DATABASE_URL --app bene-prod')
     # Leaving out and aws and reddis
-    raw_update_app(env_prefix)
+    raw_update_app(env_prefix, branch='master')
     local('heroku run python manage.py check --deploy') # make sure all ok
     local('heroku run python manage.py opbeat test')  # Test that opbeat is working
     su_name = os.environ['SUPERUSER_NAME']
@@ -49,7 +49,7 @@ def create_newbuild(env_prefix='test', branch='master'):
         + f' | python manage.py shell"' )
     local(cmd)
 
-def raw_update_app(env_prefix='uat', branch='uat'):
+def raw_update_app(env_prefix='uat', branch='master'):
     """Update of app to latest version"""
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
     # Put the heroku app in maintenance move
@@ -63,13 +63,13 @@ def raw_update_app(env_prefix='uat', branch='uat'):
     local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
 
 
-def update_app(env_prefix='uat', branch='uat'):
+def update_app(env_prefix='uat', branch='master'):
     """Protected update with maintenance on"""
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
     # Put the heroku app in maintenance move
     try:
         local('heroku maintenance:on --app {} '.format(heroku_app) )
-        raw_update_app(env_prefix)
+        raw_update_app(env_prefix, branch)
     finally:
         local('heroku maintenance:off --app {} '.format(heroku_app))
 
