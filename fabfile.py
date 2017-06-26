@@ -32,7 +32,7 @@ def create_newbuild(env_prefix='test', branch='master'):
           .format(heroku_app))
     # This is where we create the database.  The type of database can range from hobby-dev for small
     # free access to standard for production quality docs
-    local('heroku addons:create heroku-postgresql:hobby-dev --app {0}'.format(heroku_app))
+    local('heroku addons:create heroku-postgresql:hobby-basic --app {0}'.format(heroku_app))
     local('heroku pg:wait --app {0}'.format(heroku_app))  # It takes some time for DB so wait for it
     local('heroku pg:backups:schedule --at 04:00 --app {0}'.format(heroku_app))
     # Already promoted as new local('heroku pg:promote DATABASE_URL --app bene-prod')
@@ -78,7 +78,7 @@ def create_new_db(env_prefix='uat'):
     """Just creates a new database for this instance."""
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
     # Put the heroku app in maintenance move
-    m = local('heroku addons:create heroku-postgresql:hobby-dev --app {0}'.format(heroku_app), capture=True)
+    m = local('heroku addons:create heroku-postgresql:hobby-basic --app {0}'.format(heroku_app), capture=True)
     m1 = m.replace('\n',' ')  # Convert to a single string
     print(f'>>>{m1}<<<')
     found = re.search('Created\w*(.*)\w*as\w*(.*)\w* Use', m1)
@@ -111,6 +111,9 @@ def default_db_colour(app_name):
     return data['DATABASE_URL']
 
 def transfer_database_from_production(env_prefix='test', clean=True):
+    """This is usally used for making a copy of the production database for a UAT staging
+    or test environment.  It can also be used to upgrade the production environment from one
+    database plan to the next. """
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
     heroku_app_prod = '{0}-prod'.format(os.environ['HEROKU_PREFIX'])
     # Put the heroku app in maintenance move
