@@ -1,18 +1,13 @@
 {% extends "base.html" %}
 {% load static from staticfiles %}
 {% block content %}
-    <h1>Bene - accounting reporting for Xero V0.0</h1>
+    <h1>Bene - accounting reporting for Xero V0.1</h1>
     <p>This shows how to get reports from Xero.</p>
-
-{% comment %}
-    <p>
-        <img src="{% static 'images/Cotrugli.jpg' %}" alt="Manuscript copy"
-             style="width:50%;height:50%;"/>
-    </p>
 
     <p><a target="_blank" href="https://go.xero.com/Dashboard/">
         <img src="{% static 'images/connect_xero_button_white_2x.png' %}"/></a></p>
     {% if request.user.is_authenticated %}
-    <p>Customised with product database for Slumberfleece Ltd</p>
-    {% endif %}{% endcomment %}
+    <p>Customised with product database for Slumberfleece Ltd.  Reports are available on the
+    Explorer Tab.</p>
+    {% endif %}
 {% endblock content %}
