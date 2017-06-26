@@ -98,6 +98,7 @@ def remove_unused_db(env_prefix='uat'):
             if v != data['DATABASE_URL']:
                 local(f'heroku addons:destroy {k} --app {heroku_app} --confirm {heroku_app}')
 
+
 def default_db_colour(app_name):
     """Return the default database colour of heroku application"""
     data = json.loads(local('heroku config --json --app {0}'.format(app_name), capture=True))
@@ -109,6 +110,7 @@ def default_db_colour(app_name):
     # if no colour found then try the long name in database_url
     # raise Exception(f'No color database names found for app {app_name} - create an extra one and it should be ok.')
     return data['DATABASE_URL']
+
 
 def transfer_database_from_production(env_prefix='test', clean=True):
     """This is usally used for making a copy of the production database for a UAT staging
