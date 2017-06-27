@@ -37,7 +37,7 @@ class ExcelExporter(BaseExporter):
         title = self.query.title[:31]
 
         ws = wb.add_worksheet(name=title)
-        for range, width in [('A:A', 9), ('B:B', 37), ('C:C', 6), ('D:D', 11), ('E:G', 9)]:
+        for range, width in [('A:A', 9), ('B:B', 11), ('C:C', 6), ('D:D', 37), ('E:G', 9)]:
             ws.set_column(range, width)
         # Write headers
         row = 0
