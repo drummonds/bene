@@ -277,10 +277,10 @@ ADMIN_URL = r'^admin/'
 
 # SQL Explorer custom settings
 EXPLORER_DATA_EXPORTERS =  [
+    ('excel', 'utils.reports.ExcelExporter'),
     ('csv', 'explorer.exporters.CSVExporter'),
-    ('slf_excel', 'explorer.exporters.ExcelExporter'),
-    ('excel', 'explorer.exporters.ExcelExporter'),
+    # ('excel', 'explorer.exporters.ExcelExporter'),
     ('json', 'explorer.exporters.JSONExporter'),
 ]
 
-EXPLORER_PERMISSION_CHANGE = lambda u: u.name == 'TREEZ'
+# EXPLORER_PERMISSION_CHANGE = lambda u: u.name == 'hum3'

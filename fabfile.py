@@ -171,6 +171,11 @@ def load_local_data(env_prefix='uat'):
     local('git push origin master')
     local('heroku run python manage.py loaddata playpen/products.json')
 
+def uat_test_build():
+    "Build uat_test environment"
+    local('fab create_newbuild:env_prefix=uat,branch=uat')
+    local('fab transfer_database_from_production:uat')
+
 
 #if __name__ == "__main__":
     # staging = 'fac-test'
