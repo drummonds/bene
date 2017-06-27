@@ -274,3 +274,13 @@ ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+# SQL Explorer custom settings
+EXPLORER_DATA_EXPORTERS =  [
+    ('csv', 'explorer.exporters.CSVExporter'),
+    ('slf_excel', 'explorer.exporters.ExcelExporter'),
+    ('excel', 'explorer.exporters.ExcelExporter'),
+    ('json', 'explorer.exporters.JSONExporter'),
+]
+
+EXPLORER_PERMISSION_CHANGE = lambda u: u.name == 'TREEZ')
