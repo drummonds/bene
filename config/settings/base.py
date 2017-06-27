@@ -283,4 +283,4 @@ EXPLORER_DATA_EXPORTERS =  [
     ('json', 'explorer.exporters.JSONExporter'),
 ]
 
-EXPLORER_PERMISSION_CHANGE = lambda u: u.name == 'TREEZ')
+EXPLORER_PERMISSION_CHANGE = lambda u: u.name == 'TREEZ'
