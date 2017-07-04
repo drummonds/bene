@@ -37,7 +37,7 @@ def create_newbuild(env_prefix='test', branch='master'):
     local('heroku pg:backups:schedule --at 04:00 --app {0}'.format(heroku_app))
     # Already promoted as new local('heroku pg:promote DATABASE_URL --app bene-prod')
     # Leaving out and aws and reddis
-    raw_update_app(env_prefix, branch='master')
+    raw_update_app(env_prefix, branch=branch)
     local('heroku run python manage.py check --deploy') # make sure all ok
     local('heroku run python manage.py opbeat test')  # Test that opbeat is working
     su_name = os.environ['SUPERUSER_NAME']
@@ -171,10 +171,20 @@ def load_local_data(env_prefix='uat'):
     local('git push origin master')
     local('heroku run python manage.py loaddata playpen/products.json')
 
-def uat_test_build():
-    "Build uat_test environment"
+def build_uat():
+    """"Build uat_test environment"""
+    local('fab kill_app:uat')
     local('fab create_newbuild:env_prefix=uat,branch=uat')
     local('fab transfer_database_from_production:uat')
+    # makemigrations should be run locally and the results checked into git
+    # Need to migrate the old database schema from the master production database
+    local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
+
+def update_prod():
+    """"Build uat_test environment"""
+    local('fab update_app:prod')
+    local('fab kill_app:uat')
+
 
 
 #if __name__ == "__main__":
