@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Company, Reports
+from .models import Company, Report
 
 admin.site.register(Company)
-admin.site.register(Reports)
+admin.site.register(Report)
