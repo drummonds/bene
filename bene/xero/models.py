@@ -33,7 +33,7 @@ class Item(models.Model):
 
 class Invoice(models.Model):
     xerodb_id = models.CharField('Xero ID', blank=True, max_length=255, primary_key=True)  # store the guid
-    contact_id = models.ForeignKey('Contact', on_delete=models.CASCADE)
+    contact_id = models.ForeignKey('Contact', on_delete=models.CASCADE, blank=True, null=True)
     currency_code = models.CharField('Currency Code', blank=True, max_length=3)
     currency_rate = models.DecimalField('CurrencyRate', blank=True, default=0, max_digits=16, decimal_places=8)
     inv_number = models.CharField('Status', blank=True, max_length=50, default='')
@@ -51,7 +51,7 @@ class Invoice(models.Model):
 class LineItem(models.Model):
     id = models.UUIDField(primary_key=True)
     invoice = models.ForeignKey('Invoice', on_delete=models.CASCADE)
-    item = models.ForeignKey('Item', on_delete=models.CASCADE)
+    item = models.ForeignKey('Item', on_delete=models.CASCADE, blank=True, null=True)
     quantity  = models.DecimalField('Qty', max_digits=16, decimal_places=4)  # Could be part price
     price = models.DecimalField('Price', max_digits=16, decimal_places=4)  # Could be part price
 

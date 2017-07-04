@@ -59,6 +59,7 @@ LOCAL_APPS = [
     'bene.xero.apps.XeroConfig',
     'bene.product.apps.ProductConfig',
     'explorer',
+    'sereports.apps.SEReportsConfig',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
