@@ -15,6 +15,11 @@ urlpatterns = [
     ),
     url(
         regex=r'^$',
+        view=views.OAuthView.as_view(),
+        name='oauth'
+    ),
+    url(
+        regex=r'^$',
         view=views.XeroView.as_view(),
         name='xero'
     ),
