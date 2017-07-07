@@ -65,3 +65,5 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Your local stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+XERO_CONSUMER_SECRET=env('XERO_CONSUMER_SECRET')
+XERO_CONSUMER_KEY=env('XERO_CONSUMER_KEY')

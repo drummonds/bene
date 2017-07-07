@@ -16,6 +16,7 @@ APPS_DIR = ROOT_DIR.path('bene')
 env = environ.Env()
 
 # .env file, should load only in development environment
+# So in local environment set this variable
 READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
 
 if READ_DOT_ENV_FILE:
@@ -285,3 +286,8 @@ EXPLORER_DATA_EXPORTERS =  [
 ]
 
 # EXPLORER_PERMISSION_CHANGE = lambda u: u.name == 'hum3'
+
+# Xero API
+OAUTH_AUTHORIZATION_URL = 'https://ulsterbank.openbankproject.com/oauth/authorize'
+OAUTH_ACCESS_TOKEN_URL = 'https://ulsterbank.openbankproject.com/oauth/token'
+# the callback is defiened by xero_authorize

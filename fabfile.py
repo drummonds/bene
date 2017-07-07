@@ -181,9 +181,13 @@ def build_uat():
     local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
 
 def update_prod():
-    """"Build uat_test environment"""
+    """"Update the production environment with latest changes.  Removes UAT as this should now be complete."""
     local('fab update_app:prod')
     local('fab kill_app:uat')
+
+def update_requirements():
+    """"After altering requirements eg base.txt or local.txt update the local environment"""
+    local('pip install -r requirements/local.txt')
 
 
 

@@ -53,3 +53,7 @@ boto3==1.4.4
 # Reporting
 django-sql-explorer
 XlsxWriter==0.9.6
+
+# Xero requests
+pyxero
+requests_oauthlib
