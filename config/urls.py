@@ -16,7 +16,7 @@ urlpatterns = [
     # User management
     url(r'^users/', include('bene.users.urls', namespace='users')),
     url(r'^rep/', include('sereports.urls', namespace='sereport')),
-    url(r'^xero/', include('xero.urls', namespace='xero')),
+    url(r'^xero/', include('bene.xero.urls', namespace='xero')),
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here

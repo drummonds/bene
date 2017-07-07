@@ -11,7 +11,7 @@ urlpatterns = [
     url(
         regex=r'^$',
         view=views.AuthorizationView.as_view(),
-        name='xero_authorize'
+        name='authorize'
     ),
     url(
         regex=r'^$',

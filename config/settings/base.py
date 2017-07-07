@@ -57,10 +57,10 @@ LOCAL_APPS = [
     # custom users app
     'bene.users.apps.UsersConfig',
     # Your stuff: custom apps go here
-    'bene.xero.apps.XeroConfig',
     'bene.product.apps.ProductConfig',
     'explorer',
     'sereports.apps.SEReportsConfig',
+    'bene.xero.apps.XeroConfig',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

@@ -6,6 +6,9 @@ from requests_oauthlib import OAuth1Session
 
 from xero import Xero
 from xero.auth import PublicCredentials
+from xero.constants import (
+    XERO_BASE_URL, REQUEST_TOKEN_URL, AUTHORIZE_URL, ACCESS_TOKEN_URL
+)
 
 from sereports.models import Company
 
@@ -34,11 +37,12 @@ class SyncView(TemplateView, LoginRequiredMixin):
         xero = OAuth1Session(
             settings.XERO_CONSUMER_KEY,
             client_secret=settings.XERO_CONSUMER_SECRET,
-            callback_uri=reverse('xero_authorize')
+            callback_uri=reverse('xero:authorize')
         )
 
-        fetch_response = xero.fetch_request_token(settings.OAUTH_TOKEN_URL)
-        authorization_url = xero.authorization_url(settings.OAUTH_AUTHORIZATION_URL)
+
+        fetch_response = xero.fetch_request_token(XERO_BASE_URL + REQUEST_TOKEN_URL)
+        authorization_url = xero.authorization_url(XERO_BASE_URL + AUTHORIZE_URL)
 
         self.request.session['oauth_token'] = fetch_response.get('oauth_token')
         self.request.session['oauth_secret'] = fetch_response.get('oauth_token_secret')
