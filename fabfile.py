@@ -18,7 +18,8 @@ def set_environment_variables(env_prefix):
         ,'DJANGO_OPBEAT_ORGANIZATION_ID', 'DJANGO_OPBEAT_APP_ID', 'DJANGO_OPBEAT_SECRET_TOKEN'
         ,'DJANGO_AWS_ACCESS_KEY_ID', 'DJANGO_AWS_SECRET_ACCESS_KEY', 'DJANGO_AWS_STORAGE_BUCKET_NAME'
         ,'DJANGO_MAILGUN_API_KEY', 'DJANGO_SERVER_EMAIL', 'MAILGUN_SENDER_DOMAIN'
-        ,'DJANGO_ACCOUNT_ALLOW_REGISTRATION', 'DJANGO_SENTRY_DSN'):
+        ,'DJANGO_ACCOUNT_ALLOW_REGISTRATION', 'DJANGO_SENTRY_DSN'
+        ,'XERO_CONSUMER_SECRET', 'XERO_CONSUMER_KEY'):
         local('heroku config:set {}={} --app {}'.format(config, os.environ[config], heroku_app))
 
 
@@ -178,9 +179,9 @@ def build_uat():
 
 def build_app(env_prefix='uat'):
     """"Build a test environment. Default is uat.
-    So fab build_app  is equivalent to fab build_app:uat  and to fab build_app:env_prefix='uat'
-    so can build a Test branch with:
-        fab build_app:env_prefix='Test'"""
+    So fab build_app  is equivalent to fab build_app:uat  and to fab build_app:env_prefix=uat
+    so can build a test branch with:
+        fab build_app:env_prefix=test"""
     try:
         local(f'fab kill_app:{env_prefix}')
     except:
