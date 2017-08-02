@@ -291,5 +291,5 @@ EXPLORER_DATA_EXPORTERS =  [
 # API points are hardcoded at the moment
 # the callback is defined by xero_authorize
 
-XERO_CONSUMER_KEY=  env('XERO_CONSUMER_SECRET')
-XERO_SECRET_KEY = env('XERO_CONSUMER_KEY')
+XERO_CONSUMER_SECRET =  env('XERO_CONSUMER_SECRET')
+XERO_CONSUMER_KEY = env('XERO_CONSUMER_KEY')
