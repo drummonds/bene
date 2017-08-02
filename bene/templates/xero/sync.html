@@ -4,10 +4,17 @@
     <h1>Syncing Bene to Xero</h1>
     <p>Customised with product database for {{ company }}.
     </p>
-    <p>Click on this button to get data into Xero</p>
+    <p>Click on this button to get data into Xero using Xero</p>
     <p>
         <a href="{{ authorization_url }}"><img
                 src="http://xerodev.wpengine.com/wp-content/uploads/2011/09/connect_xero_button_blue1.png"></a>
     </p>
     <p>Results from Xero are {{ xero_sync }}</p>
+    <hr/>
+    <p>Use this button to use the Openbank example</p>
+    <p>
+        <a href="{{ authorization_url }}"><img
+                src="http://xerodev.wpengine.com/wp-content/uploads/2011/09/connect_xero_button_blue1.png"></a>
+    </p>
+    <p>Token from Xero is |{{ token }}|</p>
 {% endblock content %}

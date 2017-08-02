@@ -9,19 +9,29 @@ urlpatterns = [
         name='index'
     ),
     url(
-        regex=r'^$',
+        regex=r'^authorize$',
         view=views.AuthorizationView.as_view(),
         name='authorize'
     ),
     url(
-        regex=r'^$',
+        regex=r'^oauth$',
         view=views.OAuthView.as_view(),
         name='oauth'
     ),
     url(
-        regex=r'^$',
+        regex=r'^xero$',
         view=views.XeroView.as_view(),
         name='xero'
+    ),
+    url(
+        regex=r'^ob_authorize$',
+        view=views.OBAuthorizationView.as_view(),
+        name='ob_authorize'
+    ),
+    url(
+        regex=r'^ob_authorize$',
+        view=views.OBAuthorizationView.as_view(),
+        name='ob_authorize'
     ),
 ]
 

@@ -132,6 +132,8 @@ def transfer_database_from_production(env_prefix='test', clean=True):
 
 
 def kill_app(env_prefix, safety_on = True):
+    """Kill app notice that to the syntax for the production version is:
+    fab kill_app:prod,safety_on=False"""
     if not (env_prefix == 'prod' and safety_on):  # Safety check - remove when you need to
         heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
         local('heroku destroy {0} --confirm {0}'.format(heroku_app))
@@ -172,10 +174,22 @@ def load_local_data(env_prefix='uat'):
     local('heroku run python manage.py loaddata playpen/products.json')
 
 def build_uat():
-    """"Build uat_test environment"""
-    local('fab kill_app:uat')
-    local('fab create_newbuild:env_prefix=uat,branch=uat')
-    local('fab transfer_database_from_production:uat')
+    build_app()
+
+def build_app(env_prefix='uat'):
+    """"Build a test environment. Default is uat.
+    So fab build_app  is equivalent to fab build_app:uat  and to fab build_app:env_prefix='uat'
+    so can build a Test branch with:
+        fab build_app:env_prefix='Test'"""
+    try:
+        local(f'fab kill_app:{env_prefix}')
+    except:
+        if env_prefix != 'prod':
+            pass # ignore errors in case original does not exist
+        else:
+            raise Exception('Must stop if an errror when deleteing a production database.')
+    local(f'fab create_newbuild:env_prefix={env_prefix},branch={env_prefix}')
+    local(f'fab transfer_database_from_production:{env_prefix}')
     # makemigrations should be run locally and the results checked into git
     # Need to migrate the old database schema from the master production database
     local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
