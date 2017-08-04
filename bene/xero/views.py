@@ -30,7 +30,6 @@ def get_oauth(request):
     return xero
 
 
-
 class XHomeView(TemplateView, LoginRequiredMixin):
     template_name = 'xero/home.html'
 
@@ -80,8 +79,9 @@ class OAuthView(RedirectView, LoginRequiredMixin):
     #pattern_name = 'article-detail'
 
     def get_redirect_url(self, *args, **kwargs):
-        if 'oauth_token' not in kwargs or 'oauth_verifier' not in kwargs: # TODO or 'org' not in kwargs:
-            self.request.session['auth_error'] = f'OAuthView Error Missing parameters required. {kwargs}'
+        params = self.request.GET
+        if 'oauth_token' not in params or 'oauth_verifier' not in params or 'org' not in params:
+            self.request.session['auth_error'] = f'OAuthView Error Missing parameters required. {params}'
             return reverse('xero:index')
 
         OAUTH_PERSISTENT_SERVER_STORAGE = decode_oauth(self.request.session['oauth_persistent'])
@@ -90,7 +90,7 @@ class OAuthView(RedirectView, LoginRequiredMixin):
         credentials = PublicCredentials(**stored_values)
 
         try:
-            credentials.verify(kwargs['oauth_verifier'])
+            credentials.verify(params['oauth_verifier'])
 
             # Resave our verified credentials
             for key, value in credentials.state.items():
