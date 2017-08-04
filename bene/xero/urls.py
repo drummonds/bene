@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     url(
         regex=r'^$',
-        view=views.SyncView.as_view(),
+        view=views.HomeView.as_view(),
         name='index'
     ),
     url(

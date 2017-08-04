@@ -30,11 +30,11 @@ def get_oauth(request):
 
 
 
-class SyncView(TemplateView, LoginRequiredMixin):
-    template_name = 'xero/sync.html'
+class HomeView(TemplateView, LoginRequiredMixin):
+    template_name = 'xero/home.html'
 
     def get_context_data(self, **kwargs):
-        context = super(SyncView, self).get_context_data(**kwargs)
+        context = super(HomeView, self).get_context_data(**kwargs)
 
         c = Company.objects.first()
         try:
@@ -42,30 +42,10 @@ class SyncView(TemplateView, LoginRequiredMixin):
         except:
             company_name = 'No company set up yet'
 
-        print('Callback URI = |{}|'.format(reverse('xero:authorize')))
-        xero = OAuth1Session(
-            settings.XERO_CONSUMER_KEY,
-            client_secret=settings.XERO_CONSUMER_SECRET,
-            callback_uri=reverse('xero:authorize')
-        )
-
-
-        fetch_response = xero.fetch_request_token(XERO_BASE_URL + REQUEST_TOKEN_URL)
-        authorization_url = xero.authorization_url(XERO_BASE_URL + AUTHORIZE_URL, callback_uri=reverse('xero:authorize'))
-
-        self.request.session['oauth_token'] = fetch_response.get('oauth_token')
-        self.request.session['oauth_secret'] = fetch_response.get('oauth_token_secret')
-        self.request.session.modified = True
-
-        test_xero = 'Checking'
-
-        context.update({'company': company_name, 'xero_sync' : test_xero,
+        context.update({'company': company_name,
                         'authorization_url' : reverse('xero:do_auth'),
                         'ob_authorization_url' : reverse('xero:ob_authorize'),})
-
-        print('First step is to go to |{}|'.format(reverse('xero:authorize')))
         return context
-
 
 
 class DoAuthView(RedirectView, LoginRequiredMixin):
@@ -75,13 +55,17 @@ class DoAuthView(RedirectView, LoginRequiredMixin):
 
     def get_redirect_url(self, *args, **kwargs):
         # Get and approved the request token
+        print('Callback URI = |{}|'.format(self.request.build_absolute_uri(reverse('xero:oauth'))))
         credentials = PublicCredentials(
             settings.XERO_CONSUMER_KEY, settings.XERO_CONSUMER_SECRET,
-            callback_uri=reverse('xero:oauth'))
+            callback_uri=self.request.build_absolute_uri(reverse('xero:oauth')))
         # Save request token and secret and other OAuth session data
+        print(f'In DoAuthView credentials before redirect are : {credentials.state}')
         self.request.session['oauth_persistent'] = encode_oauth(credentials.state)
+        self.request.session.modified = True
         # Redirect to Xero at url provided by credentials generation
         return credentials.url
+
 
 class OAuthView(RedirectView, LoginRequiredMixin):
     permanent = False
@@ -94,7 +78,7 @@ class OAuthView(RedirectView, LoginRequiredMixin):
             return
 
         OAUTH_PERSISTENT_SERVER_STORAGE = decode_oauth(self.request.session['oauth_persistent'])
-
+        print(f'In OAuthView credentials after redirect are : {credentials.state}')
         stored_values = OAUTH_PERSISTENT_SERVER_STORAGE
         credentials = PublicCredentials(**stored_values)
 
@@ -105,6 +89,7 @@ class OAuthView(RedirectView, LoginRequiredMixin):
             for key, value in credentials.state.items():
                 OAUTH_PERSISTENT_SERVER_STORAGE.update({key: value})
             self.request.session['oauth_persistent'] = encode_oauth(OAUTH_PERSISTENT_SERVER_STORAGE)
+            self.request.session.modified = True
 
         except XeroException as e:
             self.send_error(500, message='{}: {}'.format(e.__class__, e.message))
