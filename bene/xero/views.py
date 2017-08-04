@@ -85,7 +85,6 @@ class OAuthView(RedirectView, LoginRequiredMixin):
             return reverse('xero:index')
 
         OAUTH_PERSISTENT_SERVER_STORAGE = decode_oauth(self.request.session['oauth_persistent'])
-        print(f'In OAuthView credentials after redirect are : {credentials.state}')
         stored_values = OAUTH_PERSISTENT_SERVER_STORAGE
         credentials = PublicCredentials(**stored_values)
 
