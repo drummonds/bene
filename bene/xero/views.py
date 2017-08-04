@@ -130,7 +130,7 @@ def decode_oauth(raw_data):
 
 
 class XeroView(TemplateView, LoginRequiredMixin):
-    template_name = 'xero/authorization.html'
+    template_name = 'xero/xero_result.html'
 
     def get_context_data(self, **kwargs):
         context = super(XeroView, self).get_context_data(**kwargs)
@@ -148,7 +148,7 @@ class XeroView(TemplateView, LoginRequiredMixin):
         # self.ais_action(dry_run=False)
 
         orgs = self.xero.organisations.all()
-        context['xero_json'] = orgs.json()
+        context['xero_test'] = orgs
 
         return context
 
