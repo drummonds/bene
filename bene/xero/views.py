@@ -1,3 +1,5 @@
+from dateutil.parser import parse
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -76,12 +78,8 @@ class DoAuthView(RedirectView, LoginRequiredMixin):
         credentials = PublicCredentials(
             settings.XERO_CONSUMER_KEY, settings.XERO_CONSUMER_SECRET,
             callback_uri=reverse('xero:oauth'))
-        # Save request token and secret
-        OAUTH_PERSISTENT_SERVER_STORAGE = {}
-        for key, value in credentials.state.items():
-            OAUTH_PERSISTENT_SERVER_STORAGE.update({key: value})
-        # Save OAuth session data
-        self.request.session['oauth_persistent'] = OAUTH_PERSISTENT_SERVER_STORAGE
+        # Save request token and secret and other OAuth session data
+        self.request.session['oauth_persistent'] = encode_oauth(credentials.state)
         # Redirect to Xero at url provided by credentials generation
         return credentials.url
 
@@ -95,7 +93,7 @@ class OAuthView(RedirectView, LoginRequiredMixin):
             self.send_error(500, message='Missing parameters required.')
             return
 
-        OAUTH_PERSISTENT_SERVER_STORAGE = self.request.session['oauth_persistent']
+        OAUTH_PERSISTENT_SERVER_STORAGE = decode_oauth(self.request.session['oauth_persistent'])
 
         stored_values = OAUTH_PERSISTENT_SERVER_STORAGE
         credentials = PublicCredentials(**stored_values)
@@ -106,7 +104,7 @@ class OAuthView(RedirectView, LoginRequiredMixin):
             # Resave our verified credentials
             for key, value in credentials.state.items():
                 OAUTH_PERSISTENT_SERVER_STORAGE.update({key: value})
-            self.request.session['oauth_persistent'] = OAUTH_PERSISTENT_SERVER_STORAGE
+            self.request.session['oauth_persistent'] = encode_oauth(OAUTH_PERSISTENT_SERVER_STORAGE)
 
         except XeroException as e:
             self.send_error(500, message='{}: {}'.format(e.__class__, e.message))
@@ -116,14 +114,37 @@ class OAuthView(RedirectView, LoginRequiredMixin):
         return reverse('xero:xero')
 
 
+def encode_oauth(raw_data):
+    """Use like OAUTH_PERSISTENT_SERVER_STORAGE = encode_oauth(credentials.state)
+    Used because you need to parse datetime to store as json data."""
+    result = {}
+    for key, value in raw_data.items():
+        if key in ('oauth_authorization_expires_at', 'oauth_expires_at'):
+            result.update({key: value.isoformat()})
+        else:
+            result.update({key: value})
+    return result
+
+
+def decode_oauth(raw_data):
+    """Use like OAUTH_PERSISTENT_SERVER_STORAGE = decode_oauth(self.request.session['oauth_persistent'])
+    Used because you need to parse datetime to store as json data."""
+    result = {}
+    for key, value in raw_data.items():
+        if key in ('oauth_authorization_expires_at', 'oauth_expires_at'):
+            result.update({key: parse(value)})  # parse datetime in ISO str format to datetime object
+        else:
+            result.update({key: value})
+    return result
+
+
 class XeroView(TemplateView, LoginRequiredMixin):
     template_name = 'xero/authorization.html'
 
     def get_context_data(self, **kwargs):
         context = super(XeroView, self).get_context_data(**kwargs)
 
-        OAUTH_PERSISTENT_SERVER_STORAGE = self.request.session['oauth_persistent']
-        stored_values = OAUTH_PERSISTENT_SERVER_STORAGE
+        stored_values = decode_oauth(self.request.session['oauth_persistent'])
         credentials = PublicCredentials(**stored_values)
 
         try:
