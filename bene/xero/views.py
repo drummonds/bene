@@ -60,7 +60,6 @@ class SyncView(TemplateView, LoginRequiredMixin):
         context.update({'company': company_name, 'xero_sync' : test_xero,
                         'authorization_url' : reverse('xero:do_auth'),
                         'ob_authorization_url' : reverse('xero:ob_authorize'),})
-        context['authorization_url'] = authorization_url
 
         print('First step is to go to |{}|'.format(reverse('xero:authorize')))
         return context
@@ -140,6 +139,7 @@ class XeroView(TemplateView, LoginRequiredMixin):
         context['xero_json'] = xero_json.json()
 
         return context
+
 
 class AuthorizationView(RedirectView, LoginRequiredMixin):
     permanent = False
