@@ -20,20 +20,10 @@ urlpatterns = [
     ),
     url(
         regex=r'^xero$',
-        view=views.XeroView.as_view(),
+        view=views.TestXeroView.as_view(),
         name='xero'
     ),
     # Rubbish below?
-    url(
-        regex=r'^authorize$',
-        view=views.AuthorizationView.as_view(),
-        name='authorize'
-    ),
-    url(
-        regex=r'^ob_authorize$',
-        view=views.OBAuthorizationView.as_view(),
-        name='ob_authorize'
-    ),
     url(
         regex=r'^ob_authorize$',
         view=views.OBAuthorizationView.as_view(),

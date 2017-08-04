@@ -47,7 +47,6 @@ def create_newbuild(env_prefix='test', branch='master'):
     # Leaving out and aws and reddis
     raw_update_app(env_prefix, branch=branch)
     local('heroku run python manage.py check --deploy') # make sure all ok
-    local('heroku run python manage.py opbeat test')  # Test that opbeat is working
     su_name = os.environ['SUPERUSER_NAME']
     su_email = os.environ['SUPERUSER_EMAIL']
     su_password = os.environ['SUPERUSER_PASSWORD']

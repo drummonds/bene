@@ -129,11 +129,11 @@ def decode_oauth(raw_data):
     return result
 
 
-class XeroView(TemplateView, LoginRequiredMixin):
+class TestXeroView(TemplateView, LoginRequiredMixin):
     template_name = 'xero/xero_result.html'
 
     def get_context_data(self, **kwargs):
-        context = super(XeroView, self).get_context_data(**kwargs)
+        context = super(TestXeroView, self).get_context_data(**kwargs)
 
         stored_values = decode_oauth(self.request.session['oauth_persistent'])
         credentials = PublicCredentials(**stored_values)
@@ -142,95 +142,12 @@ class XeroView(TemplateView, LoginRequiredMixin):
             self.xero = Xero(credentials)
 
         except XeroException as e:
-            self.request.session['auth_error'] = f'XeroView Error {e.__class__}: {e.message}'
+            self.request.session['auth_error'] = f'TestXeroView Error {e.__class__}: {e.message}'
             return reverse('xero:index')
 
         # self.ais_action(dry_run=False)
 
         orgs = self.xero.organisations.all()
         context['xero_test'] = orgs
-
-        return context
-
-
-class AuthorizationView(RedirectView, LoginRequiredMixin):
-    permanent = False
-    query_string = True
-    #pattern_name = 'article-detail'
-
-    def get_redirect_url(self, *args, **kwargs):
-        credentials = PublicCredentials(
-            settings.XERO_CONSUMER_KEY, settings.XERO_CONSUMER_SECRET,
-            callback_uri=reverse('xero:oauth'))
-
-        # Save generated credentials details to persistent storage
-        for key, value in credentials.state.items():
-            OAUTH_PERSISTENT_SERVER_STORAGE.update({key: value})
-
-        print('Second redirect to |{}|'.format(credentials.url))
-        return credentials.url
-
-
-# =============================================
-# Using the openbankproject authorisaction view
-# =============================================
-
-class OBIndexView(TemplateView):
-    template_name = "ob_index.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(OBIndexView, self).get_context_data(**kwargs)
-
-        openbank = OAuth1Session(
-            settings.OAUTH_CLIENT_KEY,
-            client_secret=settings.OAUTH_CLIENT_SECRET,
-            callback_uri=settings.OAUTH_CALLBACK_URI
-        )
-
-        fetch_response = openbank.fetch_request_token(settings.OAUTH_TOKEN_URL)
-        authorization_url = openbank.authorization_url(settings.OAUTH_AUTHORIZATION_URL)
-
-        self.request.session['oauth_token'] = fetch_response.get('oauth_token')
-        self.request.session['oauth_secret'] = fetch_response.get('oauth_token_secret')
-        self.request.session.modified = True
-
-        context['authorization_url'] = authorization_url
-        context['token'] = self.request.session['oauth_token']
-        return context
-
-class OBAuthorizationView(TemplateView):
-    template_name = "ob_authorization.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(OBAuthorizationView, self).get_context_data(**kwargs)
-
-        xero_session = OAuth1Session(
-            settings.XERO_CONSUMER_KEY,
-            settings.XERO_CONSUMER_SECRET,
-            resource_owner_key=self.request.session['oauth_token'],
-            resource_owner_secret=self.request.session['oauth_secret']
-        )
-
-        xero_session.parse_authorization_response(self.request.build_absolute_uri())
-
-        fetch_response = xero_session.fetch_access_token(settings.OAUTH_ACCESS_TOKEN_URL)
-
-
-        self.request.session['oauth_token'] = fetch_response.get('oauth_token')
-        self.request.session['oauth_secret'] = fetch_response.get('oauth_token_secret')
-
-        context['xero_json'] = fetch_response
-        return context
-
-class OBXeroView(TemplateView):
-    template_name = "ob_authorization.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(OBXeroView, self).get_context_data(**kwargs)
-
-        openbank = get_oauth(self.request)
-
-        xero_json = openbank.get("https://api.xero.com/api.xro/2.0/organisation")
-        context['xero_json'] = xero_json.json()
 
         return context
