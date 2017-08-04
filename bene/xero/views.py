@@ -142,13 +142,13 @@ class XeroView(TemplateView, LoginRequiredMixin):
             self.xero = Xero(credentials)
 
         except XeroException as e:
-            self.send_error(500, message='{}: {}'.format(e.__class__, e.message))
-            return
+            self.request.session['auth_error'] = f'XeroView Error {e.__class__}: {e.message}'
+            return reverse('xero:index')
 
         # self.ais_action(dry_run=False)
 
-        xero_json = self.xero.get("https://api.xero.com/api.xro/2.0/organisation")
-        context['xero_json'] = xero_json.json()
+        orgs = self.xero.organisations.all()
+        context['xero_json'] = orgs.json()
 
         return context
 
