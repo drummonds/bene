@@ -1,6 +1,7 @@
 from dateutil.parser import parse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, RedirectView
@@ -30,11 +31,11 @@ def get_oauth(request):
 
 
 
-class HomeView(TemplateView, LoginRequiredMixin):
+class XHomeView(TemplateView, LoginRequiredMixin):
     template_name = 'xero/home.html'
 
     def get_context_data(self, **kwargs):
-        context = super(HomeView, self).get_context_data(**kwargs)
+        context = super(XHomeView, self).get_context_data(**kwargs)
 
         c = Company.objects.first()
         try:
@@ -73,7 +74,7 @@ class OAuthView(RedirectView, LoginRequiredMixin):
     #pattern_name = 'article-detail'
 
     def get_redirect_url(self, *args, **kwargs):
-        if 'oauth_token' not in kwargs or 'oauth_verifier' not in kwargs or 'org' not in kwargs:
+        if 'oauth_token' not in kwargs or 'oauth_verifier' not in kwargs: # TODO or 'org' not in kwargs:
             self.send_error(500, message='Missing parameters required.')
             return
 
