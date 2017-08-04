@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 {% load static from staticfiles %}
 {% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
     <h1>Syncing Bene to Xero</h1>
-    <p>Customised with product database for {{ company }}. This is the revised version 2.
+    <p>Customised with product database for {{ company }}. This is the revised version 3 with messages.
     </p>
     <p>Click on this button to get data into Xero using Xero</p>
     <p>

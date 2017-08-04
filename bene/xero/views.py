@@ -43,6 +43,12 @@ class XHomeView(TemplateView, LoginRequiredMixin):
         except:
             company_name = 'No company set up yet'
 
+        # Display an error message for onetime if presents
+        if hasattr(self.request.session, 'auth_error'):
+            messages.error(self.request, self.request.session['auth_error'])
+            del self.request.session['auth_error']
+            self.request.session.modified = True
+
         context.update({'company': company_name,
                         'authorization_url' : reverse('xero:do_auth'),
                         'ob_authorization_url' : reverse('xero:ob_authorize'),})
@@ -75,8 +81,8 @@ class OAuthView(RedirectView, LoginRequiredMixin):
 
     def get_redirect_url(self, *args, **kwargs):
         if 'oauth_token' not in kwargs or 'oauth_verifier' not in kwargs: # TODO or 'org' not in kwargs:
-            self.send_error(500, message='Missing parameters required.')
-            return
+            self.request.session['auth_error'] = f'OAuthView Error Missing parameters required. {kwargs}'
+            return reverse('xero:index')
 
         OAUTH_PERSISTENT_SERVER_STORAGE = decode_oauth(self.request.session['oauth_persistent'])
         print(f'In OAuthView credentials after redirect are : {credentials.state}')
