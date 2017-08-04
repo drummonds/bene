@@ -9,9 +9,9 @@ urlpatterns = [
         name='index'
     ),
     url(
-        regex=r'^authorize$',
-        view=views.AuthorizationView.as_view(),
-        name='authorize'
+        regex=r'^do-auth$',
+        view=views.DoAuthView.as_view(),
+        name='do_auth'
     ),
     url(
         regex=r'^oauth$',
@@ -22,6 +22,12 @@ urlpatterns = [
         regex=r'^xero$',
         view=views.XeroView.as_view(),
         name='xero'
+    ),
+    # Rubbish below?
+    url(
+        regex=r'^authorize$',
+        view=views.AuthorizationView.as_view(),
+        name='authorize'
     ),
     url(
         regex=r'^ob_authorize$',

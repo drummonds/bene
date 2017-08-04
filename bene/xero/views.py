@@ -58,11 +58,87 @@ class SyncView(TemplateView, LoginRequiredMixin):
         test_xero = 'Checking'
 
         context.update({'company': company_name, 'xero_sync' : test_xero,
-                        'authorization_url' : reverse('xero:authorize'),
+                        'authorization_url' : reverse('xero:do_auth'),
                         'ob_authorization_url' : reverse('xero:ob_authorize'),})
         context['authorization_url'] = authorization_url
 
         print('First step is to go to |{}|'.format(reverse('xero:authorize')))
+        return context
+
+
+
+class DoAuthView(RedirectView, LoginRequiredMixin):
+    permanent = False
+    query_string = True
+    #pattern_name = 'article-detail'
+
+    def get_redirect_url(self, *args, **kwargs):
+        # Get and approved the request token
+        credentials = PublicCredentials(
+            settings.XERO_CONSUMER_KEY, settings.XERO_CONSUMER_SECRET,
+            callback_uri=reverse('xero:oauth'))
+        # Save request token and secret
+        OAUTH_PERSISTENT_SERVER_STORAGE = {}
+        for key, value in credentials.state.items():
+            OAUTH_PERSISTENT_SERVER_STORAGE.update({key: value})
+        # Save OAuth session data
+        self.request.session['oauth_persistent'] = OAUTH_PERSISTENT_SERVER_STORAGE
+        # Redirect to Xero at url provided by credentials generation
+        return credentials.url
+
+class OAuthView(RedirectView, LoginRequiredMixin):
+    permanent = False
+    query_string = True
+    #pattern_name = 'article-detail'
+
+    def get_redirect_url(self, *args, **kwargs):
+        if 'oauth_token' not in kwargs or 'oauth_verifier' not in kwargs or 'org' not in kwargs:
+            self.send_error(500, message='Missing parameters required.')
+            return
+
+        OAUTH_PERSISTENT_SERVER_STORAGE = self.request.session['oauth_persistent']
+
+        stored_values = OAUTH_PERSISTENT_SERVER_STORAGE
+        credentials = PublicCredentials(**stored_values)
+
+        try:
+            credentials.verify(kwargs['oauth_verifier'])
+
+            # Resave our verified credentials
+            for key, value in credentials.state.items():
+                OAUTH_PERSISTENT_SERVER_STORAGE.update({key: value})
+            self.request.session['oauth_persistent'] = OAUTH_PERSISTENT_SERVER_STORAGE
+
+        except XeroException as e:
+            self.send_error(500, message='{}: {}'.format(e.__class__, e.message))
+            return
+
+        # Once verified, api can be invoked with xero = Xero(credentials)
+        return reverse('xero:xero')
+
+
+class XeroView(TemplateView, LoginRequiredMixin):
+    template_name = 'xero/authorization.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(XeroView, self).get_context_data(**kwargs)
+
+        OAUTH_PERSISTENT_SERVER_STORAGE = self.request.session['oauth_persistent']
+        stored_values = OAUTH_PERSISTENT_SERVER_STORAGE
+        credentials = PublicCredentials(**stored_values)
+
+        try:
+            self.xero = Xero(credentials)
+
+        except XeroException as e:
+            self.send_error(500, message='{}: {}'.format(e.__class__, e.message))
+            return
+
+        # self.ais_action(dry_run=False)
+
+        xero_json = self.xero.get("https://api.xero.com/api.xro/2.0/organisation")
+        context['xero_json'] = xero_json.json()
+
         return context
 
 class AuthorizationView(RedirectView, LoginRequiredMixin):
@@ -81,48 +157,6 @@ class AuthorizationView(RedirectView, LoginRequiredMixin):
 
         print('Second redirect to |{}|'.format(credentials.url))
         return credentials.url
-
-
-class OAuthView(RedirectView, LoginRequiredMixin):
-    permanent = False
-    query_string = True
-    #pattern_name = 'article-detail'
-
-    def get_redirect_url(self, *args, **kwargs):
-        if 'oauth_token' not in kwargs or 'oauth_verifier' not in kwargs or 'org' not in kwargs:
-            self.send_error(500, message='Missing parameters required.')
-            return
-
-        stored_values = OAUTH_PERSISTENT_SERVER_STORAGE
-        credentials = PublicCredentials(**stored_values)
-
-        try:
-            credentials.verify(kwargs['oauth_verifier'])
-
-            # Resave our verified credentials
-            for key, value in credentials.state.items():
-                OAUTH_PERSISTENT_SERVER_STORAGE.update({key: value})
-
-        except XeroException as e:
-            self.send_error(500, message='{}: {}'.format(e.__class__, e.message))
-            return
-
-        # Once verified, api can be invoked with xero = Xero(credentials)
-        return reverse('xero:xero')
-
-
-class XeroView(TemplateView, LoginRequiredMixin):
-    template_name = 'xero/authorization.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(XeroView, self).get_context_data(**kwargs)
-
-        xero = get_oauth(self.request)
-
-        xero_json = xero.get("https://api.xero.com/api.xro/2.0/organisation")
-        context['xero_json'] = xero_json.json()
-
-        return context
 
 
 # =============================================

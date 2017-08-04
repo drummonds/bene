@@ -1,7 +1,9 @@
+import datetime as dt
 from fabric.api import *
 import json
 import os
 import re
+import time
 
 # .Env
 from dotenv import load_dotenv, find_dotenv
@@ -187,6 +189,7 @@ def build_app(env_prefix='uat'):
     So fab build_app  is equivalent to fab build_app:uat  and to fab build_app:env_prefix=uat
     so can build a test branch with:
         fab build_app:env_prefix=test"""
+    start_time = time.time()
     try:
         local(f'fab kill_app:{env_prefix}')
     except:
@@ -199,6 +202,10 @@ def build_app(env_prefix='uat'):
     # makemigrations should be run locally and the results checked into git
     # Need to migrate the old database schema from the master production database
     local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
+    # Calculate time
+    end_time = time.time()
+    runtime = str(dt.timedelta(seconds=int(end_time - start_time)))
+    print(f'Run time = {runtime}')
 
 def update_prod():
     """"Update the production environment with latest changes.  Removes UAT as this should now be complete."""
