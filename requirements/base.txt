@@ -59,4 +59,4 @@ pyxero
 requests_oauthlib
 
 # YAML support
-yaml
+pyyaml==3.12
