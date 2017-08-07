@@ -17,5 +17,5 @@ class HomeView(ListView):
             company_name = c.name
         except:
             company_name = 'No company set up yet'
-        context.update({'company': company_name, 'version': settings.FAVORITE_COLOR})
+        context.update({'company': company_name, 'version': settings.VERSION})
         return context
