@@ -23,7 +23,3 @@ django-anymail==0.10
 # Raven is the Sentry client
 # --------------------------
 raven==6.1.0
-
-# Opbeat agent for performance monitoring
-# -----------------------------------------
-opbeat==3.5.2

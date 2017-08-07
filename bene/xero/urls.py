@@ -23,11 +23,5 @@ urlpatterns = [
         view=views.TestXeroView.as_view(),
         name='xero'
     ),
-    # Rubbish below?
-    url(
-        regex=r'^ob_authorize$',
-        view=views.OBAuthorizationView.as_view(),
-        name='ob_authorize'
-    ),
 ]
 
