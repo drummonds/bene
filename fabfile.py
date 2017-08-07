@@ -203,7 +203,7 @@ def build_app(env_prefix='uat'):
     # Calculate time
     end_time = time.time()
     runtime = str(dt.timedelta(seconds=int(end_time - start_time)))
-    print(f'Run time = {runtime} Completed at: {end_time}')
+    print(f'Run time = {runtime} Completed at: {dt.datetime.now()}')
 
 def update_prod():
     """"Update the production environment with latest changes.  Removes UAT as this should now be complete."""
