@@ -205,7 +205,7 @@ class DBUpdateView(TemplateView, LoginRequiredMixin):
 
         # self.ais_action(dry_run=False)
 
-        groups, cg_file_name = get_all(self.xero.contactgroups, 'Xero_ContactGroups')[0] # Saves to YAML file
+        groups, cg_file_name = get_all(self.xero.contactgroups, 'Xero_ContactGroups') # Saves to YAML file
 
 
         context['xero_groups'] = groups

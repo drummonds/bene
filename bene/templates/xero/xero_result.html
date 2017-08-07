@@ -4,9 +4,13 @@
 {% block content %}
     <h1>From Xero Company data</h1>
     {{ xero_test }}
-    <table>
+    <hr>
+    <p>
+    <table class="table table-striped">
+    <th><td>Key</td><td>Value</td></th>
     {% for key, value in xero_test.items %}
     <tr><td>{{ key }}</td><td> {{ value }}</td></tr>
     {% endfor %}
     </table>
+    </p>
 {% endblock content %}
