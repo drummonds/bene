@@ -9,13 +9,13 @@ from requests_oauthlib import OAuth1Session
 from unipath import Path
 import yaml
 
-from .xero_db_load import truncate_data, read_in, load_contact_group
 from xero import Xero
 from xero.auth import PublicCredentials
 from xero.constants import (
     XERO_BASE_URL, REQUEST_TOKEN_URL, AUTHORIZE_URL, ACCESS_TOKEN_URL
 
-)
+from .models import reload_data
+
 from xero.exceptions import XeroException, XeroBadRequest
 
 # You should use redis or a file based persistent
@@ -164,28 +164,6 @@ class TestXeroView(TemplateView, LoginRequiredMixin):
         return context
 
 
-def to_yaml(my_list, file_root):
-    file_name = Path('.').child(file_root + dt.datetime.now().strftime(' %Y-%m-%d') + '.yml')
-    with open(file_name, 'w') as f:
-        f.write(yaml.dump(my_list))
-    return file_name
-
-def get_all(xero_endpoint, file_root='Xero_data'):
-    print('Starting to get pages for {}'.format(file_root))
-    records = records_page = xero_endpoint.filter(page=1)
-    i = 2
-    print('Page 1 ', end='')
-    while len(records_page) == 100:
-        if ((i-1) % 5) == 0:
-            print('')  # End of line
-        print(' {}'.format(i), end='')
-        records_page = xero_endpoint.filter(page=i)
-        records += records_page
-        i += 1
-    print('\n   Now saving file.')
-    file_name = to_yaml(records, file_root)
-    return records, file_name
-
 
 class DBUpdateView(TemplateView, LoginRequiredMixin):
     template_name = 'xero/xero_db_update.html'
@@ -205,13 +183,9 @@ class DBUpdateView(TemplateView, LoginRequiredMixin):
 
         # self.ais_action(dry_run=False)
 
-        groups, cg_file_name = get_all(self.xero.contactgroups, 'Xero_ContactGroups') # Saves to YAML file
+        reload_data(self.xero)
 
-
-        context['xero_groups'] = groups
+        # context['xero_groups'] = groups
         print('DBUpdateView has got groups - placeholder for DB update')
-        truncate_data()
-        cg = read_in(cg_file_name)
-        load_contact_group(cg)
 
         return context
