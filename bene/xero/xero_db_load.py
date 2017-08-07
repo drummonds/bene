@@ -2,61 +2,17 @@ import datetime as dt
 from functools import wraps
 from numpy import isnan
 import pandas as pd
-import psycopg2
-from psycopg2 import InterfaceError, IntegrityError
 from unipath import Path
 import yaml
 
+from django.db import connection
 
-from luca import p
 
-#***************************
-# Database connection
-#***************************
-
-# bene_prod
-def postgres_production():
-    return psycopg2.connect(
-        dbname='d9fjtam9q6qofp',
-        user='lcrhvbsiyzokef',
-        host='ec2-54-247-177-33.eu-west-1.compute.amazonaws.com',
-        password='7313adb5e6c9dae86f3ab4b4519b0f066fed91aa4cb02add5b489576727b206e',
-        sslmode='require'
-        )
-
-# Local
-def postgres_local():
-    return psycopg2.connect(
-        dbname='bene',
-        host='localhost',
-        )
-
-DATABASE_CONNECTION = 'production' 
-
-def database_conn():
-    if DATABASE_CONNECTION == 'production':
-        return postgres_production()
-    else:
-        return postgres_local()
+# from luca import p
 
 #***************************
 # Utilties
 #***************************
-
-def test_database_conn():
-    try:
-        conn = database_conn()
-        print ("** Connected to the database")
-        cur = conn.cursor()
-        cur.execute("""SELECT * from django_site""")
-        rows = cur.fetchall()
-        for row in rows:
-            print (f"{row}")
-        print ("** closing database")
-        conn.close()
-    except:
-        print ("I am unable to connect to the database")
-
 
 def read_in(file_name):
     """Reads in a YML file which is extracted from Xero and converts it into a dataframe.  Note often
@@ -65,27 +21,12 @@ def read_in(file_name):
         result = yaml.safe_load(f.read())
     return pd.DataFrame(result)
 
-def db_command(func):
-    """opens up the database and closes it for the function.  Makes available a live cursor cur"""
-    @wraps(func)
-    def db_access_wrapper(*args, **kwargs):       
-        try:
-            conn = database_conn()
-            conn.autocommit = True
-            cur = conn.cursor()
-            print (f"** Connected to the database for {func.__name__}")
-            func(conn, cur, *args, **kwargs)
-            print ("** closing database")
-            conn.close()
-        except InterfaceError as err:
-            print (f"I am unable to connect to the database: {err}")
-    return db_access_wrapper
-
-@db_command
-def truncate_data(conn, cur):
+def truncate_data():
     """Currently have to truncate all data in order to upload new variants."""
-    # Data is interconnected with foreign keys so have to get rid of it all
-    cur.execute('TRUNCATE xero_ContactGroup, xero_Contact, xero_Invoice, xero_LineItem, xero_Item')
+    with connection.cursor() as cursor:
+        # Data is interconnected with foreign keys so have to get rid of it all
+        cursor.execute('TRUNCATE xero_ContactGroup')
+        # cursor.execute('TRUNCATE xero_ContactGroup, xero_Contact, xero_Invoice, xero_LineItem, xero_Item')
 
 
 #***************************
@@ -96,14 +37,14 @@ def contact_groups(cg):
     for row in cg.iterrows():
         yield row[1]['Name'], row[1]['ContactGroupID']
 
-@db_command
-def load_contact_group(conn, cur, df):
-    cur.execute('TRUNCATE xero_ContactGroup')
-    i = 0
-    for n, id in contact_groups(df):
-        sql = f"""INSERT INTO xero_ContactGroup ("xerodb_id", name) VALUES('{id}', '{n}')"""
-        cur.execute(sql)
-        i += 1
+def load_contact_group(df):
+    with connection.cursor() as cursor:
+        cursor.execute('TRUNCATE xero_ContactGroup')
+        i = 0
+        for n, id in contact_groups(df):
+            sql = f"""INSERT INTO xero_ContactGroup ("xerodb_id", name) VALUES('{id}', '{n}')"""
+            cursor.execute(sql)
+            i += 1
 
 #***************************
 # Contacts
@@ -114,7 +55,6 @@ def contacts_all(c):
         yield row[1]['ContactID'], row[1]['Name'], row[1]['AccountNumber']
 
 
-@db_command
 def load_contacts(conn, cur, df):
     i = 0
     for id, name, number in contacts_all(df):
@@ -145,7 +85,6 @@ def items_all(df):
             sales_price = 0.0
         yield row[1]['ItemID'], row[1]['Code'], row[1]['Description'], cost_price, sales_price
 
-@db_command
 def load_items(conn, cur, df):
     i = 0
     num = len(df)
@@ -178,20 +117,19 @@ def invoices_all(df):
                row[1]['TotalTax'], row[1]['Status'], row[1]['Type'],
                row[1]['UpdatedDateUTC'], row[1]['InvoiceNumber'])
 
-@db_command
 def load_invoices(conn, cur, df=None, all=None):
     i = 0
     num = len(df)
     marked_complete = 0
-    for (id, contact_id, currency_code, currency_rate, 
-         date, nett, gross, 
-         tax, status, invoice_type, 
+    for (id, contact_id, currency_code, currency_rate,
+         date, nett, gross,
+         tax, status, invoice_type,
          updated_date_utc, invoice_number) in all(df):
         try:
             sql = f"""INSERT INTO xero_Invoice (xerodb_id, contact_id_id, currency_code, currency_rate, 
             inv_date, nett, gross, tax, status, invoice_type, updated_date_utc, inv_number)
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-            params = (id, contact_id, currency_code, currency_rate, date, nett, gross, tax, status, invoice_type, 
+            params = (id, contact_id, currency_code, currency_rate, date, nett, gross, tax, status, invoice_type,
                       updated_date_utc, invoice_number)
             cur.execute(sql, params)
         except IntegrityError:
@@ -213,8 +151,8 @@ def credit_notes_all(df):
             contact_id = row[1]['Contact']['ContactID']
         except:  # eg if missing
             cost_price = 0.0
-        yield (row[1]['CreditNoteID'], contact_id, row[1]['CurrencyCode'], row[1]['CurrencyRate'], 
-               row[1]['Date'], -row[1]['SubTotal'], -row[1]['Total'], 
+        yield (row[1]['CreditNoteID'], contact_id, row[1]['CurrencyCode'], row[1]['CurrencyRate'],
+               row[1]['Date'], -row[1]['SubTotal'], -row[1]['Total'],
                -row[1]['TotalTax'], row[1]['Status'], row[1]['Type'],
                row[1]['UpdatedDateUTC'], row[1]['CreditNoteNumber'])
 
@@ -278,7 +216,6 @@ def invoice_lineitems_all(df, items):
             yield (id, invoice_id, item_id, line['Quantity'], line['UnitAmount'])
 
 
-@db_command
 def load_invoice_items(conn, cur, df=None, all=None, items=None):
     i = 0
     num = len(df)
@@ -305,4 +242,3 @@ DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not prese
             print('.'*(pc-marked_complete), end='', flush=True)
             marked_complete = pc
     print('')
-    

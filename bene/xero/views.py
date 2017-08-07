@@ -9,10 +9,12 @@ from requests_oauthlib import OAuth1Session
 from unipath import Path
 import yaml
 
+from .xero_db_load import truncate_data, read_in, load_contact_group
 from xero import Xero
 from xero.auth import PublicCredentials
 from xero.constants import (
     XERO_BASE_URL, REQUEST_TOKEN_URL, AUTHORIZE_URL, ACCESS_TOKEN_URL
+
 )
 from xero.exceptions import XeroException, XeroBadRequest
 
@@ -203,9 +205,13 @@ class DBUpdateView(TemplateView, LoginRequiredMixin):
 
         # self.ais_action(dry_run=False)
 
-        groups = get_all(self.xero.contactgroups, 'Xero_ContactGroups')[0]
+        groups, cg_file_name = get_all(self.xero.contactgroups, 'Xero_ContactGroups')[0] # Saves to YAML file
+
 
         context['xero_groups'] = groups
         print('DBUpdateView has got groups - placeholder for DB update')
+        truncate_data()
+        cg = read_in(cg_file_name)
+        load_contact_group(cg)
 
         return context
