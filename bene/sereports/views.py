@@ -1,6 +1,4 @@
-from django.shortcuts import render
-
-from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView, TemplateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -19,5 +17,5 @@ class HomeView(ListView):
             company_name = c.name
         except:
             company_name = 'No company set up yet'
-        context.update({'company': company_name})
+        context.update({'company': company_name, 'version': settings.FAVORITE_COLOR})
         return context
