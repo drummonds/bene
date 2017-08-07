@@ -50,7 +50,7 @@ class XHomeView(TemplateView, LoginRequiredMixin):
 
         context.update({'company': company_name,
                         'authorization_url' : reverse('xero:do_auth'),
-                        'ob_authorization_url' : reverse('xero:ob_authorize'),})
+                        })
         return context
 
 
