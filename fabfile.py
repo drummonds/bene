@@ -207,8 +207,15 @@ def build_app(env_prefix='uat'):
 
 def update_prod():
     """"Update the production environment with latest changes.  Removes UAT as this should now be complete."""
+    start_time = time.time()
     local('fab update_app:prod')
-    local('fab kill_app:uat')
+    try:
+        local('fab kill_app:uat')
+    except:
+        print('No UAT environment to remove')
+    end_time = time.time()
+    runtime = str(dt.timedelta(seconds=int(end_time - start_time)))
+    print(f'Run time = {runtime}')
 
 def update_requirements():
     """"After altering requirements eg base.txt or local.txt update the local environment"""

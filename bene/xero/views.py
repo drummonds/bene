@@ -68,7 +68,6 @@ class DoAuthView(RedirectView, LoginRequiredMixin):
             self.request.session['xero_report'] = self.request.GET['report']
         except:
             self.request.session['xero_report'] = reverse('xero:xero')
-        if hasattr(self.request.GET,'report'):
 
         # Get and approved the request token
         credentials = PublicCredentials(
