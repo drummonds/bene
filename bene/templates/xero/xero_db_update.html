@@ -3,9 +3,9 @@
 
 {% block content %}
     <h1>From Xero Company data</h1>
-    {{ xero_test }}
+    {{ xero_groups }}
     <table>
-    {% for k, v in xero_test.iteritems %}
+    {% for k, v in xero_groups.iteritems %}
     <tr><td>{{ k }}</td><td> {{ v }}</td></tr>
     {% endfor %}
     </table>

@@ -1,11 +1,12 @@
+import datetime as dt
 from dateutil.parser import parse
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, RedirectView
 from requests_oauthlib import OAuth1Session
+from unipath import Path
 import yaml
 
 from xero import Xero
@@ -105,8 +106,9 @@ class OAuthView(RedirectView, LoginRequiredMixin):
             self.request.session.modified = True
 
         except XeroException as e:
-            self.send_error(500, message='{}: {}'.format(e.__class__, e.message))
-            return
+            self.request.session['auth_error'] = '{}: {}'.format(e.__class__, e.message)
+            return reverse('xero:index')
+
 
         # Once verified, api can be invoked with xero = Xero(credentials)
         return self.request.session['xero_report']
@@ -155,7 +157,7 @@ class TestXeroView(TemplateView, LoginRequiredMixin):
         # self.ais_action(dry_run=False)
 
         orgs = self.xero.organisations.all()
-        context['xero_test'] = orgs
+        context['xero_test'] = orgs[0]  # Just get the dictionary
 
         return context
 
@@ -203,6 +205,7 @@ class DBUpdateView(TemplateView, LoginRequiredMixin):
 
         groups = get_all(self.xero.contactgroups, 'Xero_ContactGroups')[0]
 
-        context['xero_test'] = orgs
+        context['xero_groups'] = groups
+        print('DBUpdateView has got groups - placeholder for DB update')
 
         return context

@@ -60,3 +60,6 @@ requests_oauthlib
 
 # YAML support
 pyyaml==3.12
+
+# Path support
+unipath
