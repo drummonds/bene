@@ -63,3 +63,7 @@ pyyaml==3.12
 
 # Path support
 unipath
+
+# Adding numpy and pandas for data manipulation
+pandas
+numpy
