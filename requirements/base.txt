@@ -57,3 +57,6 @@ XlsxWriter==0.9.6
 # Xero requests
 pyxero
 requests_oauthlib
+
+# YAML support
+yaml

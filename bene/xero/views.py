@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, RedirectView
 from requests_oauthlib import OAuth1Session
+import yaml
 
 from xero import Xero
 from xero.auth import PublicCredentials
@@ -31,6 +32,8 @@ def get_oauth(request):
 
 
 class XHomeView(TemplateView, LoginRequiredMixin):
+    """Xero Home view, starting point to go to a number of Routines which intereact with Xero and do some job.
+    eg Updating the database, test data, last months report etc"""
     template_name = 'xero/home.html'
 
     def get_context_data(self, **kwargs):
@@ -55,18 +58,23 @@ class XHomeView(TemplateView, LoginRequiredMixin):
 
 
 class DoAuthView(RedirectView, LoginRequiredMixin):
+    """Needs a parameter to show which report you aim to run after authorisation."""
     permanent = False
     query_string = True
     #pattern_name = 'article-detail'
 
     def get_redirect_url(self, *args, **kwargs):
+        try:
+            self.request.session['xero_report'] = self.request.GET['report']
+        except:
+            self.request.session['xero_report'] = reverse('xero:xero')
+        if hasattr(self.request.GET,'report'):
+
         # Get and approved the request token
-        print('Callback URI = |{}|'.format(self.request.build_absolute_uri(reverse('xero:oauth'))))
         credentials = PublicCredentials(
             settings.XERO_CONSUMER_KEY, settings.XERO_CONSUMER_SECRET,
             callback_uri=self.request.build_absolute_uri(reverse('xero:oauth')))
         # Save request token and secret and other OAuth session data
-        print(f'In DoAuthView credentials before redirect are : {credentials.state}')
         self.request.session['oauth_persistent'] = encode_oauth(credentials.state)
         self.request.session.modified = True
         # Redirect to Xero at url provided by credentials generation
@@ -102,7 +110,7 @@ class OAuthView(RedirectView, LoginRequiredMixin):
             return
 
         # Once verified, api can be invoked with xero = Xero(credentials)
-        return reverse('xero:xero')
+        return self.request.session['xero_report']
 
 
 def encode_oauth(raw_data):
@@ -148,6 +156,54 @@ class TestXeroView(TemplateView, LoginRequiredMixin):
         # self.ais_action(dry_run=False)
 
         orgs = self.xero.organisations.all()
+        context['xero_test'] = orgs
+
+        return context
+
+
+def to_yaml(my_list, file_root):
+    file_name = Path('.').child(file_root + dt.datetime.now().strftime(' %Y-%m-%d') + '.yml')
+    with open(file_name, 'w') as f:
+        f.write(yaml.dump(my_list))
+    return file_name
+
+def get_all(xero_endpoint, file_root='Xero_data'):
+    print('Starting to get pages for {}'.format(file_root))
+    records = records_page = xero_endpoint.filter(page=1)
+    i = 2
+    print('Page 1 ', end='')
+    while len(records_page) == 100:
+        if ((i-1) % 5) == 0:
+            print('')  # End of line
+        print(' {}'.format(i), end='')
+        records_page = xero_endpoint.filter(page=i)
+        records += records_page
+        i += 1
+    print('\n   Now saving file.')
+    file_name = to_yaml(records, file_root)
+    return records, file_name
+
+
+class DBUpdateView(TemplateView, LoginRequiredMixin):
+    template_name = 'xero/xero_db_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DBUpdateView, self).get_context_data(**kwargs)
+
+        stored_values = decode_oauth(self.request.session['oauth_persistent'])
+        credentials = PublicCredentials(**stored_values)
+
+        try:
+            self.xero = Xero(credentials)
+
+        except XeroException as e:
+            self.request.session['auth_error'] = f'TestXeroView Error {e.__class__}: {e.message}'
+            return reverse('xero:index')
+
+        # self.ais_action(dry_run=False)
+
+        groups = get_all(self.xero.contactgroups, 'Xero_ContactGroups')[0]
+
         context['xero_test'] = orgs
 
         return context

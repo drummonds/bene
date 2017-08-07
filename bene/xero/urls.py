@@ -23,5 +23,10 @@ urlpatterns = [
         view=views.TestXeroView.as_view(),
         name='xero'
     ),
+    url(
+        regex=r'^db-update$',
+        view=views.DBUpdateView.as_view(),
+        name='dbupdate'
+    ),
 ]
 
