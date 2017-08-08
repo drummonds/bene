@@ -27,5 +27,5 @@ def debug_task(self):
 
 @app.task(bind=True)
 def reload_task(self, xero):
-    reload_data.apply_async(xero)
+    reload_data(xero)
 

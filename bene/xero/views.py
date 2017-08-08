@@ -179,7 +179,7 @@ class DBUpdateView(TemplateView, LoginRequiredMixin):
 
         # self.ais_action(dry_run=False)
 
-        reload_task(self.xero)
+        reload_task.apply_async(self.xero)
 
         # context['xero_groups'] = groups
         print('DBUpdateView has got groups - placeholder for DB update')
