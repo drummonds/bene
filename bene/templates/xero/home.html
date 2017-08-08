@@ -9,9 +9,10 @@
 </ul>
 {% endif %}
     <h1>Syncing Bene to Xero</h1>
-    <p>Customised with product database for {{ company }}. This is the revised version 3 with messages.
+    <p>Customised with product database for {{ company }}. Version {{ version }}.
+    <br/>Last updated: {{ last_updated }}
     </p>
-    <p>Click on this button to get data into Xero using Xero</p>
+    <p>Click on this button to get data into Xero using Xero.  Note this may take serveral minutes to update.</p>
     <p>
         <a href="{{ authorization_url }}?report={% url 'xero:dbupdate' %}"><img
                 src="http://xerodev.wpengine.com/wp-content/uploads/2011/09/connect_xero_button_blue1.png"></a>

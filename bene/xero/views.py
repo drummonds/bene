@@ -6,8 +6,6 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, RedirectView
 from requests_oauthlib import OAuth1Session
-from unipath import Path
-import yaml
 
 from xero import Xero as PyXero
 from xero.auth import PublicCredentials
@@ -55,6 +53,7 @@ class XHomeView(TemplateView, LoginRequiredMixin):
 
         context.update({'company': company_name,
                         'authorization_url' : reverse('xero:do_auth'),
+                        'version': settings.VERSION
                         })
         return context
 
