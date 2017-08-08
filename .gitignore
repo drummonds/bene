@@ -40,7 +40,7 @@ htmlcov
 *.pot
 
 # Pycharm
-.idea/*
+.idea/
 
 # Provided default Pycharm Run/Debug Configurations should be tracked by git
 # In case of local modifications made by Pycharm, use update-index command
@@ -81,3 +81,7 @@ staticfiles/
 
 # Temporary workspace
 playpen
+
+# Windows temporary files
+thumbs.db
+
