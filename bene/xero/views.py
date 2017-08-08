@@ -10,8 +10,6 @@ from requests_oauthlib import OAuth1Session
 from xero import Xero as PyXero
 from xero.auth import PublicCredentials
 
-from .update_models_from_xero import reload_data
-
 from xero.exceptions import XeroException, XeroBadRequest
 
 # You should use redis or a file based persistent
@@ -161,7 +159,7 @@ class TestXeroView(TemplateView, LoginRequiredMixin):
 
         return context
 
-
+from bene.celery import reload_task
 
 class DBUpdateView(TemplateView, LoginRequiredMixin):
     template_name = 'xero/xero_db_update.html'
@@ -181,7 +179,7 @@ class DBUpdateView(TemplateView, LoginRequiredMixin):
 
         # self.ais_action(dry_run=False)
 
-        reload_data(self.xero)
+        reload_task(self.xero)
 
         # context['xero_groups'] = groups
         print('DBUpdateView has got groups - placeholder for DB update')
