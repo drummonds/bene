@@ -9,12 +9,10 @@ from requests_oauthlib import OAuth1Session
 from unipath import Path
 import yaml
 
-from xero import Xero
+from xero import Xero as PyXero
 from xero.auth import PublicCredentials
-from xero.constants import (
-    XERO_BASE_URL, REQUEST_TOKEN_URL, AUTHORIZE_URL, ACCESS_TOKEN_URL
 
-from .models import reload_data
+from .update_models_from_xero import reload_data
 
 from xero.exceptions import XeroException, XeroBadRequest
 
@@ -22,16 +20,17 @@ from xero.exceptions import XeroException, XeroBadRequest
 # storage handler if you are running multiple servers.
 OAUTH_PERSISTENT_SERVER_STORAGE = {}
 
-from sereports.models import Company
+from sereports.models import Company  # This could be bene.serports but Django likes this better and needs to match
+# settings
 
 def get_oauth(request):
-    xero = OAuth1Session(
+    xero_obj = OAuth1Session(
         settings.XERO_CONSUMER_KEY,
         client_secret=settings.XERO_CONSUMER_SECRET,
         resource_owner_key=request.session['oauth_token'],
         resource_owner_secret=request.session['oauth_secret']
     )
-    return xero
+    return xero_obj
 
 
 class XHomeView(TemplateView, LoginRequiredMixin):
@@ -150,7 +149,7 @@ class TestXeroView(TemplateView, LoginRequiredMixin):
         credentials = PublicCredentials(**stored_values)
 
         try:
-            self.xero = Xero(credentials)
+            self.xero = PyXero(credentials)
 
         except XeroException as e:
             self.request.session['auth_error'] = f'TestXeroView Error {e.__class__}: {e.message}'
@@ -175,7 +174,7 @@ class DBUpdateView(TemplateView, LoginRequiredMixin):
         credentials = PublicCredentials(**stored_values)
 
         try:
-            self.xero = Xero(credentials)
+            self.xero = PyXero(credentials)
 
         except XeroException as e:
             self.request.session['auth_error'] = f'TestXeroView Error {e.__class__}: {e.message}'
