@@ -8,6 +8,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 import environ
+import os
 
 ROOT_DIR = environ.Path(__file__) - 3  # (bene/config/settings/base.py - 3 = bene/)
 APPS_DIR = ROOT_DIR.path('bene')
@@ -296,3 +297,15 @@ XERO_CONSUMER_KEY = env('XERO_CONSUMER_KEY')
 
 # Version info
 VERSION = '0.3.4'
+
+########## CELERY CONFIGURATION
+# recommended settings: https://www.cloudamqp.com/docs/celery.html
+BROKER_POOL_LIMIT = 1  # Will decrease connection usage
+BROKER_HEARTBEAT = None  # We're using TCP keep-alive instead
+BROKER_CONNECTION_TIMEOUT = 30  # May require a long timeout due to Linux DNS timeouts etc
+CELERY_RESULT_BACKEND = None  # AMQP is not recommended as result backend as it creates thousands of queues
+CELERY_SEND_EVENTS = False  # Will not create celeryev.* queues
+CELERY_EVENT_QUEUE_EXPIRES = 60  # Will delete all celeryev. queues without consumers after 1 minute.
+BROKER_URL = os.environ.get('CLOUDAMQP_URL', 'amqp://')
+########## END CELERY CONFIGURATION
+
