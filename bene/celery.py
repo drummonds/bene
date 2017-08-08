@@ -24,7 +24,8 @@ app.autodiscover_tasks(settings.INSTALLED_APPS)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
 
+
 @app.task(bind=True)
 def reload_task(self, xero):
-    reload_data(xero)
+    reload_data.apply_async(xero)
 

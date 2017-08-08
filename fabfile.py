@@ -56,6 +56,10 @@ def create_newbuild(env_prefix='test', branch='master'):
         + f' | python manage.py shell"' )
     local(cmd)
 
+def build_flower():
+    pass
+
+
 def raw_update_app(env_prefix='uat', branch='master'):
     """Update of app to latest version"""
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
