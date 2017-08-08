@@ -60,7 +60,7 @@ LOCAL_APPS = [
     'bene.product.apps.ProductConfig',
     'explorer',
     'sereports.apps.SEReportsConfig',
-    'bene.xero.apps.XeroConfig',
+    'bene.xero.apps.XeroConfig',  # Using bene.xero as a name clash with xero from PyXero
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -295,4 +295,4 @@ XERO_CONSUMER_SECRET =  env('XERO_CONSUMER_SECRET')
 XERO_CONSUMER_KEY = env('XERO_CONSUMER_KEY')
 
 # Version info
-VERSION = '0.3.3'
+VERSION = '0.3.4'

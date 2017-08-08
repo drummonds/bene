@@ -40,6 +40,7 @@ def create_newbuild(env_prefix='test', branch='master'):
     # This is where we create the database.  The type of database can range from hobby-dev for small
     # free access to standard for production quality docs
     local('heroku addons:create heroku-postgresql:hobby-basic --app {0}'.format(heroku_app))
+    local(f'heroku addons:create cloudamqp:lemur --app {heroku_app}')
     local('heroku pg:wait --app {0}'.format(heroku_app))  # It takes some time for DB so wait for it
     local('heroku pg:backups:schedule --at 04:00 --app {0}'.format(heroku_app))
     # Already promoted as new local('heroku pg:promote DATABASE_URL --app bene-prod')
