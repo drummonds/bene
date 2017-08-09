@@ -69,7 +69,8 @@ def raw_update_app(env_prefix='uat', branch='master'):
     local('heroku git:remote -a {}'.format(heroku_app))
     # Need to push the branch in git to the master branch in the remote heroku repository
     local(f'git push heroku {branch}:master')
-    # local(f'git push heroku {branch}')
+    # Don't need to scale workers down as not using eg heroku ps:scale worker=0
+    local(f'heroku ps:scale worker=1 -a {heroku_app}')
     # makemigrations should be run locally and the results checked into git
     local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
 
