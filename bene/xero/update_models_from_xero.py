@@ -2,6 +2,10 @@ import datetime as dt
 from unipath import Path
 import yaml
 
+from xero import Xero as PyXero
+from xero.auth import PublicCredentials
+from xero.exceptions import XeroException, XeroBadRequest
+
 from .credit_note_caching import CreditNoteCache
 from .xero_db_load import truncate_data, read_in, load_contact_group, load_contacts, load_items, load_invoices
 from .xero_db_load import load_invoice_items
@@ -31,8 +35,17 @@ def get_all(xero_endpoint, file_root='Xero_data'):
     return records, file_name
 
 
-def reload_data(xero):
+def reload_data(xero_values):
     """Reloads all the data by downloading from Xero and updating the local copy database"""
+    # First convert stored xero values to credentials
+    credentials = PublicCredentials(**xero_values)
+    try:
+        xero = PyXero(credentials)
+    except XeroException as e:
+        print(f'real_data failed to convert values to credentials: {xero_values}')
+        print(f'TestXeroView Error {e.__class__}: {e.message}')
+        return
+
     truncate_data()
     # Contact Groups
     print(f'RD update contact groups from Xero')
