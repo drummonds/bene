@@ -4,6 +4,7 @@ from celery import Celery
 
 from bene.xero.update_models_from_xero import reload_data
 
+print('In celery.py')
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.production')
