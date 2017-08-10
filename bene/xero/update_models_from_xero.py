@@ -1,4 +1,5 @@
 import datetime as dt
+import pandas as pd
 from unipath import Path
 import yaml
 
@@ -28,7 +29,7 @@ def get_all(xero_endpoint, file_root='Xero_data'):
             print('')  # End of line
         print(f' {i} {file_root}', end='')
         records_page = xero_endpoint.filter(page=i)
-        records += records_page
+        records.extend(records_page)
         i += 1
     # file_name = to_yaml(records, file_root)
     # print(f'Now saving file {file_name}.')
@@ -49,28 +50,28 @@ def reload_data(xero_values):
     truncate_data()
     # Contact Groups
     print(f'RD update contact groups from Xero')
-    groups = get_all(xero.contactgroups, 'Xero_ContactGroups') # Saves to YAML file
+    groups = pd.DataFrame(get_all(xero.contactgroups, 'Xero_ContactGroups')) # Saves to YAML file
     #cg = read_in(cg_file_name)  # Convert from list to dataframe
     load_contact_group(groups)
     # Contacts
     print(f'RD update contacts from Xero')
-    contacts = get_all(xero.contacts, 'Xero_Contacts')
+    contacts = pd.DataFrame(get_all(xero.contacts, 'Xero_Contacts'))
     #ct = read_in(ct_file_name)
     load_contacts(contacts)
     # Items
     print(f'RD update items from Xero')
-    items  = get_all(xero.items, 'Xero_Items')
+    items  = pd.DataFrame(get_all(xero.items, 'Xero_Items'))
     #it = read_in(it_file_name)
     load_items(items)
     # Invoices
     print(f'RD update invoices from Xero')
-    invoices = get_all(xero.invoices, 'Xero_Invoices')
+    invoices = pd.DataFrame(get_all(xero.invoices, 'Xero_Invoices'))
     #inv = read_in(inv_file_name)
     load_invoices(df=invoices, all=invoices_all)
     load_invoice_items(df=invoices, all=invoice_lineitems_all, items=items)
     # Credit notes (overview)
     print(f'RD update credit notes from Xero')
-    credit_notes = get_all(xero.creditnotes, 'Xero_CreditNotes')
+    credit_notes = pd.DataFrame(get_all(xero.creditnotes, 'Xero_CreditNotes'))
     #cn = read_in(cn_file_name)
     # Credit notes cache
     ## Todo can now junk cache as credit notes gets invoice
