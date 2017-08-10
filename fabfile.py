@@ -42,6 +42,18 @@ def create_newbuild(env_prefix='test', branch='master'):
     local('heroku addons:create heroku-postgresql:hobby-basic --app {0}'.format(heroku_app))
     local(f'heroku addons:create cloudamqp:lemur --app {heroku_app}')
     local(f'heroku addons:create papertrail:choklad --app {heroku_app}')
+    # Add guvscale processing to allow celery queue to be at zero
+    local(f'heroku addons:create guvscale --app {heroku_app}')
+    local(f'heroku plugins:install heroku-cli-oauth --app {heroku_app}')
+    # Now need to create a token and add to guvscale
+    data = json.loads(local(f'heroku authorizations:create --json --description "GuvScale" --app {heroku_app}',
+                            capture=True))
+    print(f'Data for guvscale = :{data}')
+    # Load guvscale cli tool (may already be installed)
+    local(f'heroku plugins:install heroku-guvscale')  # installed in local toolbelt not on app
+    # start of configuring guvscale to autoscale
+    local(f'heroku guvscale:getconfig --app {heroku_app}')
+    # set database backup schedule
     local('heroku pg:wait --app {0}'.format(heroku_app))  # It takes some time for DB so wait for it
     local('heroku pg:backups:schedule --at 04:00 --app {0}'.format(heroku_app))
     # Already promoted as new local('heroku pg:promote DATABASE_URL --app bene-prod')
@@ -57,9 +69,6 @@ def create_newbuild(env_prefix='test', branch='master'):
         + f' | python manage.py shell"' )
     local(cmd)
 
-def build_flower():
-    pass
-
 
 def raw_update_app(env_prefix='uat', branch='master'):
     """Update of app to latest version"""
@@ -71,7 +80,9 @@ def raw_update_app(env_prefix='uat', branch='master'):
     # Need to push the branch in git to the master branch in the remote heroku repository
     local(f'git push heroku {branch}:master')
     # Don't need to scale workers down as not using eg heroku ps:scale worker=0
-    local(f'heroku ps:scale worker=1 -a {heroku_app}')
+    # Will add guvscale to spin workers up and down from 0
+    local(f'heroku ps:scale worker=0 -a {heroku_app}')
+    local(f'heroku ps:resize worker=standard-2x -a {heroku_app}')  # Resize workers
     # makemigrations should be run locally and the results checked into git
     local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
 
