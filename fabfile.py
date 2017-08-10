@@ -43,16 +43,18 @@ def create_newbuild(env_prefix='test', branch='master'):
     local(f'heroku addons:create cloudamqp:lemur --app {heroku_app}')
     local(f'heroku addons:create papertrail:choklad --app {heroku_app}')
     # Add guvscale processing to allow celery queue to be at zero
-    local(f'heroku addons:create guvscale --app {heroku_app}')
+    # guvscale seems not to work in beta
+    # local(f'heroku addons:create guvscale --app {heroku_app}')
     local(f'heroku plugins:install heroku-cli-oauth --app {heroku_app}')
     # Now need to create a token and add to guvscale
-    data = json.loads(local(f'heroku authorizations:create --json --description "GuvScale" --app {heroku_app}',
-                            capture=True))
+    data = json.loads(local(
+        f'heroku authorizations:create --json --description "GuvScale" -s write,read-protected --app {heroku_app}',
+        capture=True))
     print(f'Data for guvscale = :{data}')
     # Load guvscale cli tool (may already be installed)
     local(f'heroku plugins:install heroku-guvscale')  # installed in local toolbelt not on app
     # start of configuring guvscale to autoscale
-    local(f'heroku guvscale:getconfig --app {heroku_app}')
+    # local(f'heroku guvscale:getconfig --app {heroku_app}')
     # set database backup schedule
     local('heroku pg:wait --app {0}'.format(heroku_app))  # It takes some time for DB so wait for it
     local('heroku pg:backups:schedule --at 04:00 --app {0}'.format(heroku_app))
