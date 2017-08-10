@@ -3,6 +3,7 @@ from functools import wraps
 from numpy import isnan
 import pandas as pd
 from unipath import Path
+import uuid
 import yaml
 
 from django.db import connection
@@ -98,7 +99,7 @@ def load_items(df):
             i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print(f'Load items {pc*10} complete')
+                print(f'Load items {pc*10}% complete')
                 #print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
 
@@ -141,7 +142,7 @@ def load_invoices(df=None, all=None):
             i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print(f'Load invoices {pc*10} complete')
+                print(f'Load invoices {pc*10}% complete')
                 # print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
 
@@ -208,27 +209,25 @@ def get_item(line, items):
     return item_id
 
 
-def invoice_lineitems_all(df, items):
+def abstract_lineitems_all(df, items, id_name, number_name):
     for row in df.iterrows():
-        invoice_id = row[1]['InvoiceID']
-        inv_number = row[1]['InvoiceNumber']
+        invoice_id = row[1][id_name]
+        inv_number = row[1][number_name]
         for line in row[1]['LineItems']:
-            id = line['LineItemID']
+            try:
+                id = line['LineItemID']
+            except KeyError:  # there is no line item ID
+                # but must have unique key so generate one here
+                # Maybe there is a better solution
+                id = str(uuid.uuid4())
             item_id = get_item(line, items)
             yield (id, invoice_id, item_id, line['Quantity'], line['UnitAmount'])
 
+def invoice_lineitems_all(df, items):
+    abstract_lineitems_all(df, items, 'InvoiceID', 'InvoiceNumber')
+
 def credit_note_lineitems_all(df, items):
-    printed = False
-    for row in df.iterrows():
-        if not printed:
-            printed = True
-            print(f'Demo credit ntoe line items data {row}')
-        invoice_id = row[1]['CreditNoteID']
-        inv_number = row[1]['CreditNoteNumber']
-        for line in row[1]['LineItems']:
-            id = line['LineItemID']
-            item_id = get_item(line, items)
-            yield (id, invoice_id, item_id, line['Quantity'], line['UnitAmount'])
+    abstract_lineitems_all(df, items, 'CreditNoteID', 'CreditNoteNumber')
 
 def load_invoice_items(df=None, all=None, items=None):
     with connection.cursor() as cursor:
@@ -254,7 +253,7 @@ def load_invoice_items(df=None, all=None, items=None):
                 i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print(f'Load invoice items {pc*10} complete')
+                print(f'Load invoice items {pc*10}% complete')
                 #print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
         print('')

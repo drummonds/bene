@@ -9,8 +9,9 @@ from requests_oauthlib import OAuth1Session
 
 from xero import Xero as PyXero
 from xero.auth import PublicCredentials
-
 from xero.exceptions import XeroException, XeroBadRequest
+
+from bene.celery import reload_task
 
 # You should use redis or a file based persistent
 # storage handler if you are running multiple servers.
@@ -29,10 +30,11 @@ def get_oauth(request):
     return xero_obj
 
 
-class XHomeView(TemplateView, LoginRequiredMixin):
+class XHomeView(LoginRequiredMixin, TemplateView):
     """Xero Home view, starting point to go to a number of Routines which intereact with Xero and do some job.
     eg Updating the database, test data, last months report etc"""
     template_name = 'xero/home.html'
+    redirect_field_name = ''
 
     def get_context_data(self, **kwargs):
         context = super(XHomeView, self).get_context_data(**kwargs)
@@ -56,8 +58,9 @@ class XHomeView(TemplateView, LoginRequiredMixin):
         return context
 
 
-class DoAuthView(RedirectView, LoginRequiredMixin):
+class DoAuthView(LoginRequiredMixin, RedirectView):
     """Needs a parameter to show which report you aim to run after authorisation."""
+    redirect_field_name = ''
     permanent = False
     query_string = True
     #pattern_name = 'article-detail'
@@ -79,7 +82,8 @@ class DoAuthView(RedirectView, LoginRequiredMixin):
         return credentials.url
 
 
-class OAuthView(RedirectView, LoginRequiredMixin):
+class OAuthView(LoginRequiredMixin, RedirectView):
+    redirect_field_name = ''
     permanent = False
     query_string = True
     #pattern_name = 'article-detail'
@@ -136,8 +140,9 @@ def decode_oauth(raw_data):
     return result
 
 
-class TestXeroView(TemplateView, LoginRequiredMixin):
+class TestXeroView(LoginRequiredMixin, TemplateView):
     template_name = 'xero/xero_result.html'
+    redirect_field_name = ''
 
     def get_context_data(self, **kwargs):
         context = super(TestXeroView, self).get_context_data(**kwargs)
@@ -159,10 +164,11 @@ class TestXeroView(TemplateView, LoginRequiredMixin):
 
         return context
 
-from bene.celery import reload_task
 
-class DBUpdateView(TemplateView, LoginRequiredMixin):
+
+class DBUpdateView(LoginRequiredMixin, TemplateView):
     template_name = 'xero/xero_db_update.html'
+    redirect_field_name = ''
 
     def get_context_data(self, **kwargs):
         context = super(DBUpdateView, self).get_context_data(**kwargs)
