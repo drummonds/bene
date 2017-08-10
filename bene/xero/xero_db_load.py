@@ -224,10 +224,10 @@ def abstract_lineitems_all(df, items, id_name, number_name):
             yield (id, invoice_id, item_id, line['Quantity'], line['UnitAmount'])
 
 def invoice_lineitems_all(df, items):
-    abstract_lineitems_all(df, items, 'InvoiceID', 'InvoiceNumber')
+    yield from abstract_lineitems_all(df, items, 'InvoiceID', 'InvoiceNumber')
 
 def credit_note_lineitems_all(df, items):
-    abstract_lineitems_all(df, items, 'CreditNoteID', 'CreditNoteNumber')
+    yield from abstract_lineitems_all(df, items, 'CreditNoteID', 'CreditNoteNumber')
 
 def load_invoice_items(df=None, all=None, items=None):
     with connection.cursor() as cursor:
