@@ -50,10 +50,11 @@ def create_newbuild(env_prefix='test', branch='master'):
     except:
         print('Probably already installed')
     # Now need to create a token and add to guvscale
-    data = json.loads(local(
-        f'heroku authorizations:create --json --description "GuvScale" -s write,read-protected --app {heroku_app}',
-        capture=True))
-    print(f'Data for guvscale = :{data}')
+    # Does'nt work
+    #data = json.loads(local(
+    #    f'heroku authorizations:create --json --description "GuvScale" -s write,read-protected --app {heroku_app}',
+    #    capture=True))
+    #print(f'Data for guvscale = :{data}')
     # Load guvscale cli tool (may already be installed)
     try:
         local(f'heroku plugins:install heroku-guvscale')  # installed in local toolbelt not on app
