@@ -235,7 +235,23 @@ def build_app(env_prefix='uat'):
     print(f'Run time = {runtime} Completed at: {dt.datetime.now()}')
 
 def update_prod():
-    """"Update the production environment with latest changes.  Removes UAT as this should now be complete."""
+    """"Update the production environment with latest changes.  Removes UAT as this should now be complete.
+    This only works for partial updates.  For a major change in how the build is created you need to build a UAT and then
+    promote it to production"""
+    start_time = time.time()
+    local('fab update_app:prod')
+    try:
+        local('fab kill_app:uat')
+    except:
+        print('No UAT environment to remove')
+    end_time = time.time()
+    runtime = str(dt.timedelta(seconds=int(end_time - start_time)))
+    print(f'Run time = {runtime}')
+
+def update_prod():
+    """"Update the production environment with latest changes.  Removes UAT as this should now be complete.
+    This only works for partial updates.  For a major change in how the build is created you need to build a UAT and then
+    promote it to production"""
     start_time = time.time()
     local('fab update_app:prod')
     try:
