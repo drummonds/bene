@@ -45,7 +45,7 @@ def create_newbuild(env_prefix='test', branch='master'):
     # Add guvscale processing to allow celery queue to be at zero
     # guvscale seems not to work in beta
     # local(f'heroku addons:create guvscale --app {heroku_app}')
-    local(f'heroku plugins:install heroku-cli-oauth --app {heroku_app}')
+    local(f'heroku plugins:install heroku-cli-oauth')  # installed in local toolbelt not on app
     # Now need to create a token and add to guvscale
     data = json.loads(local(
         f'heroku authorizations:create --json --description "GuvScale" -s write,read-protected --app {heroku_app}',
