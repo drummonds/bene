@@ -118,7 +118,7 @@ def invoices_all(df):
                row[1]['TotalTax'], row[1]['Status'], row[1]['Type'],
                row[1]['UpdatedDateUTC'], row[1]['InvoiceNumber'])
 
-def load_invoices(conn, cur, df=None, all=None):
+def load_invoices(df=None, all=None):
     with connection.cursor() as cursor:
         i = 0
         num = len(df)
@@ -218,7 +218,7 @@ def invoice_lineitems_all(df, items):
             yield (id, invoice_id, item_id, line['Quantity'], line['UnitAmount'])
 
 
-def load_invoice_items(conn, cur, df=None, all=None, items=None):
+def load_invoice_items(df=None, all=None, items=None):
     with connection.cursor() as cursor:
         i = 0
         num = len(df)
