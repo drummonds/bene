@@ -96,11 +96,11 @@ def load_items(df):
             params = {'id': id, 'code': code, 'name': name, 'cost_price': cost_price, 'sales_price':sales_price}
             cursor.execute(sql, params)
             i+=1
-            pc = int(100.0 * (i / num))  # percent complete
+            pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print('.'*(pc-marked_complete), end='', flush=True)
+                print('Load items {pc*10} complete')
+                #print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
-        print('')
 
 
 #***************************
@@ -139,11 +139,11 @@ def load_invoices(df=None, all=None):
             """IntegrityError: insert or update on table "xero_invoice" violates foreign key constraint "xero_invoice_contact_id_id_833dbd1a_fk_xero_contact_xerodb_id"
     DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not present in table "xero_contact"."""
             i+=1
-            pc = int(100.0 * (i / num))  # percent complete
+            pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print('.'*(pc-marked_complete), end='', flush=True)
+                print('Load invoices {pc*10} complete')
+                # print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
-        print('')
 
 
 def credit_notes_all(df):
@@ -217,6 +217,14 @@ def invoice_lineitems_all(df, items):
             item_id = get_item(line, items)
             yield (id, invoice_id, item_id, line['Quantity'], line['UnitAmount'])
 
+def credit_note_lineitems_all(df, items):
+    for row in df.iterrows():
+        invoice_id = row[1]['CreditNoteID']
+        inv_number = row[1]['CreditNoteNumber']
+        for line in row[1]['LineItems']:
+            id = line['LineItemID']
+            item_id = get_item(line, items)
+            yield (id, invoice_id, item_id, line['Quantity'], line['UnitAmount'])
 
 def load_invoice_items(df=None, all=None, items=None):
     with connection.cursor() as cursor:
@@ -240,8 +248,9 @@ def load_invoice_items(df=None, all=None, items=None):
             if old_invoice_id != invoice_id:
                 old_invoice_id = invoice_id
                 i+=1
-            pc = int(100.0 * (i / num))  # percent complete
+            pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print('.'*(pc-marked_complete), end='', flush=True)
+                print('Load invoice items {pc*10} complete')
+                #print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
         print('')

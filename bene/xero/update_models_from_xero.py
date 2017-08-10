@@ -10,7 +10,7 @@ from xero.exceptions import XeroException, XeroBadRequest
 from .credit_note_caching import CreditNoteCache
 from .xero_db_load import truncate_data, read_in, load_contact_group, load_contacts, load_items, load_invoices
 from .xero_db_load import load_invoice_items
-from .xero_db_load import invoices_all, invoice_lineitems_all, credit_notes_all  # Functions/iterators
+from .xero_db_load import invoices_all, invoice_lineitems_all, credit_notes_all, credit_note_lineitems_all # Functions/iterators
 
 # def to_yaml(my_list, file_root):
 #     file_name = Path('.').child(file_root + dt.datetime.now().strftime(' %Y-%m-%d') + '.yml')
@@ -78,6 +78,7 @@ def reload_data(xero_values):
     ## cnc = CreditNoteCache()
     ## cnc.update_cache(xero, fn)
     load_invoices(df=credit_notes, all=credit_notes_all)
+    load_invoice_items(df=credit_notes, all=credit_note_lineitems_all, items=items)
     print(f'RD ******** completed database update')
 
 

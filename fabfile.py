@@ -91,8 +91,9 @@ def raw_update_app(env_prefix='uat', branch='master'):
     # Don't need to scale workers down as not using eg heroku ps:scale worker=0
     # Will add guvscale to spin workers up and down from 0
     local(f'heroku ps:scale worker=0 -a {heroku_app}')
-    local(f'heroku ps:resize web=standard-1x -a {heroku_app}')  # Resize web to be compatible with performance workers
-    local(f'heroku ps:resize worker=standard-2x -a {heroku_app}')  # Resize workers
+    # Have used performance web=standard-1x and worker=standard-2x but adjusted app to used less memory
+    #local(f'heroku ps:resize web=standard-1x -a {heroku_app}')  # Resize web to be compatible with performance workers
+    #local(f'heroku ps:resize worker=standard-2x -a {heroku_app}')  # Resize workers
     # makemigrations should be run locally and the results checked into git
     local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
 
