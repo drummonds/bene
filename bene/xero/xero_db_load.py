@@ -98,7 +98,7 @@ def load_items(df):
             i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print('Load items {pc*10} complete')
+                print(f'Load items {pc*10} complete')
                 #print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
 
@@ -141,7 +141,7 @@ def load_invoices(df=None, all=None):
             i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print('Load invoices {pc*10} complete')
+                print(f'Load invoices {pc*10} complete')
                 # print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
 
@@ -218,7 +218,11 @@ def invoice_lineitems_all(df, items):
             yield (id, invoice_id, item_id, line['Quantity'], line['UnitAmount'])
 
 def credit_note_lineitems_all(df, items):
+    printed = False
     for row in df.iterrows():
+        if not printed:
+            printed = True
+            print(f'Demo credit ntoe line items data {row}')
         invoice_id = row[1]['CreditNoteID']
         inv_number = row[1]['CreditNoteNumber']
         for line in row[1]['LineItems']:
@@ -250,7 +254,7 @@ def load_invoice_items(df=None, all=None, items=None):
                 i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print('Load invoice items {pc*10} complete')
+                print(f'Load invoice items {pc*10} complete')
                 #print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
         print('')
