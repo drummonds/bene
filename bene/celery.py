@@ -5,7 +5,7 @@ import logging
 from raven import Client
 from raven.contrib.celery import register_signal, register_logger_signal
 
-from xeroapp.update_models_from_xero import reload_data
+from bene.xeroapp.update_models_from_xero import reload_data
 
 
 client = Client(settings.SENTRY_DSN)
