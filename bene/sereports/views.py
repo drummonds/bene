@@ -18,7 +18,7 @@ class HomeView(LoginRequiredMixin, ListView):
             company_name = c.name
         except:
             company_name = 'No company set up yet'
-        inv = Invoice.latest('updated_date_utc').objects.first()
+        inv = Invoice.objects.latest('updated_date_utc')
         try:
             last_update = inv.updated_date_utc.strftime('%Y-%m-$d')
         except:
