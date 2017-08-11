@@ -17,7 +17,7 @@ APPS_DIR = ROOT_DIR.path('bene')
 env = environ.Env()
 
 # .env file, should load only in development environment
-# So in local environment set this variable
+# So in local environment set this variable -> set DJANGO_READ_DOT_ENV_FILE=True
 READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
 
 if READ_DOT_ENV_FILE:
