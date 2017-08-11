@@ -4,7 +4,7 @@ from django.views.generic import DetailView, ListView, RedirectView, UpdateView,
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Report, Company
-from bene.xeroapp.models import Invoice
+from xeroapp.models import Invoice
 
 class HomeView(LoginRequiredMixin, ListView):
     template_name = 'sereports/reports_list.html'
