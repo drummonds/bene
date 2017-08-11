@@ -61,6 +61,7 @@ LOCAL_APPS = [
     'bene.product.apps.ProductConfig',
     'explorer',
     'sereports.apps.SEReportsConfig',
+    'xeroapp.apps.XeroConfig', # Adding replacement
     'bene.xero.apps.XeroConfig',  # Using bene.xero as a name clash with xero from PyXero
 ]
 

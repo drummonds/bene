@@ -53,6 +53,10 @@
                 <a class="nav-link" href="/xero">{% trans "Xero" %}</a>
               </li>
               <li class="nav-item">
+                {# Link to Xero app sub system #}
+                <a class="nav-link" href="/xeroapp">{% trans "XeroApp" %}</a>
+              </li>
+              <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}
                 <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
               </li>

@@ -303,7 +303,7 @@ def promote_uat():
         local(f'heroku domains:clear --app {old_prod}')
         local(f'heroku domains:add bene.drummonds.net --app {prod}')
     finally:
-        local('heroku maintenance:off --app {prod} ') # Different prod does this matter?
+        local(f'heroku maintenance:off --app {prod} ') # Different prod does this matter?
         end_time = time.time()
         runtime = str(dt.timedelta(seconds=int(end_time - start_time)))
         print(f'Run time = {runtime}')
