@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class XeroConfig(AppConfig):
-    name = 'xero'
-    verbose_namse = 'Xero sync app'
+    name = 'xeroapp'
+    verbose_namse = 'Xero sync app renamed'
