@@ -28,3 +28,10 @@
     <p> This is test data:
     {{ chart.as_html }}</p>
 {% endblock content %}
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart"]});
+    </script>
+{% endblock javascript %}

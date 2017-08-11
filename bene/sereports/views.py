@@ -4,7 +4,7 @@ from django.views.generic import DetailView, ListView, RedirectView, UpdateView,
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Report, Company
-#from xero.models import Invoice
+from bene.xeroapp.models import Invoice
 
 class HomeView(LoginRequiredMixin, ListView):
     template_name = 'sereports/reports_list.html'
@@ -18,7 +18,7 @@ class HomeView(LoginRequiredMixin, ListView):
             company_name = c.name
         except:
             company_name = 'No company set up yet'
-        inv = None # Invoice.latest('updated_date_utc').objects.first()
+        inv = Invoice.latest('updated_date_utc').objects.first()
         try:
             last_update = inv.updated_date_utc.strftime('%Y-%m-$d')
         except:
