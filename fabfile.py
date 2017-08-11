@@ -98,6 +98,7 @@ def raw_update_app(env_prefix='uat', branch='master'):
     local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
 
 
+@task
 def update_app(env_prefix='uat', branch='master'):
     """Protected update with maintenance on"""
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
@@ -166,6 +167,7 @@ def transfer_database_from_production(env_prefix='test', clean=True):
         local('heroku maintenance:off --app {} '.format(heroku_app))
 
 
+@task
 def kill_app(env_prefix, safety_on = True):
     """Kill app notice that to the syntax for the production version is:
     fab kill_app:prod,safety_on=False"""
@@ -174,6 +176,7 @@ def kill_app(env_prefix, safety_on = True):
         local('heroku destroy {0} --confirm {0}'.format(heroku_app))
 
 
+@task
 def first_publish(env_prefix='prod'):
     """Publish to production.  THIS DESTROYS THE OLD BUILD."""
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
@@ -184,6 +187,7 @@ def first_publish(env_prefix='prod'):
 
 #from build.new_db import create_staging, build_staging, update, kill_staging
 
+# @task
 def build_staging(env_prefix='uat'):
     """THIS DESTROYS THE OLD BUILD. It builds a new environment with the uat branch."""
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
@@ -208,9 +212,12 @@ def load_local_data(env_prefix='uat'):
     local('git push origin master')
     local('heroku run python manage.py loaddata playpen/products.json')
 
+@task
 def build_uat():
+    """Build a new uat environments"""
     build_app()
 
+@task
 def build_app(env_prefix='uat'):
     """"Build a test environment. Default is uat.
     So fab build_app  is equivalent to fab build_app:uat  and to fab build_app:env_prefix=uat
@@ -234,6 +241,7 @@ def build_app(env_prefix='uat'):
     runtime = str(dt.timedelta(seconds=int(end_time - start_time)))
     print(f'Run time = {runtime} Completed at: {dt.datetime.now()}')
 
+@task
 def update_prod():
     """"Update the production environment with latest changes.  Removes UAT as this should now be complete.
     This only works for partial updates.  For a major change in how the build is created you need to build a UAT and then
@@ -248,10 +256,11 @@ def update_prod():
     runtime = str(dt.timedelta(seconds=int(end_time - start_time)))
     print(f'Run time = {runtime}')
 
+@task
 def update_prod():
     """"Update the production environment with latest changes.  Removes UAT as this should now be complete.
-    This only works for partial updates.  For a major change in how the build is created you need to build a UAT and then
-    promote it to production"""
+    THIS ONLY WORKS FOR CODE UPADATE NOT **HEROKU CONFIGURATION CHANGES**.  For a major change in how the build is 
+    created you need to build a UAT and then promote it to production.  See promote_uat"""
     start_time = time.time()
     local('fab update_app:prod')
     try:
@@ -262,17 +271,30 @@ def update_prod():
     runtime = str(dt.timedelta(seconds=int(end_time - start_time)))
     print(f'Run time = {runtime}')
 
+@task
 def update_requirements():
     """"After altering requirements eg base.txt or local.txt update the local environment"""
     local('pip install -r requirements/local.txt')
 
-
-
-#if __name__ == "__main__":
-    # staging = 'fac-test'
-    # old_staging = staging
-    # #create_staging(staging) # This builds the database and waits for it be ready.  It is is safe to run
-    # #build_staging('BLUE', staging)
-    # #update(staging)  #After simple fix which doesnt need DB rebuilding
-    # kill_staging(old_staging)
-    # #update('fac-prod')
+@task
+def promote_uat():
+    """Promotes UAT to PROD and renames app-prod app-old-prod"""
+    old_prod = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], 'old-prod')
+    prod = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], 'prod')
+    uat = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], 'uat')
+    start_time = time.time()
+    local(f'heroku maintenance:on --app {prod}')
+    try:
+        local(f'heroku apps:rename {old_prod} --app {prod}')  # Should fail if alread an old_prod
+        local(f'heroku apps:rename {prod} --app {uat}')
+        # Update allowed site
+        local(f'heroku config:set DJANGO_ALLOWED_HOSTS="{old_prod}.herokuapp.com" --app {old_prod}')
+        local(f'heroku config:set DJANGO_ALLOWED_HOSTS="{prod}.herokuapp.com" --app {prod}')
+        # Switch over domains
+        local(f'heroku domains:clear --app {old_prod}')
+        local(f'heroku domains:add bene.drummonds.net --app {prod}')
+    finally:
+        local('heroku maintenance:off --app {prod} ') # Different prod does this matter?
+        end_time = time.time()
+        runtime = str(dt.timedelta(seconds=int(end_time - start_time)))
+        print(f'Run time = {runtime}')

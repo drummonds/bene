@@ -1,13 +1,14 @@
+import datetime as dt
 from django.conf import settings
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView, TemplateView
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Report, Company
-#from ..xero.models import Item# Company,
+from bene.xero.models import Invoice
 
-class HomeView(ListView):
+class HomeView(LoginRequiredMixin, ListView):
     template_name = 'sereports/reports_list.html'
+    redirect_field_name = ''
     model = Report
 
     def get_context_data(self, **kwargs):
@@ -17,5 +18,10 @@ class HomeView(ListView):
             company_name = c.name
         except:
             company_name = 'No company set up yet'
-        context.update({'company': company_name, 'version': settings.VERSION})
+        inv = Invoice.latest('updated_date_utc').objects.first()
+        try:
+            last_update = inv.updated_date_utc.strftime('%Y-%m-$d')
+        except:
+            last_update = 'No DB update'
+        context.update({'company': company_name, 'version': settings.VERSION, 'last_update': last_update})
         return context
