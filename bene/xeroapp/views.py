@@ -52,7 +52,7 @@ class XHomeView(LoginRequiredMixin, TemplateView):
             self.request.session.modified = True
 
         context.update({'company': company_name,
-                        'authorization_url' : reverse('xero:do_auth'),
+                        'authorization_url' : reverse('xeroapp:do_auth'),
                         'version': settings.VERSION
                         })
         return context
@@ -69,12 +69,12 @@ class DoAuthView(LoginRequiredMixin, RedirectView):
         try:
             self.request.session['xero_report'] = self.request.GET['report']
         except:
-            self.request.session['xero_report'] = reverse('xero:xero')
+            self.request.session['xero_report'] = reverse('xeroapp:xero')
 
         # Get and approved the request token
         credentials = PublicCredentials(
             settings.XERO_CONSUMER_KEY, settings.XERO_CONSUMER_SECRET,
-            callback_uri=self.request.build_absolute_uri(reverse('xero:oauth')))
+            callback_uri=self.request.build_absolute_uri(reverse('xeroapp:oauth')))
         # Save request token and secret and other OAuth session data
         self.request.session['oauth_persistent'] = encode_oauth(credentials.state)
         self.request.session.modified = True
@@ -92,7 +92,7 @@ class OAuthView(LoginRequiredMixin, RedirectView):
         params = self.request.GET
         if 'oauth_token' not in params or 'oauth_verifier' not in params or 'org' not in params:
             self.request.session['auth_error'] = f'OAuthView Error Missing parameters required. {params}'
-            return reverse('xero:index')
+            return reverse('xeroapp:index')
 
         OAUTH_PERSISTENT_SERVER_STORAGE = decode_oauth(self.request.session['oauth_persistent'])
         stored_values = OAUTH_PERSISTENT_SERVER_STORAGE
@@ -109,7 +109,7 @@ class OAuthView(LoginRequiredMixin, RedirectView):
 
         except XeroException as e:
             self.request.session['auth_error'] = '{}: {}'.format(e.__class__, e.message)
-            return reverse('xero:index')
+            return reverse('xeroapp:index')
 
 
         # Once verified, api can be invoked with xero = Xero(credentials)
@@ -155,7 +155,7 @@ class TestXeroView(LoginRequiredMixin, TemplateView):
 
         except XeroException as e:
             self.request.session['auth_error'] = f'TestXeroView Error {e.__class__}: {e.message}'
-            return reverse('xero:index')
+            return reverse('xeroapp:index')
 
         # self.ais_action(dry_run=False)
 
@@ -181,7 +181,7 @@ class DBUpdateView(LoginRequiredMixin, TemplateView):
 
         except XeroException as e:
             self.request.session['auth_error'] = f'TestXeroView Error {e.__class__}: {e.message}'
-            return reverse('xero:index')
+            return reverse('xeroapp:index')
 
         # self.ais_action(dry_run=False)
 
