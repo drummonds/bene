@@ -35,7 +35,7 @@ def get_oauth(request):
 class XHomeView(LoginRequiredMixin, TemplateView):
     """Xero Home view, starting point to go to a number of Routines which intereact with Xero and do some job.
     eg Updating the database, test data, last months report etc"""
-    template_name = 'xero/home.html'
+    template_name = 'xeroapp/home.html'
     redirect_field_name = ''
 
     def get_context_data(self, **kwargs):
@@ -155,7 +155,7 @@ def decode_oauth(raw_data):
 
 
 class TestXeroView(LoginRequiredMixin, TemplateView):
-    template_name = 'xero/xero_result.html'
+    template_name = 'xeroapp/xero_result.html'
     redirect_field_name = ''
 
     def get_context_data(self, **kwargs):
@@ -181,7 +181,7 @@ class TestXeroView(LoginRequiredMixin, TemplateView):
 
 
 class DBUpdateView(LoginRequiredMixin, TemplateView):
-    template_name = 'xero/xero_db_update.html'
+    template_name = 'xeroapp/xero_db_update.html'
     redirect_field_name = ''
 
     def get_context_data(self, **kwargs):
