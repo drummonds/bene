@@ -10,6 +10,32 @@ from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
+##################################################
+# Local utilities
+##################################################
+
+def remove_unused_db(env_prefix='uat'):
+    """List all databases in use for app, find the main one and remove all the others"""
+    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
+    data = json.loads(local(f'heroku config --json --app {heroku_app}', capture=True))
+    for k,v in data.items():
+        if k.find('HEROKU_POSTGRESQL_') == 0:
+            if v != data['DATABASE_URL']:
+                local(f'heroku addons:destroy {k} --app {heroku_app} --confirm {heroku_app}')
+
+
+def default_db_colour(app_name):
+    """Return the default database colour of heroku application"""
+    data = json.loads(local('heroku config --json --app {0}'.format(app_name), capture=True))
+    result = ''
+    for k,v in data.items():
+        if k.find('HEROKU_POSTGRESQL_') == 0:
+            if v == data['DATABASE_URL']:
+                return k
+    # if no colour found then try the long name in database_url
+    # raise Exception(f'No color database names found for app {app_name} - create an extra one and it should be ok.')
+    return data['DATABASE_URL']
+
 
 def set_environment_variables(env_prefix):
     if env_prefix == 'test':
@@ -28,7 +54,11 @@ def set_environment_variables(env_prefix):
         ,'XERO_CONSUMER_SECRET', 'XERO_CONSUMER_KEY'):
         local('heroku config:set {}={} --app {}'.format(config, os.environ[config], heroku_app))
 
+##################################################
+# Tasks
+##################################################
 
+@task
 def create_newbuild(env_prefix='test', branch='master'):
     """This builds the database and waits for it be ready.  It is is safe to run and won't
     destroy any existing infrastructure."""
@@ -110,6 +140,7 @@ def update_app(env_prefix='uat', branch='master'):
         local('heroku maintenance:off --app {} '.format(heroku_app))
 
 
+@task
 def create_new_db(env_prefix='uat'):
     """Just creates a new database for this instance."""
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
@@ -125,29 +156,7 @@ def create_new_db(env_prefix='uat'):
     return (colour, db_name)
 
 
-def remove_unused_db(env_prefix='uat'):
-    """List all databases in use for app, find the main one and remove all the others"""
-    heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
-    data = json.loads(local(f'heroku config --json --app {heroku_app}', capture=True))
-    for k,v in data.items():
-        if k.find('HEROKU_POSTGRESQL_') == 0:
-            if v != data['DATABASE_URL']:
-                local(f'heroku addons:destroy {k} --app {heroku_app} --confirm {heroku_app}')
-
-
-def default_db_colour(app_name):
-    """Return the default database colour of heroku application"""
-    data = json.loads(local('heroku config --json --app {0}'.format(app_name), capture=True))
-    result = ''
-    for k,v in data.items():
-        if k.find('HEROKU_POSTGRESQL_') == 0:
-            if v == data['DATABASE_URL']:
-                return k
-    # if no colour found then try the long name in database_url
-    # raise Exception(f'No color database names found for app {app_name} - create an extra one and it should be ok.')
-    return data['DATABASE_URL']
-
-
+@task
 def transfer_database_from_production(env_prefix='test', clean=True):
     """This is usally used for making a copy of the production database for a UAT staging
     or test environment.  It can also be used to upgrade the production environment from one
