@@ -8,7 +8,7 @@ from django.views.generic import TemplateView, RedirectView
 from requests_oauthlib import OAuth1Session
 
 from graphos.sources.simple import SimpleDataSource
-from graphos.renderers.gchart import LineChart
+from graphos.renderers.morris import LineChart
 from xero import Xero as PyXero
 from xero.auth import PublicCredentials
 from xero.exceptions import XeroException, XeroBadRequest

@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 {% load static from staticfiles %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script>
+{% endblock %}
+
+
 {% block content %}
 {% if messages %}
 <ul class="messages">
@@ -26,12 +36,8 @@
     <hr/>
     <h3>Demo graph</h3>
     <p> This is test data:
-    {{ chart.as_html }}</p>
+    </p>
+        <div id="line_chart" class="well">
+        {{ chart.as_html }}
+    </div>
 {% endblock content %}
-{% block javascript %}
-    {{ block.super }}
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-        google.load("visualization", "1", {packages:["corechart"]});
-    </script>
-{% endblock javascript %}
