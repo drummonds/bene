@@ -17,7 +17,7 @@
                 explorer tab
             </a>.</p>
         {% for report in object_list %}
-            <a href="{% url 'query_detail' report.report_number %}{{ report.parameters }}/download?name=excel" alt="{{ report.name }}">
+            <a href="{% url 'query_detail' report.report_number %}download?name=excel{{ report.parameters }}" alt="{{ report.name }}">
                 <button type="button" class="btn btn-primary">{{ report.button_name }}
                 </button>
             </a>
