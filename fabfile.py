@@ -257,10 +257,11 @@ def update_prod():
     promote it to production"""
     start_time = time.time()
     local('fab update_app:prod')
-    try:
-        local('fab kill_app:uat')
-    except:
-        print('No UAT environment to remove')
+    # Not currently working and a pain when uat is removed as can't then promote it.
+    # try:
+    #     local('fab kill_app:uat')
+    # except:
+    #     print('No UAT environment to remove')
     end_time = time.time()
     runtime = str(dt.timedelta(seconds=int(end_time - start_time)))
     print(f'Run time = {runtime}')
