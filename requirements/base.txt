@@ -77,6 +77,3 @@ numpy
 # --------------------------
 raven==6.1.0
 
-
-# Trying out local graphs
-django-graphos==0.3.41
