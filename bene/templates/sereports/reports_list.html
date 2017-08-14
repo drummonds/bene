@@ -12,8 +12,12 @@
                 Explorer Tab</a>.
         </p>
         <h2>Standard Reports</h2>
+        <p>These buttons download the excel reports.  For the full details go to the
+            <a href="explorer_index'" alt="Explorer Tab">
+                explorer tab
+            </a>.</p>
         {% for report in object_list %}
-            <a href="{% url 'query_detail' report.report_number %}{{ report.parameters }}" alt="{{ report.name }}">
+            <a href="{% url 'query_detail' report.report_number %}{{ report.parameters }}/download?name=excel" alt="{{ report.name }}">
                 <button type="button" class="btn btn-primary">{{ report.button_name }}
                 </button>
             </a>

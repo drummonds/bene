@@ -7,8 +7,6 @@ from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, RedirectView
 from requests_oauthlib import OAuth1Session
 
-from graphos.sources.simple import SimpleDataSource
-from graphos.renderers.morris import LineChart
 from xero import Xero as PyXero
 from xero.auth import PublicCredentials
 from xero.exceptions import XeroException, XeroBadRequest
@@ -53,21 +51,9 @@ class XHomeView(LoginRequiredMixin, TemplateView):
             del self.request.session['auth_error']
             self.request.session.modified = True
 
-        data = [
-            ['Year', 'Sales', 'Expenses'],
-            [2004, 1000, 400],
-            [2005, 1170, 460],
-            [2006, 660, 1120],
-            [2007, 1030, 540]
-        ]
-        # DataSource object
-        data_source = SimpleDataSource(data=data)
-        # Chart object
-        chart = LineChart(data_source)
         context.update({'company': company_name,
                         'authorization_url' : reverse('xeroapp:do_auth'),
                         'version': settings.VERSION,
-                        'chart': chart
                         })
         return context
 
