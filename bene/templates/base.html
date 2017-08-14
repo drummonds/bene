@@ -49,11 +49,12 @@
             </li>
             {% if request.user.is_authenticated %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="{% url 'sereports' %}" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Reports
                     </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                   <a class="dropdown-item" href="{% url 'sereports:customers' %}">Customers</a>
+                  <a class="dropdown-item" href="{% url 'sereports:remittance' %}">Remittance</a>
                 </div>
               </li>
               <li class="nav-item">

@@ -8,4 +8,14 @@ urlpatterns = [
         view=views.HomeView.as_view(),
         name='home'
     ),
+    url(
+        regex=r'^customer$',
+        view=views.CustomerView.as_view(),
+        name='customers'
+    ),
+    url(
+        regex=r'^remittance$',
+        view=views.RemittanceView.as_view(),
+        name='remittance'
+    ),
 ]
