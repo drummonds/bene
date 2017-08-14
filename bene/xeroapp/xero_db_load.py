@@ -26,7 +26,7 @@ def truncate_data():
     """Currently have to truncate all data in order to upload new variants."""
     with connection.cursor() as cursor:
         # Data is interconnected with foreign keys so have to get rid of it all
-        cursor.execute('TRUNCATE xero_ContactGroup, xero_Contact, xero_Invoice, xero_LineItem, xero_Item')
+        cursor.execute('TRUNCATE xeroapp_ContactGroup, xeroapp_Contact, xeroapp_Invoice, xeroapp_LineItem, xeroapp_Item')
 
 
 #***************************
@@ -39,10 +39,10 @@ def contact_groups(cg):
 
 def load_contact_group(df):
     with connection.cursor() as cursor:
-        cursor.execute('TRUNCATE xero_ContactGroup')
+        cursor.execute('TRUNCATE xeroapp_ContactGroup')
         i = 0
         for n, id in contact_groups(df):
-            sql = f"""INSERT INTO xero_ContactGroup ("xerodb_id", name) VALUES('{id}', '{n}')"""
+            sql = f"""INSERT INTO xeroapp_ContactGroup ("xerodb_id", name) VALUES('{id}', '{n}')"""
             cursor.execute(sql)
             i += 1
 
@@ -64,7 +64,7 @@ def load_contacts(df):
                     number = ''
             except:
                 pass
-            sql = f"""INSERT INTO xero_Contact ("xerodb_id", name, number ) VALUES(%(id)s, %(name)s, %(number)s)"""
+            sql = f"""INSERT INTO xeroapp_Contact ("xerodb_id", name, number ) VALUES(%(id)s, %(name)s, %(number)s)"""
             params = {'id': id, 'name': name, 'number': number}
             cursor.execute(sql, params)
             i+=1
@@ -92,7 +92,7 @@ def load_items(df):
         num = len(df)
         marked_complete = 0
         for id, code, name, cost_price, sales_price in items_all(df):
-            sql = f"""INSERT INTO xero_Item ("xerodb_id",code, name, cost_price, sales_price)
+            sql = f"""INSERT INTO xeroapp_Item ("xerodb_id",code, name, cost_price, sales_price)
             VALUES(%(id)s, %(code)s, %(name)s, %(cost_price)s, %(sales_price)s)"""
             params = {'id': id, 'code': code, 'name': name, 'cost_price': cost_price, 'sales_price':sales_price}
             cursor.execute(sql, params)
@@ -129,7 +129,7 @@ def load_invoices(df=None, all=None):
              tax, status, invoice_type,
              updated_date_utc, invoice_number) in all(df):
             try:
-                sql = f"""INSERT INTO xero_Invoice (xerodb_id, contact_id_id, currency_code, currency_rate, 
+                sql = f"""INSERT INTO xeroapp_Invoice (xerodb_id, contact_id_id, currency_code, currency_rate, 
                 inv_date, nett, gross, tax, status, invoice_type, updated_date_utc, inv_number)
                 VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
                 params = (id, contact_id, currency_code, currency_rate, date, nett, gross, tax, status, invoice_type,
@@ -137,8 +137,8 @@ def load_invoices(df=None, all=None):
                 cursor.execute(sql, params)
             except:
                 pass  # TODO but for the moment ignore things like
-            """IntegrityError: insert or update on table "xero_invoice" violates foreign key constraint "xero_invoice_contact_id_id_833dbd1a_fk_xero_contact_xerodb_id"
-    DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not present in table "xero_contact"."""
+            """IntegrityError: insert or update on table "xeroapp_invoice" violates foreign key constraint "xeroapp_invoice_contact_id_id_833dbd1a_fk_xeroapp_contact_xerodb_id"
+    DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not present in table "xeroapp_contact"."""
             i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
@@ -237,7 +237,7 @@ def load_invoice_items(df=None, all=None, items=None):
         old_invoice_id = ''
         for (id, invoice_id, item_id, qty, price) in all(df, items):
             try:
-                sql = f"""INSERT INTO xero_LineItem (id, invoice_id, item_id, quantity, 
+                sql = f"""INSERT INTO xeroapp_LineItem (id, invoice_id, item_id, quantity, 
                 price)
                 VALUES(%s, %s, %s, %s, %s)"""
                 params = (id, invoice_id, item_id, qty, price)
@@ -246,8 +246,8 @@ def load_invoice_items(df=None, all=None, items=None):
                 if old_invoice_id == '':
                     print(sql, params)
                 pass  # TODO but for the moment ignore things like
-            """IntegrityError: insert or update on table "xero_invoice" violates foreign key constraint "xero_invoice_contact_id_id_833dbd1a_fk_xero_contact_xerodb_id"
-    DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not present in table "xero_contact"."""
+            """IntegrityError: insert or update on table "xeroapp_invoice" violates foreign key constraint "xeroapp_invoice_contact_id_id_833dbd1a_fk_xeroapp_contact_xerodb_id"
+    DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not present in table "xeroapp_contact"."""
             if old_invoice_id != invoice_id:
                 old_invoice_id = invoice_id
                 i+=1
