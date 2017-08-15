@@ -18,4 +18,6 @@ urlpatterns = [
         view=views.RemittanceView.as_view(),
         name='remittance'
     ),
+    # uploadering/urls.py
+    url(r'^add$', views.FileAddView.as_view(), name='filebaby-add'),
 ]
