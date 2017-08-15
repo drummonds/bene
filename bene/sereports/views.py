@@ -26,7 +26,7 @@ class HomeView(LoginRequiredMixin, ListView):
             company_name = 'No company set up yet'
         try:
             inv = Invoice.objects.latest('updated_date_utc')
-            last_update = inv.updated_date_utc.strftime('%Y-%m-$d')
+            last_update = inv.updated_date_utc.strftime('%Y-%m-%d')
         except Invoice.DoesNotExist:
             last_update = 'No data so no DB update'
         context.update({'company': company_name, 'version': settings.VERSION, 'last_update': last_update})
