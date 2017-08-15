@@ -59,7 +59,7 @@ class FileListView(ListView):
     model = FilebabyFile
     queryset = FilebabyFile.objects.order_by('-id')
     context_object_name = "files"
-    template_name = "filebaby/index.html"
+    template_name = "sereports/file_index.html"
     paginate_by = 5
 
 
@@ -67,7 +67,7 @@ class FileAddView(FormView):
 
     form_class = FilebabyForm
     success_url = reverse_lazy('home')
-    template_name = "filebaby/add.html"
+    template_name = "sereports/add.html"
     #template_name = "filebaby/add-boring.html"
 
     def form_valid(self, form):
@@ -81,7 +81,7 @@ class FileAddHashedView(FormView):
 
     form_class = FilebabyForm
     success_url = reverse_lazy('home')
-    template_name = "filebaby/add.html"
+    template_name = "sereports/add.html"
 
     def form_valid(self, form):
         hash_value = hashlib.md5(form.files.get('f').read()).hexdigest()

@@ -1,4 +1,4 @@
-{% extends "filebaby/base.html" %}
+{% extends "base.html" %}
 
 
 {% block page_title %}Add file{% endblock %}
@@ -12,7 +12,7 @@
 </div>
 {% endif %}
 
-<form action="{% url 'filebaby-add' %}" method="post" enctype="multipart/form-data">
+<form action="{% url 'sereport:filebaby-add' %}" method="post" enctype="multipart/form-data">
   <fieldset>
     <legend>Add file</legend>
 
