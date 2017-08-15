@@ -84,6 +84,7 @@ class FileAddHashedView(FormView):
     template_name = "sereports/add.html"
 
     def form_valid(self, form):
+        print('Validating file upload form')
         hash_value = hashlib.md5(form.files.get('f').read()).hexdigest()
         # form.save returns a new FilebabyFile as instance
         instance = form.save(commit=False)
@@ -91,4 +92,5 @@ class FileAddHashedView(FormView):
         instance.save()
         messages.success(
             self.request, 'File hashed and uploaded!', fail_silently=True)
+        print('Completed form')
         return super(FileAddHashedView, self).form_valid(form)

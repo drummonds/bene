@@ -21,3 +21,4 @@ DEBUG_TOOLBAR_CONFIG = {
     ],
     'SHOW_TEMPLATE_CONTEXT': False,
 }
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
