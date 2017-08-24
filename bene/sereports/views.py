@@ -52,6 +52,7 @@ class RemittanceView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(RemittanceView, self).get_context_data(**kwargs)
+        context.update({'company': company_name, 'version': settings.VERSION, 'last_update': last_update})
         return context
 
     def form_valid(self, form):

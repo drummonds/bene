@@ -119,6 +119,11 @@ DATABASES = {
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
+# Explorer connection idea read-only
+EXPLORER_CONNECTIONS = { 'Default': env.db('DATABASE_URL', default='postgres://localhost/bene') }
+EXPLORER_DEFAULT_CONNECTION = env.db('DATABASE_URL', default='postgres://localhost/bene')
+
+
 
 # GENERAL CONFIGURATION
 # ------------------------------------------------------------------------------
