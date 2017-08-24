@@ -139,8 +139,8 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 DATABASES['default'] = env.db('DATABASE_URL')
 
 # Explorer connection idea read-only
-EXPLORER_CONNECTIONS = { 'Default': env.db('DATABASE_URL') }
-EXPLORER_DEFAULT_CONNECTION = env.db('DATABASE_URL')
+EXPLORER_CONNECTIONS = { 'Default': os.environ.get('DATABASE_URL') }
+EXPLORER_DEFAULT_CONNECTION = os.environ.get('DATABASE_URL')
 
 # CACHING
 # ------------------------------------------------------------------------------

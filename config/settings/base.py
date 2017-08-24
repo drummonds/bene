@@ -25,9 +25,8 @@ if READ_DOT_ENV_FILE:
     # that is to say variables from the .env files will only be used if not defined
     # as environment variables.
     env_file = str(ROOT_DIR.path('.env'))
-    print('Loading : {}'.format(env_file))
+    print('Loading : {}. See {} for more info'.format(env_file, __name__))
     env.read_env(env_file)
-    print('The .env file has been loaded. See base.py for more information')
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -120,8 +119,10 @@ DATABASES = {
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # Explorer connection idea read-only
-EXPLORER_CONNECTIONS = { 'Default': env.db('DATABASE_URL', default='postgres://localhost/bene') }
-EXPLORER_DEFAULT_CONNECTION = env.db('DATABASE_URL', default='postgres://localhost/bene')
+print('********* Hello')
+print(os.environ.get('DATABASE_URL'))
+EXPLORER_CONNECTIONS = { 'default': os.environ.get('DATABASE_URL') }
+EXPLORER_DEFAULT_CONNECTION = os.environ.get('DATABASE_URL')
 
 
 
