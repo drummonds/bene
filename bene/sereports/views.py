@@ -6,9 +6,9 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, FormView
 import hashlib
 
-from .forms import FilebabyForm
+from .forms import FilebabyForm, RemittanceForm
 from .models import Report, Company
-from .models import FilebabyFile
+from .models import FilebabyFile, RemittanceFile
 from xeroapp.models import Invoice
 
 
@@ -42,7 +42,10 @@ class CustomerView(LoginRequiredMixin, ListView):
         context = super(CustomerView, self).get_context_data(**kwargs)
         return context
 
-class RemittanceView(LoginRequiredMixin, ListView):
+
+class RemittanceView(LoginRequiredMixin, FormView):
+    form_class = RemittanceForm
+    success_url = reverse_lazy('home')
     template_name = 'sereports/remittance.html'
     redirect_field_name = ''
     model = Report
@@ -50,6 +53,12 @@ class RemittanceView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(RemittanceView, self).get_context_data(**kwargs)
         return context
+
+    def form_valid(self, form):
+        form.save(commit=True)
+        messages.success(self.request, 'Remmitance file uploaded!', fail_silently=True)
+        return super(RemittanceView, self).form_valid(form)
+
 
 
 # /uploadering/filebaby/views.py
@@ -64,11 +73,9 @@ class FileListView(ListView):
 
 
 class FileAddView(FormView):
-
     form_class = FilebabyForm
     success_url = reverse_lazy('home')
     template_name = "sereports/add.html"
-    #template_name = "filebaby/add-boring.html"
 
     def form_valid(self, form):
         form.save(commit=True)
