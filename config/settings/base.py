@@ -119,10 +119,10 @@ DATABASES = {
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # Explorer connection idea read-only
-print('********* Hello')
-print(os.environ.get('DATABASE_URL'))
-EXPLORER_CONNECTIONS = { 'default': os.environ.get('DATABASE_URL') }
+EXPLORER_CONNECTIONS = { 'Default': os.environ.get('DATABASE_URL') }
 EXPLORER_DEFAULT_CONNECTION = os.environ.get('DATABASE_URL')
+#EXPLORER_CONNECTIONS = { 'default': 'default' }
+#EXPLORER_DEFAULT_CONNECTION = 'default'
 
 
 
