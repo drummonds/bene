@@ -138,10 +138,6 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
 DATABASES['default'] = env.db('DATABASE_URL')
 
-# Explorer connection idea read-only
-EXPLORER_CONNECTIONS = { 'Default': os.environ.get('DATABASE_URL') }
-EXPLORER_DEFAULT_CONNECTION = os.environ.get('DATABASE_URL')
-
 # CACHING
 # ------------------------------------------------------------------------------
 
