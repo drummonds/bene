@@ -1,7 +1,9 @@
+import json
 import os
+
 from django.db import models
 
-from bene.utils.json_parameters import json_to_params
+from bene.utils.json_parameters import json_to_params, json_to_param_dict
 
 class Company(models.Model):
     name = models.CharField('Name of Company', blank=True, max_length=255)
@@ -21,7 +23,27 @@ class Report(models.Model):
 
     @property
     def url_parameters(self):
-        return json_to_params(self.parameters)
+        try:
+            json_text = json.loads(self.parameters)
+            return json_to_params(json_text)
+        except:
+            try:
+                return f'JSON |{self.parameters}| incorrectly formed'
+            except:
+                return 'JSON incorrectly formed and cannot convert to string'
+
+    @property
+    def dict_parameters(self):
+        try:
+            json_text = json.loads(self.parameters)
+            return json_to_param_dict(json_text)
+        except:
+            try:
+                return {'Error': f'JSON |{self.parameters}| incorrectly formed'}
+            except:
+                return {'Error': f'JSON incorrectly formed and cannot convert to string'}
+
+
 
 def hashed_uploads_dirs(instance, filename):
     """Returns path with md5 hash as directory"""

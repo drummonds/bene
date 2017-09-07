@@ -149,7 +149,8 @@ class QueryView(LoginRequiredMixin, TemplateView):
             report = Report.objects.filter(name=report_name).first() # get the details of the report
             try:
                 query_id = report.report_number
-                query = Query.objects.get(pk=query_id)
+                query = Query.objects.get(pk=query_id) # Todo need to add paremeters
+                query.params = report.dict_parameters
                 res = query.execute()
                 header = res.header_strings
                 data = [dict(zip(header, row)) for row in res.data]
