@@ -18,9 +18,6 @@
             </a>.</p>
         <h2>
             {% for report in object_list %}
-                {% if not forloop.first %}
-                    |
-                {% endif %}
                 <a href="{% url 'query_detail' report.report_number %}download?name=excel&{{ report.url_parameters }}"
                    alt="{{ report.name }}">
                     <button type="button" class="btn btn-primary">{{ report.button_name }}
@@ -30,7 +27,12 @@
                     <button type="button" class="btn btn-success btn-sm">Link to Query {{ query_id }}
                     </button>
                 </a>
-                {% if not forloop.last %} {% if forloop.counter|divisibleby:3 %}</h2><h2>{% endif %} {% endif %}
+                {% if not forloop.last %}
+                    {% if forloop.counter|divisibleby:3 %}</h2><h2>
+                    {%  else %}
+                        |
+                    {% endif %}
+                {% endif %}
             {% endfor %}
             </h2>
     {% endif %}
