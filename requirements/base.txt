@@ -79,3 +79,6 @@ numpy
 # --------------------------
 raven==6.1.0
 
+# for formatting tables
+django-tables2
+requests

@@ -23,6 +23,11 @@ urlpatterns = [
         view=views.FileAddView.as_view(),
         name='filebaby-add'
     ),
-#    # uploadering/urls.py
+    url(
+        regex=r'^query/(?P<query_id>.+)/$',
+        view=views.QueryView.as_view(),
+        name='query'
+    ),
+    #    # uploadering/urls.py
 #    url(r'^add$', views.FileAddView.as_view(), name='filebaby-add'),
 ]

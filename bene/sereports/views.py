@@ -2,9 +2,18 @@ import datetime as dt
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import ListView, FormView
+from django.views.generic import TemplateView, ListView, FormView
 import hashlib
+import urllib.request
+import json
+import requests
+
+import django_tables2 as tables
+from explorer.models import Query
+from explorer.exporters import JSONExporter
+
 
 from .forms import FilebabyForm, RemittanceForm
 from .models import Report, Company
@@ -102,3 +111,53 @@ class FileAddHashedView(FormView):
             self.request, 'File hashed and uploaded!', fail_silently=True)
         print('Completed form')
         return super(FileAddHashedView, self).form_valid(form)
+
+counter = 0
+
+def generate(li_dict):
+    #unique classname.
+    global counter
+    counter += 1
+    table_classname = "MyTableClass%s" % (counter)
+
+    class Meta:
+        #ahhh... Bootstrap
+        attrs = {"class": "table table-striped"}
+
+    #generate a class dynamically
+    cls = type(table_classname,(tables.Table,),dict(Meta=Meta))
+
+    #grab the first dict's keys
+    try:
+        li = li_dict[0].keys()
+    except IndexError:
+        li = ['No Data']
+
+    for colname in li:
+        column = tables.Column(orderable=False)
+        cls.base_columns[colname] = column
+
+    return cls
+
+class QueryView(LoginRequiredMixin, TemplateView):
+    template_name = "sereports/query.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(QueryView, self).get_context_data(**kwargs)
+        try:
+            report_name = self.kwargs['query_id']  # Indexed by name of report
+            report = Report.objects.filter(name=report_name).first() # get the details of the report
+            try:
+                query_id = report.report_number
+                query = Query.objects.get(pk=query_id)
+                res = query.execute()
+                header = res.header_strings
+                data = [dict(zip(header, row)) for row in res.data]
+            except:
+                query = Query.objects.none()
+                header = data = []
+        except:
+            report_name = 'Failed to get query_id'
+        table_cls = generate(data)
+        context.update({'report': report, 'report_name': report_name, 'query': table_cls(data), 'header': header})
+        return context
