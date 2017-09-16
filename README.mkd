@@ -107,3 +107,21 @@ the following settings.
     set DJANGO_READ_DOT_ENV_FILE=True
     set DJANGO_SETTINGS_MODULE=config.settings.local
     python manage.py runserver
+
+# Build chain
+To build the project you need to do the following:
+
+1. Download from github the project
+1. Build the bene virtual environment with python 3.6
+1. Copy the .env or fill it in from the example
+1. Install [Heroku CLI][] (was part of toolbelt)
+    1. Download and install software
+    1. logout of command window if logged in and log backin so that
+    new path is used
+    1. set up app again eg workon bene and cd
+    1. heroku login to store user id
+     
+
+
+[Heroku CLI]: https://devcenter.heroku.com/articles/heroku-cli#download-and-install
+
