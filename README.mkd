@@ -108,6 +108,7 @@ the following settings.
     set DJANGO_SETTINGS_MODULE=config.settings.local
     python manage.py runserver
 
+then `python manage.py makemigrations` will work fine.
 # Build chain
 To build the project you need to do the following:
 

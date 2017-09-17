@@ -129,3 +129,6 @@ RAVEN_CONFIG = {
     'CELERY_LOGLEVEL': env.int('DJANGO_SENTRY_LOG_LEVEL', logging.INFO),
     'DSN': SENTRY_DSN
 }
+
+DATABASES['default'] = env.db('DATABASE_URL')
+
