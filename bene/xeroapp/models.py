@@ -45,13 +45,13 @@ class Invoice(models.Model):
     status = models.CharField('Status', blank=True, max_length=255, default='')
     invoice_type = models.CharField('Invoice Type', blank=True, max_length=255, default='')
     updated_date_utc = models.DateTimeField('UpdatedDateUTC', default=timezone.now)
-    due_date = models.DateTimeField('DueDate', default=timezone.now)
-    expected_payment_date = models.DateTimeField('ExpectedPaymentDate', default=timezone.now)
-    planned_payment_date = models.DateTimeField('PlannedPaymentDate', default=timezone.now)
-    fully_paid_on_date = models.DateTimeField('FullyPaidOnDate', default=timezone.now)
-    amount_due = models.DecimalField('AmountDue', max_digits=16, decimal_places=2, default=0)
-    amount_paid = models.DecimalField('AmountPaid', max_digits=16, decimal_places=2, default=0)
-    amount_credited = models.DecimalField('AmountCredited', max_digits=16, decimal_places=2, default=0)
+    due_date = models.DateTimeField('DueDate', default=timezone.now, blank=True, null=True)
+    expected_payment_date = models.DateTimeField('ExpectedPaymentDate', default=timezone.now, blank=True, null=True)
+    planned_payment_date = models.DateTimeField('PlannedPaymentDate', default=timezone.now, blank=True, null=True)
+    fully_paid_on_date = models.DateTimeField('FullyPaidOnDate', default=timezone.now, blank=True, null=True)
+    amount_due = models.DecimalField('AmountDue', max_digits=16, decimal_places=2, default=0, blank=True, null=True)
+    amount_paid = models.DecimalField('AmountPaid', max_digits=16, decimal_places=2, default=0, blank=True, null=True)
+    amount_credited = models.DecimalField('AmountCredited', max_digits=16, decimal_places=2, default=0, blank=True, null=True)
 
 
     def __str__(self):

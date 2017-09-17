@@ -109,6 +109,7 @@ def load_items(df):
 #***************************
 
 def invoices_all(df):
+    "Iterate all invoice fields in dataframe"
     for row in df.iterrows():
         try:
             contact_id = row[1]['Contact']['ContactID']
@@ -117,7 +118,9 @@ def invoices_all(df):
         yield (row[1]['InvoiceID'], contact_id, row[1]['CurrencyCode'], row[1]['CurrencyRate'],
                row[1]['Date'], row[1]['SubTotal'], row[1]['Total'],
                row[1]['TotalTax'], row[1]['Status'], row[1]['Type'],
-               row[1]['UpdatedDateUTC'], row[1]['InvoiceNumber'])
+               row[1]['UpdatedDateUTC'], row[1]['InvoiceNumber'],
+               row[1]['DueDate'], row[1]['ExpectedPaymentDate'], row[1]['PlannedPaymentDate'],
+               )
 
 def load_invoices(df=None, all=None):
     with connection.cursor() as cursor:
@@ -127,13 +130,15 @@ def load_invoices(df=None, all=None):
         for (id, contact_id, currency_code, currency_rate,
              date, nett, gross,
              tax, status, invoice_type,
-             updated_date_utc, invoice_number) in all(df):
+             updated_date_utc, invoice_number,
+             due_date, expected_payment_date, planned_payment_date) in all(df):
             try:
                 sql = f"""INSERT INTO xeroapp_Invoice (xerodb_id, contact_id_id, currency_code, currency_rate, 
                 inv_date, nett, gross, tax, status, invoice_type, updated_date_utc, inv_number)
-                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
                 params = (id, contact_id, currency_code, currency_rate, date, nett, gross, tax, status, invoice_type,
-                          updated_date_utc, invoice_number)
+                          updated_date_utc, invoice_number,
+                          due_date, expected_payment_date, planned_payment_date)
                 cursor.execute(sql, params)
             except:
                 pass  # TODO but for the moment ignore things like
@@ -157,7 +162,9 @@ def credit_notes_all(df):
         yield (row[1]['CreditNoteID'], contact_id, row[1]['CurrencyCode'], row[1]['CurrencyRate'],
                row[1]['Date'], -row[1]['SubTotal'], -row[1]['Total'],
                -row[1]['TotalTax'], row[1]['Status'], row[1]['Type'],
-               row[1]['UpdatedDateUTC'], row[1]['CreditNoteNumber'])
+               row[1]['UpdatedDateUTC'], row[1]['CreditNoteNumber'],
+               row[1]['DueDate'], row[1]['ExpectedPaymentDate'], row[1]['PlannedPaymentDate'],
+               )
 
 
 #***************************
