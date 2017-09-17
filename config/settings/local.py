@@ -76,7 +76,6 @@ XERO_CONSUMER_KEY=env('XERO_CONSUMER_KEY')
 
 # Sentry Configuration
 SENTRY_DSN = env('DJANGO_SENTRY_DSN')
-print(f'<>Local<> SENTRY_DSN = {SENTRY_DSN}')
 SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT', default='raven.contrib.django.raven_compat.DjangoClient')
 LOGGING = {
     'version': 1,
