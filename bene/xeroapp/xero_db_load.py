@@ -108,18 +108,31 @@ def load_items(df):
 # Generic invoices covers both invoices and credit notes
 #***************************
 
+def default_get(row, default, index_str, index_str2 = ''):
+    if index_str2:
+        try:
+            return row[1][index_str][index_str2]
+        except:  # eg if missing
+            return default
+    else:
+        try:
+            return row[1][index_str]
+        except:  # eg if missing
+            return default
+
+
 def invoices_all(df):
     "Iterate all invoice fields in dataframe"
     for row in df.iterrows():
-        try:
-            contact_id = row[1]['Contact']['ContactID']
-        except:  # eg if missing
-            cost_price = 0.0
+        contact_id = default_get(row, 0.0, 'Contact', 'ContactID')
+        due_date = default_get(row, None, 'DueDate')
+        payment_date = default_get(row, None, 'ExpectedPaymentDate')
+        planned_payment_date = default_get(row, None, 'PlannedPaymentDate')
         yield (row[1]['InvoiceID'], contact_id, row[1]['CurrencyCode'], row[1]['CurrencyRate'],
                row[1]['Date'], row[1]['SubTotal'], row[1]['Total'],
                row[1]['TotalTax'], row[1]['Status'], row[1]['Type'],
                row[1]['UpdatedDateUTC'], row[1]['InvoiceNumber'],
-               row[1]['DueDate'], row[1]['ExpectedPaymentDate'], row[1]['PlannedPaymentDate'],
+               due_date, payment_date, planned_payment_date,
                )
 
 def load_invoices(df=None, all=None):
