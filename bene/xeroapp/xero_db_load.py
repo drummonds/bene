@@ -168,15 +168,15 @@ def load_invoices(df=None, all=None):
 def credit_notes_all(df):
     """Generator for all credit notes"""
     for row in df.iterrows():
-        try:
-            contact_id = row[1]['Contact']['ContactID']
-        except:  # eg if missing
-            cost_price = 0.0
+        contact_id = default_get(row, 0.0, 'Contact', 'ContactID')
+        due_date = default_get(row, None, 'DueDate')
+        payment_date = default_get(row, None, 'ExpectedPaymentDate')
+        planned_payment_date = default_get(row, None, 'PlannedPaymentDate')
         yield (row[1]['CreditNoteID'], contact_id, row[1]['CurrencyCode'], row[1]['CurrencyRate'],
                row[1]['Date'], -row[1]['SubTotal'], -row[1]['Total'],
                -row[1]['TotalTax'], row[1]['Status'], row[1]['Type'],
                row[1]['UpdatedDateUTC'], row[1]['CreditNoteNumber'],
-               row[1]['DueDate'], row[1]['ExpectedPaymentDate'], row[1]['PlannedPaymentDate'],
+               due_date, payment_date, planned_payment_date,
                )
 
 
