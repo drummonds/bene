@@ -13,7 +13,7 @@
     <p>Customised with product database for {{ company }}. Version {{ version }}.
     <br/>Last updated: {{ last_updated }}
     </p>
-    <p>Click on this button to authorise bene to get data from Xero.  Note this may take serveral minutes to update.
+    <p>Click on this button to authorise bene to get data from Xero.  Note this may take several minutes to update.
     You can check on progress by using the 'How much data' Explorer report.</p>
     <p>
         <a href="{{ authorization_url }}?report={% url 'xeroapp:dbupdate' %}"><img
