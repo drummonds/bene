@@ -144,6 +144,7 @@ def load_invoices(df=None, all=None):
         i = 0
         num = len(df)
         marked_complete = 0
+        first_failure = True
         for (id, contact_id, currency_code, currency_rate,
              date, nett, gross,
              tax, status, invoice_type,
@@ -158,6 +159,10 @@ def load_invoices(df=None, all=None):
                           due_date, expected_payment_date, planned_payment_date)
                 cursor.execute(sql, params)
             except:
+                if first_failure:
+                    print('# ~~~ Loading invoices failed')
+                    print(f'sql = {sql}')
+                    print(f'params = {params}')
                 pass  # TODO but for the moment ignore things like
             """IntegrityError: insert or update on table "xeroapp_invoice" violates foreign key constraint "xeroapp_invoice_contact_id_id_833dbd1a_fk_xeroapp_contact_xerodb_id"
     DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not present in table "xeroapp_contact"."""
