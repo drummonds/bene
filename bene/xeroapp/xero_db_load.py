@@ -144,26 +144,40 @@ def load_invoices(df=None, all=None):
         i = 0
         num = len(df)
         marked_complete = 0
-        first_failure = True
+        first_failures = 3
         for (id, contact_id, currency_code, currency_rate,
              date, nett, gross,
              tax, status, invoice_type,
              updated_date_utc, invoice_number,
              due_date, expected_payment_date, planned_payment_date) in all(df):
             try:
-                sql = f"""INSERT INTO xeroapp_Invoice (xerodb_id, contact_id_id, currency_code, currency_rate, 
-                inv_date, nett, gross, tax, status, invoice_type, updated_date_utc, inv_number)
-                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-                params = (id, contact_id, currency_code, currency_rate, date, nett, gross, tax, status, invoice_type,
-                          updated_date_utc, invoice_number,
-                          due_date, expected_payment_date, planned_payment_date)
+                sql = f"""
+INSERT INTO xeroapp_Invoice 
+(    xerodb_id, contact_id_id, currency_code, 
+     currency_rate, inv_date, nett, 
+     gross, tax, status, 
+     invoice_type, updated_date_utc, inv_number,
+     due_date, expected_payment_date, planned_payment_date
+     )
+VALUES
+(    %s, %s, %s, 
+     %s, %s, %s, 
+     %s, %s, %s, 
+     %s, %s, %s, 
+     %s, %s, %s)"""
+                params = (
+                    id, contact_id, currency_code,
+                    currency_rate, date, nett,
+                    gross, tax, status,
+                    invoice_type, updated_date_utc, invoice_number,
+                    due_date, expected_payment_date, planned_payment_date)
                 cursor.execute(sql, params)
             except:
-                if first_failure:
+                if first_failures > 0:
                     print('# ~~~ Loading invoices failed')
                     print(f'sql = {sql}')
                     print(f'params = {params}')
-                    first_failure = False
+                    first_failures -= 1
                 pass  # TODO but for the moment ignore things like
             """IntegrityError: insert or update on table "xeroapp_invoice" violates foreign key constraint "xeroapp_invoice_contact_id_id_833dbd1a_fk_xeroapp_contact_xerodb_id"
     DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not present in table "xeroapp_contact"."""
