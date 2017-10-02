@@ -163,6 +163,7 @@ def load_invoices(df=None, all=None):
                     print('# ~~~ Loading invoices failed')
                     print(f'sql = {sql}')
                     print(f'params = {params}')
+                    first_failure = False
                 pass  # TODO but for the moment ignore things like
             """IntegrityError: insert or update on table "xeroapp_invoice" violates foreign key constraint "xeroapp_invoice_contact_id_id_833dbd1a_fk_xeroapp_contact_xerodb_id"
     DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not present in table "xeroapp_contact"."""
