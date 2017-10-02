@@ -6,7 +6,7 @@ from unipath import Path
 import uuid
 import yaml
 
-from django.db import connection
+from django.db import connection, IntegrityError
 
 
 # from luca import p
@@ -66,7 +66,11 @@ def load_contacts(df):
                 pass
             sql = f"""INSERT INTO xeroapp_Contact ("xerodb_id", name, number ) VALUES(%(id)s, %(name)s, %(number)s)"""
             params = {'id': id, 'name': name, 'number': number}
-            cursor.execute(sql, params)
+            try:
+                cursor.execute(sql, params)
+            except IntegrityError:
+                pass  # TODO this is too broad and was put in as hotfix
+
             i+=1
 
 
