@@ -32,7 +32,7 @@ def truncate_data():
 # Wrapper for SQL execute that has error handling
 
 class SQLExecute:
-    def _init__(self, num_failures_to_report = 3):
+    def __init__(self, num_failures_to_report = 3):
         self.cursor = connection.cursor()
         self.first_failures = num_failures_to_report
 
