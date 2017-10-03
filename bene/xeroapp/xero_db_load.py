@@ -12,7 +12,7 @@ from django.db import connection, IntegrityError
 # from luca import p
 
 #***************************
-# Utilties
+# Utilities
 #***************************
 
 def read_in(file_name):
@@ -29,6 +29,37 @@ def truncate_data():
         cursor.execute('TRUNCATE xeroapp_ContactGroup, xeroapp_Contact, xeroapp_Invoice, xeroapp_LineItem, xeroapp_Item')
 
 
+# Wrapper for SQL execute that has error handling
+
+class SQLExecute:
+    def _init__(self, num_failures_to_report = 3):
+        self.cursor = connection.cursor()
+        self.first_failures = num_failures_to_report
+
+    def __enter__(self):
+        self.cursor.__enter__()
+
+    def __exit__(self, *exc_info):
+        self.cursor.__exit__(*exc_info)
+
+    def execute(self, sql, params = None):
+        try:
+            if params:
+                self.cursor.execute(sql, params)
+            else:
+                self.cursor.execute(sql)
+        except Exception as e:
+            if self.first_failures > 0:
+                print('# ~~~ Loading invoices failed')
+                print(f'sql = {sql}')
+                if params:
+                    print(f'params = {params}')
+                else:
+                    print('No params')
+                print(e)
+                self.first_failures -= 1
+
+
 #***************************
 # Contact groups
 #***************************
@@ -38,7 +69,7 @@ def contact_groups(cg):
         yield row[1]['Name'], row[1]['ContactGroupID']
 
 def load_contact_group(df):
-    with connection.cursor() as cursor:
+    with SQLExecute() as cursor:
         cursor.execute('TRUNCATE xeroapp_ContactGroup')
         i = 0
         for n, id in contact_groups(df):
@@ -46,9 +77,9 @@ def load_contact_group(df):
             cursor.execute(sql)
             i += 1
 
-#***************************
+# ***************************
 # Contacts
-#***************************
+# ***************************
 
 def contacts_all(c):
     for row in c.iterrows():
@@ -56,7 +87,7 @@ def contacts_all(c):
 
 
 def load_contacts(df):
-    with connection.cursor() as cursor:
+    with SQLExecute() as cursor:
         i = 0
         for id, name, number in contacts_all(df):
             try:
@@ -66,11 +97,7 @@ def load_contacts(df):
                 pass
             sql = f"""INSERT INTO xeroapp_Contact ("xerodb_id", name, number ) VALUES(%(id)s, %(name)s, %(number)s)"""
             params = {'id': id, 'name': name, 'number': number}
-            try:
-                cursor.execute(sql, params)
-            except IntegrityError:
-                pass  # TODO this is too broad and was put in as hotfix
-
+            cursor.execute(sql, params)
             i+=1
 
 
@@ -91,7 +118,7 @@ def items_all(df):
         yield row[1]['ItemID'], row[1]['Code'], row[1]['Description'], cost_price, sales_price
 
 def load_items(df):
-    with connection.cursor() as cursor:
+    with SQLExecute() as cursor:
         i = 0
         num = len(df)
         marked_complete = 0
@@ -140,18 +167,16 @@ def invoices_all(df):
                )
 
 def load_invoices(df=None, all=None):
-    with connection.cursor() as cursor:
+    with SQLExecute() as cursor:
         i = 0
         num = len(df)
         marked_complete = 0
-        first_failures = 3
         for (id, contact_id, currency_code, currency_rate,
              date, nett, gross,
              tax, status, invoice_type,
              updated_date_utc, invoice_number,
              due_date, expected_payment_date, planned_payment_date) in all(df):
-            try:
-                sql = f"""
+            sql = f"""
 INSERT INTO xeroapp_Invoice 
 (    xerodb_id, contact_id_id, currency_code, 
      currency_rate, inv_date, nett, 
@@ -165,22 +190,13 @@ VALUES
      %s, %s, %s, 
      %s, %s, %s, 
      %s, %s, %s)"""
-                params = (
+            params = (
                     id, contact_id, currency_code,
                     currency_rate, date, nett,
                     gross, tax, status,
                     invoice_type, updated_date_utc, invoice_number,
                     due_date, expected_payment_date, planned_payment_date)
-                cursor.execute(sql, params)
-            except:
-                if first_failures > 0:
-                    print('# ~~~ Loading invoices failed')
-                    print(f'sql = {sql}')
-                    print(f'params = {params}')
-                    first_failures -= 1
-                pass  # TODO but for the moment ignore things like
-            """IntegrityError: insert or update on table "xeroapp_invoice" violates foreign key constraint "xeroapp_invoice_contact_id_id_833dbd1a_fk_xeroapp_contact_xerodb_id"
-    DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not present in table "xeroapp_contact"."""
+            cursor.execute(sql, params)
             i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
@@ -274,24 +290,17 @@ def credit_note_lineitems_all(df, items):
     yield from abstract_lineitems_all(df, items, 'CreditNoteID', 'CreditNoteNumber')
 
 def load_invoice_items(df=None, all=None, items=None):
-    with connection.cursor() as cursor:
+    with SQLExecute() as cursor:
         i = 0
         num = len(df)
         marked_complete = 0
         old_invoice_id = ''
         for (id, invoice_id, item_id, qty, price) in all(df, items):
-            try:
-                sql = f"""INSERT INTO xeroapp_LineItem (id, invoice_id, item_id, quantity, 
+            sql = f"""INSERT INTO xeroapp_LineItem (id, invoice_id, item_id, quantity, 
                 price)
                 VALUES(%s, %s, %s, %s, %s)"""
-                params = (id, invoice_id, item_id, qty, price)
-                cursor.execute(sql, params)
-            except:  # Todo was integrity error
-                if old_invoice_id == '':
-                    print(sql, params)
-                pass  # TODO but for the moment ignore things like
-            """IntegrityError: insert or update on table "xeroapp_invoice" violates foreign key constraint "xeroapp_invoice_contact_id_id_833dbd1a_fk_xeroapp_contact_xerodb_id"
-    DETAIL:  Key (contact_id_id)=(97ead41b-22cb-4f63-bf92-d8dbc9dc610a) is not present in table "xeroapp_contact"."""
+            params = (id, invoice_id, item_id, qty, price)
+            cursor.execute(sql, params)
             if old_invoice_id != invoice_id:
                 old_invoice_id = invoice_id
                 i+=1
