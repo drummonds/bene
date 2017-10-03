@@ -38,6 +38,7 @@ class SQLExecute:
 
     def __enter__(self):
         self.cursor.__enter__()
+        return self
 
     def __exit__(self, *exc_info):
         self.cursor.__exit__(*exc_info)
