@@ -143,14 +143,20 @@ def load_items(df):
 def default_get(row, default, index_str, index_str2 = ''):
     if index_str2:
         try:
-            return row[1][index_str][index_str2]
+            result = row[1][index_str][index_str2]
         except:  # eg if missing
-            return default
+            result = default
     else:
         try:
-            return row[1][index_str]
+            result = row[1][index_str]
         except:  # eg if missing
-            return default
+            result = default
+    try:
+        if f'{result}' == 'NaT':
+            result = default
+    except:
+        result = default
+    return result
 
 
 def invoices_all(df):
@@ -159,7 +165,7 @@ def invoices_all(df):
         contact_id = default_get(row, 0.0, 'Contact', 'ContactID')
         due_date = default_get(row, None, 'DueDate')
         payment_date = default_get(row, None, 'ExpectedPaymentDate')
-        planned_payment_date = default_get(row, None, 'PlannedPaymentDate')
+        planned_payment_date =  default_get(row, None, 'PlannedPaymentDate')
         yield (row[1]['InvoiceID'], contact_id, row[1]['CurrencyCode'], row[1]['CurrencyRate'],
                row[1]['Date'], row[1]['SubTotal'], row[1]['Total'],
                row[1]['TotalTax'], row[1]['Status'], row[1]['Type'],
