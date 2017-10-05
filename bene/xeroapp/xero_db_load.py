@@ -84,20 +84,32 @@ def load_contact_group(df):
 
 def contacts_all(c):
     for row in c.iterrows():
-        yield row[1]['ContactID'], row[1]['Name'], row[1]['AccountNumber']
+        first_name = default_get(row, None, 'FirstName')
+        last_name = default_get(row, None, 'LastName')
+        email_address = default_get(row, None, 'EmailAddress')
+        yield row[1]['ContactID'], row[1]['Name'], row[1]['AccountNumber'], \
+              first_name, last_name, email_address
 
 
 def load_contacts(df):
     with SQLExecute() as cursor:
         i = 0
-        for id, name, number in contacts_all(df):
+        for id, name, number, first_name, last_name, email_address in contacts_all(df):
             try:
                 if isnan(number):
                     number = ''
             except:
                 pass
-            sql = f"""INSERT INTO xeroapp_Contact ("xerodb_id", name, number ) VALUES(%(id)s, %(name)s, %(number)s)"""
-            params = {'id': id, 'name': name, 'number': number}
+            sql = f"""
+INSERT INTO xeroapp_Contact 
+("xerodb_id", name, number,
+first_name, last_name, email_address 
+) 
+VALUES(%(id)s, %(name)s, %(number)s,
+%(first_name)s, %(last_name)s, %(email_address)s
+)"""
+            params = {'id': id, 'name': name, 'number': number,
+                      'first_name': first_name, 'last_name': last_name, 'email_address': email_address}
             cursor.execute(sql, params)
             i+=1
 

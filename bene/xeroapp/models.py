@@ -16,6 +16,10 @@ class Contact(models.Model):
     xerodb_id = models.CharField('Xero ID', blank=True, max_length=255, primary_key=True)  # store the guid
     name = models.CharField('Name of Contact', blank=True, max_length=255)
     number = models.CharField('Account number', blank=True, max_length=50)
+    first_name  = models.CharField('Account number', blank=True, max_length=255)
+    last_name  = models.CharField('Account number', blank=True, max_length=255)
+    email_address  = models.CharField('Account number', blank=True, max_length=255)
+
 
     def __str__(self):
         return self.name
