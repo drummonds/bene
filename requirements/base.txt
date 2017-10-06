@@ -71,7 +71,7 @@ pyyaml==3.12
 unipath
 
 # Adding numpy and pandas for data manipulation
-pandas
+pandas==0.20.3
 numpy
 
 # Raven is the Sentry client
