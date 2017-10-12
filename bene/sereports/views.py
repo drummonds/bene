@@ -18,6 +18,7 @@ from explorer.exporters import JSONExporter
 from .forms import FilebabyForm, RemittanceForm
 from .models import Report, Company
 from .models import FilebabyFile, RemittanceFile
+from utils.table_formatters import generate
 from xeroapp.models import Invoice
 
 
@@ -49,6 +50,17 @@ class CustomerView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CustomerView, self).get_context_data(**kwargs)
+        try:
+            query = Query.objects.get(pk=24) # Todo need to add paremeters
+            # query.params = report.dict_parameters
+            res = query.execute()
+            header = res.header_strings
+            data = [dict(zip(header, row)) for row in res.data]
+        except:
+            query = Query.objects.none()
+            header = data = []
+        table_cls = generate(data)
+        context.update({'version': settings.VERSION, 'query': table_cls(data), 'header': header})
         return context
 
 
@@ -112,32 +124,6 @@ class FileAddHashedView(FormView):
         print('Completed form')
         return super(FileAddHashedView, self).form_valid(form)
 
-counter = 0
-
-def generate(li_dict):
-    #unique classname.
-    global counter
-    counter += 1
-    table_classname = "MyTableClass%s" % (counter)
-
-    class Meta:
-        #ahhh... Bootstrap
-        attrs = {"class": "table table-striped"}
-
-    #generate a class dynamically
-    cls = type(table_classname,(tables.Table,),dict(Meta=Meta))
-
-    #grab the first dict's keys
-    try:
-        li = li_dict[0].keys()
-    except IndexError:
-        li = ['No Data']
-
-    for colname in li:
-        column = tables.Column(orderable=False)
-        cls.base_columns[colname] = column
-
-    return cls
 
 class QueryView(LoginRequiredMixin, TemplateView):
     template_name = "sereports/query.html"

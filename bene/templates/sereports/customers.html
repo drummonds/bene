@@ -2,5 +2,6 @@
 {% load static from staticfiles %}
 {% block content %}
     <h1>Bene - customer reporting for Xero V{{ version }}</h1>
-    <p>Holding place </p>
+    <hr/>
+    <p>{% render_table query %}</p>
 {% endblock content %}
