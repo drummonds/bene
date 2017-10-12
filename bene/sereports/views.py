@@ -9,6 +9,7 @@ import hashlib
 import urllib.request
 import json
 import requests
+import pygal
 
 import django_tables2 as tables
 from explorer.models import Query
@@ -60,6 +61,14 @@ class CustomerView(LoginRequiredMixin, ListView):
             query = Query.objects.none()
             header = data = []
         table_cls = generate(data)
+        # Generate graph
+        file_name = '/tmp/customer/graph.svg'
+        try:
+            bar_chart = pygal.Bar()  # Then create a bar graph object
+            bar_chart.add('Sales', [row[1] for row in res.data])  # Add some values
+            bar_chart.render_to_file(file_name)
+        except:
+            pass
         context.update({'version': settings.VERSION, 'query': table_cls(data), 'header': header})
         return context
 

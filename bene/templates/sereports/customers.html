@@ -4,5 +4,7 @@
 {% block content %}
     <h1>Bene - customer reporting for Xero V{{ version }}</h1>
     <hr/>
+    <embed type="image/svg+xml" src="/tmp/customer/graph.svg" width="90"/>
+    <hr/>
     <p>{% render_table query %}</p>
 {% endblock content %}
