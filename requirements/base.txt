@@ -58,7 +58,7 @@ boto3==1.4.4
 git+git://github.com/drummonds/django-sql-explorer@abf3595#egg=django-sql-explorer
 # django-sql-explorer
 
-XlsxWriter==0.9.6
+XlsxWriter==1.0.1
 
 # Xero requests
 pyxero
