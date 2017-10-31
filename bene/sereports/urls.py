@@ -15,7 +15,7 @@ urlpatterns = [
     ),
     url(
         regex=r'^customer-graph$',
-        view=views.customer_graph(),
+        view=views.customer_graph,
         name='customers_graph'
     ),
     url(
