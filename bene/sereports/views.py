@@ -77,9 +77,12 @@ class CustomerView(LoginRequiredMixin, ListView):
 def customer_graph(request):
     # do whatever you have to do with your view
     # customize and prepare your chart
-    # save SVG chart to server
     bar_chart = pygal.Bar()  # Then create a bar graph object
-    bar_chart.add('Fibonacci', [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55])  # Add some values
+    # bar_chart.add('Fibonacci', [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55])  # Add some values
+    query = Query.objects.get(pk=24)  # Todo need to add paremeters
+    # query.params = report.dict_parameters
+    res = query.execute()
+    bar_chart.add('Sales', [row[1] for row in res.data])  # Add some values
     # bar_chart.render_to_file('bar_chart.svg')
     return HttpResponse(bar_chart.render())
 
