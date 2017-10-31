@@ -14,6 +14,11 @@ urlpatterns = [
         name='customers'
     ),
     url(
+        regex=r'^customer-graph$',
+        view=views.customer_graph(),
+        name='customers_graph'
+    ),
+    url(
         regex=r'^remittance$',
         view=views.RemittanceView.as_view(),
         name='remittance'

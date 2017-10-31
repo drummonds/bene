@@ -14,8 +14,6 @@ class TestJSONParameter(unittest.TestCase):
         d = json_to_params(c)
         self.assertEqual(a, d)
 
-
-
     def test_to_dict(self):
         # URL param string
         b = '{"startdate":[2017, 6, 1], "enddate":[2017, 6, 30]}'

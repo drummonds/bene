@@ -2,6 +2,7 @@ import datetime as dt
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.urls import reverse
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView, ListView, FormView
@@ -71,6 +72,25 @@ class CustomerView(LoginRequiredMixin, ListView):
             pass
         context.update({'version': settings.VERSION, 'query': table_cls(data), 'header': header})
         return context
+
+
+def customer_graph(request):
+    # do whatever you have to do with your view
+    # customize and prepare your chart
+    # save SVG chart to server
+    bar_chart = pygal.Bar()  # Then create a bar graph object
+    bar_chart.add('Fibonacci', [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55])  # Add some values
+    # bar_chart.render_to_file('bar_chart.svg')
+    return HttpResponse(bar_chart.render())
+
+    # # Generate graph
+    # file_name = '/tmp/customer/graph.svg'
+    # try:
+    #     bar_chart = pygal.Bar()  # Then create a bar graph object
+    #     bar_chart.add('Sales', [row[1] for row in res.data])  # Add some values
+    #     bar_chart.render_to_file(file_name)
+    # except:
+    #     pass
 
 
 class RemittanceView(LoginRequiredMixin, FormView):
