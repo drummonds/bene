@@ -15,14 +15,14 @@ urlpatterns = [
         name='customers'
     ),
     url(
-        regex=r'^customer-graph$',
+        regex=r'^monthly-sales$',
         view=views.customer_graph,
-        name='customers_graph'
+        name='monthly_sales_graph'
     ),
     url(
         regex=r'^customer-graph.svg$',
         view=views.customer_graph,
-        name='customers_graph'
+        name='monthly_sales_graph'
     ),
     url(
         regex=r'^remittance$',

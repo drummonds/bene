@@ -74,26 +74,18 @@ class CustomerView(LoginRequiredMixin, ListView):
         return context
 
 
-def customer_graph(request):
+def monthly_sales(request):
     # do whatever you have to do with your view
     # customize and prepare your chart
-    bar_chart = pygal.Bar()  # Then create a bar graph object
-    # bar_chart.add('Fibonacci', [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55])  # Add some values
+    bar_chart = pygal.Bar(show_legend=False, human_readable=True,
+                          y_title='Sales (£,000)', height=200, width=800)  # Then create a bar graph object
     query = Query.objects.get(pk=24)  # Todo need to add paremeters
     # query.params = report.dict_parameters
     res = query.execute()
-    bar_chart.add('Sales', [row[1] for row in res.data])  # Add some values
-    # bar_chart.render_to_file('bar_chart.svg')
+    bar_chart.title = 'Monthly Sales'
+    bar_chart.x_labels = [row[0] for row in res.data]
+    bar_chart.add('Sales', [row[1]/1000 for row in res.data])  # Add some values
     return bar_chart.render_django_response()
-
-    # # Generate graph
-    # file_name = '/tmp/customer/graph.svg'
-    # try:
-    #     bar_chart = pygal.Bar()  # Then create a bar graph object
-    #     bar_chart.add('Sales', [row[1] for row in res.data])  # Add some values
-    #     bar_chart.render_to_file(file_name)
-    # except:
-    #     pass
 
 
 class RemittanceView(LoginRequiredMixin, FormView):
