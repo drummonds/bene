@@ -4,9 +4,18 @@
 {% block content %}
     <h1>Bene - customer reporting for Xero V{{ version }}</h1>
     <hr/>
-    <embed type="image/svg+xml" src="/rep/customer-graph" width="90"/>
+    <p>Using an img tag with .svg</p>
+    <img src="/rep/customer-graph.svg" alt="Customer Graph as .svg" height="150" width="400">
     <hr/>
-    <embed type="image/svg+xml" src="{% url 'reports:customers_graph'%}"/>
+    <p>Object with .svg</p>
+    <object type="image/svg+xml" data="src="/rep/customer-graph.svg" height="150" width="400">
+    Your browser does not support SVG
+    </object>
+    <hr/>
+    <p>Object without .svg</p>
+    <object type="image/svg+xml" data="src="/rep/customer-graph" height="150" width="400">
+    Your browser does not support SVG
+    </object>
     <hr/>
     <p>{% render_table query %}</p>
 {% endblock content %}
