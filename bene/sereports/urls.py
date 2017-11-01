@@ -39,6 +39,11 @@ urlpatterns = [
         view=views.QueryView.as_view(),
         name='query'
     ),
+    url(
+        regex=r'^sales-analysis-by-customer$',
+        view=views.QueryView.as_view(),
+        name='sales_analysis_by_customer'
+    ),
     #    # uploadering/urls.py
 #    url(r'^add$', views.FileAddView.as_view(), name='filebaby-add'),
 ]

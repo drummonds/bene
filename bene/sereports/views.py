@@ -78,6 +78,7 @@ def monthly_sales_graph(request):
     # do whatever you have to do with your view
     # customize and prepare your chart
     bar_chart = pygal.Bar(show_legend=False, human_readable=True,
+                          x_label_rotation=20, show_minor_x_labels=False,
                           y_title='Sales (£,000)', height=200, width=800)  # Then create a bar graph object
     query = Query.objects.get(pk=24)  # Todo need to add paremeters
     # query.params = report.dict_parameters
