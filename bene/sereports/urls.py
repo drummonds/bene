@@ -22,7 +22,7 @@ urlpatterns = [
     url(
         regex=r'^monthly-sales.svg$',
         view=views.monthly_sales_graph,
-        name='monthly_sales-svg'
+        name='monthly_sales_svg'
     ),
     url(
         regex=r'^remittance$',

@@ -74,7 +74,7 @@ class CustomerView(LoginRequiredMixin, ListView):
         return context
 
 
-def monthly_sales(request):
+def monthly_sales_graph(request):
     # do whatever you have to do with your view
     # customize and prepare your chart
     bar_chart = pygal.Bar(show_legend=False, human_readable=True,
