@@ -84,7 +84,7 @@ def customer_graph(request):
     res = query.execute()
     bar_chart.add('Sales', [row[1] for row in res.data])  # Add some values
     # bar_chart.render_to_file('bar_chart.svg')
-    return HttpResponse(bar_chart.render())
+    return bar_chart.render_django_reponse()
 
     # # Generate graph
     # file_name = '/tmp/customer/graph.svg'
