@@ -6,7 +6,7 @@
     <hr/>
     <embed type="image/svg+xml" src="/rep/customer-graph" width="90"/>
     <hr/>
-    <embed type="image/svg+xml" src="{% url 'customers_graph'%}"/>
+    <embed type="image/svg+xml" src="{% url 'reports:customers_graph'%}"/>
     <hr/>
     <p>{% render_table query %}</p>
 {% endblock content %}
