@@ -16,13 +16,13 @@ urlpatterns = [
     ),
     url(
         regex=r'^monthly-sales$',
-        view=views.customer_graph,
+        view=views.monthly_sales_graph,
         name='monthly_sales_graph'
     ),
     url(
-        regex=r'^customer-graph.svg$',
-        view=views.customer_graph,
-        name='monthly_sales_graph'
+        regex=r'^monthly-sales.svg$',
+        view=views.monthly_sales_graph,
+        name='monthly_sales-svg'
     ),
     url(
         regex=r'^remittance$',
