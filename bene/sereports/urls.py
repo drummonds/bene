@@ -36,7 +36,7 @@ urlpatterns = [
     ),
     # Special cases
     url(
-        regex=r'^Sales Analysis by Customer/$',
+        regex=r'^Sales\sAnalysis\sby\sCustomer/$',
         view=views.SalesAnalysisByCustomerView.as_view(),
         name='sales_analysis_by_customer'
     ),
