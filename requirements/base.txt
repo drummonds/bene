@@ -28,7 +28,7 @@ argon2-cffi==16.3.0
 
 # For user registration, either via email or social
 # Well-built with regular release cycles!
-django-allauth==0.32.0
+django-allauth==0.34.0
 
 # On Windows, you must download/install psycopg2 manually
 # from http://www.lfd.uci.edu/~gohlke/pythonlibs/#psycopg
@@ -38,7 +38,7 @@ django-allauth==0.32.0
 awesome-slugify==1.6.5
 
 # Time zones support
-pytz==2017.2
+pytz==2017.3
 
 # Redis support
 django-redis==4.8.0
@@ -77,7 +77,7 @@ numpy
 # Raven is the Sentry client
 # Not used locally but is required to run make migrations
 # --------------------------
-raven==6.1.0
+raven==6.3.0
 
 # for formatting tables
 django-tables2==1.14.2
