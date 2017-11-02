@@ -78,13 +78,14 @@ def monthly_sales_graph(request):
     # do whatever you have to do with your view
     # customize and prepare your chart
     bar_chart = pygal.Bar(show_legend=False, human_readable=True,
-                          x_label_rotation=20, show_minor_x_labels=False,
+                          # x_label_rotation=20,
                           y_title='Sales (£,000)', height=200, width=800)  # Then create a bar graph object
     query = Query.objects.get(pk=24)  # Todo need to add paremeters
     # query.params = report.dict_parameters
     res = query.execute()
     bar_chart.title = 'Monthly Sales'
-    bar_chart.x_labels = [row[0] for row in res.data]
+    months = 'JFMAMJJASOND'
+    bar_chart.x_labels = [months[int(row[0][-2:])-1] for row in res.data]
     bar_chart.add('Sales', [row[1]/1000 for row in res.data])  # Add some values
     return bar_chart.render_django_response()
 
