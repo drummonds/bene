@@ -178,7 +178,7 @@ class SalesAnalysisByCustomerView(LoginRequiredMixin, TemplateView):
     template_name = "sereports/sa_by_cust.html"
 
     def get_context_data(self, **kwargs):
-        context = super(QueryView, self).get_context_data(**kwargs)
+        context = super(SalesAnalysisByCustomerView, self).get_context_data(**kwargs)
         try:
             report_name = self.kwargs['query_id']  # Indexed by name of report
             report = Report.objects.filter(name=report_name).first() # get the details of the report
