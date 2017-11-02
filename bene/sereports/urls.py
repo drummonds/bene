@@ -36,9 +36,11 @@ urlpatterns = [
     ),
     # Special cases
     url(
-        regex=r'^query/Sales\sAnalysis\sby\sCustomer/$',
-        view=views.SalesAnalysisByCustomerView.as_view(),
-        name='sales_analysis_by_customer'
+        r'^query/Sales\sAnalysis\sby\sCustomer/$',
+        views.SalesAnalysisByCustomerView.as_view(),
+        {'query_id': 'Sales Analysis by Customer'}
+        name='sales_analysis_by_customer',
+
     ),
     # Generic cases
     url(
