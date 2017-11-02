@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% load render_table from django_tables2 %}
+{% block content %}
+    <h1>Sales Analysis Query By Customer {{ query_id }}</h1>
+    <p>This shows the results from a query. ID = {{ report_name }}.</p>
+    <P> from date A to date B</P>
+
+    <p>Button for full details go to the
+        <a href="explorer_index'" alt="Explorer Tab">
+            explorer tab
+        </a>.</p>
+    <a href="{% url 'query_detail' report.report_number %}download?name=excel&{{ report.url_parameters }}"
+       alt="{{ report.name }}">
+        <button type="button" class="btn btn-primary">{{ report.button_name }} Excel
+        </button>
+    </a>
+    <a href="{% url 'query_detail' report.report_number %}?{{ report.url_parameters }}" alt="{{ report.name }}">
+        <button type="button" class="btn btn-primary">{{ report.button_name }} Report
+        </button>
+    </a>
+    <hr/>
+    <p>{% render_table query %}</p>
+{% endblock content %}

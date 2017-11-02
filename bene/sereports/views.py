@@ -149,9 +149,32 @@ class FileAddHashedView(FormView):
         print('Completed form')
         return super(FileAddHashedView, self).form_valid(form)
 
-
 class QueryView(LoginRequiredMixin, TemplateView):
     template_name = "sereports/query.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(QueryView, self).get_context_data(**kwargs)
+        try:
+            report_name = self.kwargs['query_id']  # Indexed by name of report
+            report = Report.objects.filter(name=report_name).first() # get the details of the report
+            try:
+                query_id = report.report_number
+                query = Query.objects.get(pk=query_id) # Todo need to add paremeters
+                query.params = report.dict_parameters
+                res = query.execute()
+                header = res.header_strings
+                data = [dict(zip(header, row)) for row in res.data]
+            except:
+                query = Query.objects.none()
+                header = data = []
+        except:
+            report_name = 'Failed to get query_id'
+        table_cls = generate(data)
+        context.update({'report': report, 'report_name': report_name, 'query': table_cls(data), 'header': header})
+        return context
+
+class SalesAnalysisByCustomerView(LoginRequiredMixin, TemplateView):
+    template_name = "sereports/sa_by_cust.html"
 
     def get_context_data(self, **kwargs):
         context = super(QueryView, self).get_context_data(**kwargs)

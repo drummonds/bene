@@ -34,15 +34,17 @@ urlpatterns = [
         view=views.FileAddView.as_view(),
         name='filebaby-add'
     ),
+    # Special cases
+    url(
+        regex=r'^Sales Analysis by Customer/$',
+        view=views.SalesAnalysisByCustomerView.as_view(),
+        name='sales_analysis_by_customer'
+    ),
+    # Generic cases
     url(
         regex=r'^query/(?P<query_id>.+)/$',
         view=views.QueryView.as_view(),
         name='query'
-    ),
-    url(
-        regex=r'^sales-analysis-by-customer$',
-        view=views.QueryView.as_view(),
-        name='sales_analysis_by_customer'
     ),
     #    # uploadering/urls.py
 #    url(r'^add$', views.FileAddView.as_view(), name='filebaby-add'),
