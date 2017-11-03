@@ -2,8 +2,7 @@
 {% load static from staticfiles %}
 {% load render_table from django_tables2 %}
 {% block content %}
-    <h1>Sales Analysis Query By Customer {{ query_id }}</h1>
-    <p>This shows the results from a query. ID = {{ report_name }}.</p>
+    <h1>{{ query_id }}</h1>
     <P> from date A to date B</P>
 
     <p>Button for full details go to the
@@ -19,6 +18,23 @@
         <button type="button" class="btn btn-primary">{{ report.button_name }} Report
         </button>
     </a>
+    <hr/>
+    {% if params %}
+        <div class="panel-footer">
+            <div class="form-inline">
+                {% for k, v in params.items %}
+                    <div class="form-group">
+                        <label for="{{ k }}_param" class="control-label col-sm-4">{{ k }}:</label>
+                        <div class="col-sm-7">
+                            <input type="text" data-param="{{ k }}" class="param form-control" name="{{ k }}_param"
+                                   id="{{ k }}_param" placeholder="parameter" value="{{ v }}"/>
+                        </div>
+                        <div class="col-sm-1"></div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
     <hr/>
     <p>{% render_table query %}</p>
 {% endblock content %}

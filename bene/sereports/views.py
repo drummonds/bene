@@ -192,8 +192,11 @@ class SalesAnalysisByCustomerView(LoginRequiredMixin, TemplateView):
             except:
                 query = Query.objects.none()
                 header = data = []
+            params = {'StartDate' : '2017-02-01', 'EndDate': '2018-01-31'}
         except:
             report_name = 'Failed to get query_id'
         table_cls = generate(data)
-        context.update({'report': report, 'report_name': report_name, 'query': table_cls(data), 'header': header})
+        context.update({'report': report, 'report_name': report_name,
+                        'query': table_cls(data), 'header': header,
+                        'params' : params})
         return context
