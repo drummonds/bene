@@ -38,7 +38,7 @@ urlpatterns = [
     url(
         r'^query/Sales\sAnalysis\sby\sCustomer/$',
         views.SalesAnalysisByCustomerView.as_view(),
-        {'query_id': 'Sales Analysis by Customer'}
+        {'query_id': 'Sales Analysis by Customer'},
         name='sales_analysis_by_customer',
 
     ),
