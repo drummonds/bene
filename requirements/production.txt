@@ -4,7 +4,7 @@
 # Python-PostgreSQL Database Adapter
 # If using Win for dev, this assumes Unix in prod
 # ------------------------------------------------
-psycopg2==2.7.1
+psycopg2==2.7.3.2
 
 # WSGI Handler
 # ------------------------------------------------
@@ -18,5 +18,5 @@ django-storages==1.6.5
 
 # Email backends for Mailgun, Postmark, SendGrid and more
 # -------------------------------------------------------
-django-anymail==1.1
+django-anymail==1.2
 

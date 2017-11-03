@@ -12,13 +12,14 @@ from xero.auth import PublicCredentials
 from xero.exceptions import XeroException, XeroBadRequest
 
 from bene.celery import reload_task
+from .models import Invoice
+from sereports.models import Company  # This could be bene.serports but Django likes this better and needs to match
+# settings
 
 # You should use redis or a file based persistent
 # storage handler if you are running multiple servers.
 OAUTH_PERSISTENT_SERVER_STORAGE = {}
 
-from sereports.models import Company  # This could be bene.serports but Django likes this better and needs to match
-# settings
 
 def get_oauth(request):
     xero_obj = OAuth1Session(
@@ -50,10 +51,16 @@ class XHomeView(LoginRequiredMixin, TemplateView):
             messages.error(self.request, self.request.session['auth_error'])
             del self.request.session['auth_error']
             self.request.session.modified = True
+        try:
+            inv = Invoice.objects.latest('updated_date_utc')
+            last_updated = inv.updated_date_utc.strftime('%Y-%m-%d %H:%M')
+        except Invoice.DoesNotExist:
+            last_updated = 'No data so no DB update'
 
         context.update({'company': company_name,
                         'authorization_url' : reverse('xeroapp:do_auth'),
                         'version': settings.VERSION,
+                        'last_updated': last_updated
                         })
         return context
 

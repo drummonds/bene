@@ -11,6 +11,8 @@
             <a target="_blank" href="{% url 'explorer_index' %}">
                 Explorer Tab</a>.
         </p>
+        <hr/>
+        <img src="{% url 'reports:monthly_sales_graph' %}" alt="Monthly sales for all customers">
         <h2>Standard Reports</h2>
         <p>These buttons download the excel reports. For the full details go to the
             <a href="explorer_index'" alt="Explorer Tab">
@@ -18,17 +20,13 @@
             </a>.</p>
         <h2>
             {% for report in object_list %}
-                <a href="{% url 'query_detail' report.report_number %}download?name=excel&{{ report.url_parameters }}"
+                <a href="{% url 'sereport:query' report.name %}"
                    alt="{{ report.name }}">
                     <button type="button" class="btn btn-primary">{{ report.button_name }}
                     </button>
                 </a>
-                <a href="{% url 'sereport:query' report.name %}">
-                    <button type="button" class="btn btn-success btn-sm">Link to Query {{ query_id }}
-                    </button>
-                </a>
                 {% if not forloop.last %}
-                    {% if forloop.counter|divisibleby:3 %}</h2><h2>
+                    {% if forloop.counter|divisibleby:6 %}</h2><h2>
                     {%  else %}
                         |
                     {% endif %}

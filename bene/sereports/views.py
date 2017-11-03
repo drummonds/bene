@@ -78,13 +78,14 @@ def monthly_sales_graph(request):
     # do whatever you have to do with your view
     # customize and prepare your chart
     bar_chart = pygal.Bar(show_legend=False, human_readable=True,
-                          x_label_rotation=20, show_minor_x_labels=False,
+                          # x_label_rotation=20,
                           y_title='Sales (£,000)', height=200, width=800)  # Then create a bar graph object
     query = Query.objects.get(pk=24)  # Todo need to add paremeters
     # query.params = report.dict_parameters
     res = query.execute()
     bar_chart.title = 'Monthly Sales'
-    bar_chart.x_labels = [row[0] for row in res.data]
+    months = 'JFMAMJJASOND'
+    bar_chart.x_labels = [months[int(row[0][-2:])-1] for row in res.data]
     bar_chart.add('Sales', [row[1]/1000 for row in res.data])  # Add some values
     return bar_chart.render_django_response()
 
@@ -149,7 +150,6 @@ class FileAddHashedView(FormView):
         print('Completed form')
         return super(FileAddHashedView, self).form_valid(form)
 
-
 class QueryView(LoginRequiredMixin, TemplateView):
     template_name = "sereports/query.html"
 
@@ -172,4 +172,31 @@ class QueryView(LoginRequiredMixin, TemplateView):
             report_name = 'Failed to get query_id'
         table_cls = generate(data)
         context.update({'report': report, 'report_name': report_name, 'query': table_cls(data), 'header': header})
+        return context
+
+class SalesAnalysisByCustomerView(LoginRequiredMixin, TemplateView):
+    template_name = "sereports/sa_by_cust.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(SalesAnalysisByCustomerView, self).get_context_data(**kwargs)
+        try:
+            report_name = self.kwargs['query_id']  # Indexed by name of report
+            report = Report.objects.filter(name=report_name).first() # get the details of the report
+            try:
+                query_id = report.report_number
+                query = Query.objects.get(pk=query_id) # Todo need to add paremeters
+                query.params = report.dict_parameters
+                res = query.execute()
+                header = res.header_strings
+                data = [dict(zip(header, row)) for row in res.data]
+            except:
+                query = Query.objects.none()
+                header = data = []
+            params = {'StartDate' : '2017-02-01', 'EndDate': '2018-01-31'}
+        except:
+            report_name = 'Failed to get query_id'
+        table_cls = generate(data)
+        context.update({'report': report, 'report_name': report_name,
+                        'query': table_cls(data), 'header': header,
+                        'params' : params})
         return context
