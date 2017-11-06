@@ -68,7 +68,7 @@ requests_oauthlib
 pyyaml==3.12
 
 # Path support
-unipath
+unipath==1.1
 
 # Adding numpy and pandas for data manipulation
 pandas==0.21.0
