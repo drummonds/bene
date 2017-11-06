@@ -20,6 +20,6 @@ pytest-sugar==0.8.0
 
 # my scripts
 Fabric3==1.13.1.post1
-python-dotenv
+python-dotenv==0.7.1
 
 psycopg2==2.7.3.2
