@@ -9,19 +9,19 @@ wheel==0.30.0
 django==1.10.8 # pyup: >=1.10,<1.11
 
 # Configuration
-django-environ==0.4.3
-whitenoise==3.3.0
+django-environ==0.4.4
+whitenoise==3.3.1
 
 
 # Forms
 django-braces==1.11.0
-django-crispy-forms==1.6.1
+django-crispy-forms==1.7.0
 
 # Models
 django-model-utils==3.0.0
 
 # Images
-Pillow==4.1.1
+Pillow==4.3.0
 
 # Password storage
 argon2-cffi==16.3.0
@@ -50,7 +50,7 @@ celery==4.1
 # Your custom requirements go here
 
 # AWS
-boto3==1.4.4
+boto3==1.4.7
 
 # Reporting
 # I have made the django-sql-explorer more robust
@@ -61,18 +61,18 @@ git+git://github.com/drummonds/django-sql-explorer@abf3595#egg=django-sql-explor
 XlsxWriter==1.0.2
 
 # Xero requests
-pyxero
-requests_oauthlib
+pyxero=0.9.0
+requests_oauthlib==0.8.0
 
 # YAML support
 pyyaml==3.12
 
 # Path support
-unipath
+unipath==1.1
 
 # Adding numpy and pandas for data manipulation
 pandas==0.21.0
-numpy
+numpy==1.13.3
 
 # Raven is the Sentry client
 # Not used locally but is required to run make migrations
@@ -81,7 +81,7 @@ raven==6.3.0
 
 # for formatting tables
 django-tables2==1.14.2
-requests
+requests==2.18.4
 tablib==0.12.1
 
 # for doing server side graphs
