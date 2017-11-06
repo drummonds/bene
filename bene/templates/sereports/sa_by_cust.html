@@ -19,22 +19,29 @@
         </button>
     </a>
     <hr/>
-    {% if params %}
-        <div class="panel-footer">
-            <div class="form-inline">
-                {% for k, v in params.items %}
-                    <div class="form-group">
-                        <label for="{{ k }}_param" class="control-label col-sm-4">{{ k }}:</label>
-                        <div class="col-sm-7">
-                            <input type="text" data-param="{{ k }}" class="param form-control" name="{{ k }}_param"
-                                   id="{{ k }}_param" placeholder="parameter" value="{{ v }}"/>
+    <form role="form" class="form-horizontal" action="{% url 'sereport:query' report.name %}" method="post"
+          id="editor">{% csrf_token %}
+
+        {% if params %}
+            <div class="panel-footer">
+                <div class="form-inline">
+                    {% for k, v in params.items %}
+                        <div class="form-group">
+                            <label for="{{ k }}_param" class="control-label col-sm-4">{{ k }}:</label>
+                            <div class="col-sm-7">
+                                <input type="text" data-param="{{ k }}" class="param form-control" name="{{ k }}_param"
+                                       id="{{ k }}_param" placeholder="parameter" value="{{ v }}"/>
+                            </div>
+                            <div class="col-sm-1"></div>
                         </div>
-                        <div class="col-sm-1"></div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
+        {% endif %}
+        <div>
+            <input type="submit" value="Update" class="btn btn-default" id="save_button"/>
         </div>
-    {% endif %}
+    </form>
     <hr/>
     <p>{% render_table query %}</p>
 {% endblock content %}

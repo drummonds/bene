@@ -184,15 +184,16 @@ class SalesAnalysisByCustomerView(LoginRequiredMixin, TemplateView):
             report = Report.objects.filter(name=report_name).first() # get the details of the report
             try:
                 query_id = report.report_number
-                query = Query.objects.get(pk=query_id) # Todo need to add paremeters
-                query.params = report.dict_parameters
+                query = Query.objects.get(pk=query_id)
+                query.params = report.dict_parameters  # taking parameters from hard coded
+                # TODO these should be the default parameters rather than the curent ones
                 res = query.execute()
                 header = res.header_strings
                 data = [dict(zip(header, row)) for row in res.data]
             except:
                 query = Query.objects.none()
                 header = data = []
-            params = {'StartDate' : '2017-02-01', 'EndDate': '2018-01-31'}
+            params = {'StartDate' : '2017-02-01', 'EndDate': '2018-01-31'}  # Todo connect to actual parameters
         except:
             report_name = 'Failed to get query_id'
         table_cls = generate(data)

@@ -34,6 +34,7 @@ class Report(models.Model):
 
     @property
     def dict_parameters(self):
+        """Parameters are stored as jscon in the database"""
         try:
             json_text = json.loads(self.parameters)
             return json_to_param_dict(json_text)
