@@ -301,7 +301,7 @@ XERO_CONSUMER_SECRET =  env('XERO_CONSUMER_SECRET')
 XERO_CONSUMER_KEY = env('XERO_CONSUMER_KEY')
 
 # Version info
-VERSION = '0.6.0'
+VERSION = '0.6.1'
 
 # ######### CELERY CONFIGURATION
 # recommended settings: https://www.cloudamqp.com/docs/celery.html
@@ -314,4 +314,3 @@ CELERY_EVENT_QUEUE_EXPIRES = 60  # Will delete all celeryev. queues without cons
 BROKER_URL = os.environ.get('CLOUDAMQP_URL', 'amqp://')
 print(f'Settings for brokery url = {BROKER_URL}')
 # ######### END CELERY CONFIGURATION
-
