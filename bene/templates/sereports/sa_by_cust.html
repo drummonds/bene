@@ -2,55 +2,42 @@
 {% load static from staticfiles %}
 {% load render_table from django_tables2 %}
 {% block content %}
-    <h1>{{ query_id }}</h1>
-    <a href="{% url 'query_detail' report.report_number %}download?name=excel&{{ report.url_parameters }}"
+    <h1>{{ report_name }}</h1>
+    <a href="{% url 'query_detail' report_number %}download?name=excel&{{url_parameters }}"
        alt="{{ report.name }}">
         <button type="button" class="btn btn-primary">{{ report.button_name }} Excel
         </button>
     </a>
-    <a href="{% url 'query_detail' report.report_number %}?{{ report.url_parameters }}" alt="{{ report.name }}">
-        <button type="button" class="btn btn-primary">{{ report.button_name }} Report
-        </button>
+    <a href="{% url 'query_detail' report_number %}?{{ url_parameters }}" alt="{{ report.name }}">
+    <button type="button" class="btn btn-primary">{{ report.button_name }} Report
+    </button>
     </a>
     <hr/>
-    <form role="form" class="form-horizontal" action="{% url 'sereport:query' report.name %}" method="post
-          id="editor">{% csrf_token %}
-
-        {% if params %}
-            <div class="panel-footer">
-                <div class="form-inline">
-                    {% for k, v in params.items %}
-                        <div class="form-group">
-                            <label for="{{ k }}_param" class="control-label col-sm-4">{{ k }}:</label>
-                            <div class="col-sm-7">
-                                <input type="text" data-param="{{ k }}" class="param form-control" name="{{ k }}_param"
-                                       id="{{ k }}_param" placeholder="parameter" value="{{ v }}"/>
-                            </div>
-                            <div class="col-sm-1"></div>
+    <form role="form"
+          class="form-horizontal" {%  comment %}  %}action="{% url 'sereport:query' report.name %}"{% endcomment %}
+          method="post
+          id=" editor">{% csrf_token %}
+    {% if params %}
+        <div class="panel-footer">
+            <div class="form-inline">
+                {% for k, v in params.items %}
+                    <div class="form-group">
+                        <label for="{{ k }}_param" class="control-label col-sm-4">{{ k }}:</label>
+                        <div class="col-sm-7">
+                            <input type="text" data-param="{{ k }}" class="param form-control" name="{{ k }}_param"
+                                   id="{{ k }}_param" placeholder="parameter" value="{{ v }}"/>
                         </div>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endif %}
-        <div>
-            <input type="submit" value="Update" class="btn btn-default" id="save_button"/>
-        </div>
-    </form>
-    <hr/>
-    <p>
-        {% if params %}
-            {% for k, v in params.items %}
-                    <label for="{{ k }}_param" class="control-label col-sm-4">{{ k }}:</label>
-                    <div class="col-sm-7">
-                        <input type="text" data-param="{{ k }}" class="param form-control" name="{{ k }}_param"
-                               id="{{ k }}_param" placeholder="parameter" value="{{ v }}"/>
+                        <div class="col-sm-1"></div>
                     </div>
-                    <div class="col-sm-1"></div>
-                </div>
-            {% endfor %}
-        {% else %}
-            Query with no parameters.
-        {% endif %}
-    </p
-    <p>{% render_table query %}</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <p>Report has no parameters.</p>
+    {% endif %}
+    <div>
+        <input type="submit" value="Update" class="btn btn-default" id="save_button"/>
+    </div>
+    </form>
+    <p>{% render_table report_data %}</p>
 {% endblock content %}

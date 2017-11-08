@@ -2,8 +2,9 @@ import datetime as dt
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import DatabaseError
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView, ListView, FormView, View
@@ -157,7 +158,7 @@ class QueryView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(QueryView, self).get_context_data(**kwargs)
         try:
-            report_name = self.kwargs['query_id']  # Indexed by name of report
+            report_name = self.kwargs['report_name']  # Indexed by name of report
             report = Report.objects.filter(name=report_name).first() # get the details of the report
             try:
                 query_id = report.report_number
@@ -170,7 +171,7 @@ class QueryView(LoginRequiredMixin, TemplateView):
                 query = Query.objects.none()
                 header = data = []
         except:
-            report_name = 'Failed to get query_id'
+            report_name = 'Failed to convert report_name to query_id'
         table_cls = generate(data)
         context.update({'report': report, 'report_name': report_name, 'query': table_cls(data), 'header': header})
         return context
@@ -187,10 +188,58 @@ def get_params_from_request(request):
     except Exception:
         return None
 
+from explorer.utils import url_get_show, url_get_rows, url_get_fullscreen, url_get_params
 
-class SalesAnalysisByCustomerView(LoginRequiredMixin, FormView):
+class ReportContextMixin(object):
+
+    def gen_ctx(self):
+        # Todo add flexible pemissions
+        #return {'can_view': app_settings.EXPLORER_PERMISSION_VIEW(self.request.user),
+        #        'can_change': app_settings.EXPLORER_PERMISSION_CHANGE(self.request.user)}
+        #
+        return {'can_view': True, 'can_change': False}
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ReportContextMixin, self).get_context_data(**kwargs)
+        ctx.update(self.gen_ctx())
+        return ctx
+
+    def render_template(self, template, ctx):
+        ctx.update(self.gen_ctx())
+        return render(self.request, template, ctx)
+
+
+class SalesAnalysisByCustomerView(LoginRequiredMixin, ReportContextMixin, TemplateView):
     template_name = "sereports/sa_by_cust.html"
     form_class = QueryReportForm
+
+    def get(self, request, report_name):
+        query, form, query_id = SalesAnalysisByCustomerView.get_instance_and_form(request, report_name)
+        query.save()  # updates the modified date
+        show = url_get_show(request)
+        vm = report_viewmodel(request.user, query, form=form, run_query=show,
+                             name = report_name,
+                             report_number=query_id)
+        fullscreen = url_get_fullscreen(request)
+        return self.render_template(self.template_name, vm)
+
+    def post(self, request, report_name):
+        # todo Integrate permissions
+        # if not app_settings.EXPLORER_PERMISSION_CHANGE(request.user):
+        #    return HttpResponseRedirect(
+        #        reverse_lazy('query_detail', kwargs={'query_id': query_id})
+        #    )
+        show = url_get_show(request)
+        query, form, query_id = SalesAnalysisByCustomerView.get_instance_and_form(request, report_name)
+        success = form.is_valid() and form.save()
+        vm = report_viewmodel(request.user,
+                             query,
+                             form=form,
+                             run_query=show,
+                             message="Query saved." if success else None,
+                             name = report_name,
+                             report_number=query_id)
+        return self.render_template(self.template_name, vm)
 
     def get_context_data(self, **kwargs):
         context = super(SalesAnalysisByCustomerView, self).get_context_data(**kwargs)
@@ -219,9 +268,63 @@ class SalesAnalysisByCustomerView(LoginRequiredMixin, FormView):
         return context
 
     @staticmethod
-    def get_instance_and_form(request, query_id):
+    def get_instance_and_form(request, report_name):
+        report = Report.objects.filter(name=report_name).first()  # get the details of the report
+        try:
+            query_id = report.report_number
+            query = get_object_or_404(Query, pk=query_id)
+            query.params = url_get_params(request)
+            # query.params = report.dict_parameters TODO addd default parameters
+            res = query.execute()
+            header = res.header_strings
+            data = [dict(zip(header, row)) for row in res.data]
+        except:
+            query = Query.objects.none()
+            header = data = []
         query = get_object_or_404(Query, pk=query_id)
         query.params = get_params_from_request(request)
         form = QueryReportForm(request.POST if len(request.POST) else None, instance=query)
-        return query, form
+        return query, form, query_id
+
+def report_viewmodel(user, query, title=None, form=None, message=None, run_query=True, error=None,
+                     name='This Report', report_number = 0):
+    """Report convert query to parameters for template"""
+    try:
+        res = query.execute()
+        header = res.header_strings
+        data = [dict(zip(header, row)) for row in res.data]
+    except:
+        header = data = []
+    table_cls = generate(data)
+    # SQL Explorer
+    res = None
+    ql = None
+    if run_query:
+        try:
+            res, ql = query.execute_with_logging(user)
+        except DatabaseError as e:
+            error = str(e)
+    has_valid_results = not error and res and run_query
+    ret = {
+        'params': query.available_params(),
+        'title': title,
+        'shared': query.shared,
+        'query': query,
+        'form': form,
+        'message': message,
+        'error': error,
+        'headers': res.headers if has_valid_results else None,
+        'total_rows': len(res.data) if has_valid_results else None,
+        'duration': res.duration if has_valid_results else None,
+        'has_stats': len([h for h in res.headers if h.summary]) if has_valid_results else False,
+        'snapshots': query.snapshots if query.snapshot else [],
+        'ql_id': ql.id if ql else None,
+        # Report specific monitoring
+        'report_name': name,
+        'report_number': report_number,
+        'report_data' : table_cls(data),
+        'header': header,
+    }
+    return ret
+
 

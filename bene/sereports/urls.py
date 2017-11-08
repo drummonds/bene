@@ -38,13 +38,13 @@ urlpatterns = [
     url(
         r'^query/Sales\sAnalysis\sby\sCustomer/$',
         views.SalesAnalysisByCustomerView.as_view(),
-        {'query_id': 'Sales Analysis by Customer'},
+        {'report_name': 'Sales Analysis by Customer'},
         name='sales_analysis_by_customer',
 
     ),
     # Generic cases
     url(
-        regex=r'^query/(?P<query_id>.+)/$',
+        regex=r'^query/(?P<report_name>.+)/$',
         view=views.QueryView.as_view(),
         name='query'
     ),

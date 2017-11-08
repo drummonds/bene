@@ -67,3 +67,4 @@ class QueryReportForm(ModelForm):
 
     class Meta:
         model = Report
+        fields = ['name']
