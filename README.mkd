@@ -110,6 +110,11 @@ the following settings.
 
 then `python manage.py makemigrations` will work fine.
 
+The easiest way to configure the local database if you have a working version on heroku
+is to backup the heroku data to a local file and the restore to the local data from this.
+(making a copy of your previous database before you start. Restore all data and confirm email
+by updating DB)
+
 # Build chain
 To build the project you need to do the following:
 

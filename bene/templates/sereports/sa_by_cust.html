@@ -3,12 +3,6 @@
 {% load render_table from django_tables2 %}
 {% block content %}
     <h1>{{ query_id }}</h1>
-    <P> from date A to date B</P>
-
-    <p>Button for full details go to the
-        <a href="explorer_index'" alt="Explorer Tab">
-            explorer tab
-        </a>.</p>
     <a href="{% url 'query_detail' report.report_number %}download?name=excel&{{ report.url_parameters }}"
        alt="{{ report.name }}">
         <button type="button" class="btn btn-primary">{{ report.button_name }} Excel
@@ -19,7 +13,7 @@
         </button>
     </a>
     <hr/>
-    <form role="form" class="form-horizontal" action="{% url 'sereport:query' report.name %}" method="post"
+    <form role="form" class="form-horizontal" action="{% url 'sereport:query' report.name %}" method="post
           id="editor">{% csrf_token %}
 
         {% if params %}
@@ -43,5 +37,20 @@
         </div>
     </form>
     <hr/>
+    <p>
+        {% if params %}
+            {% for k, v in params.items %}
+                    <label for="{{ k }}_param" class="control-label col-sm-4">{{ k }}:</label>
+                    <div class="col-sm-7">
+                        <input type="text" data-param="{{ k }}" class="param form-control" name="{{ k }}_param"
+                               id="{{ k }}_param" placeholder="parameter" value="{{ v }}"/>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+            {% endfor %}
+        {% else %}
+            Query with no parameters.
+        {% endif %}
+    </p
     <p>{% render_table query %}</p>
 {% endblock content %}

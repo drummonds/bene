@@ -3,21 +3,22 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import TemplateView, ListView, FormView
+from django.views.generic import TemplateView, ListView, FormView, View
 import hashlib
-import urllib.request
 import json
 import requests
 import pygal
+import urllib.request
 
 import django_tables2 as tables
 from explorer.models import Query
 from explorer.exporters import JSONExporter
 
 
-from .forms import FilebabyForm, RemittanceForm
+from .forms import FilebabyForm, RemittanceForm, QueryReportForm
 from .models import Report, Company
 from .models import FilebabyFile, RemittanceFile
 from utils.table_formatters import generate
@@ -174,8 +175,22 @@ class QueryView(LoginRequiredMixin, TemplateView):
         context.update({'report': report, 'report_name': report_name, 'query': table_cls(data), 'header': header})
         return context
 
-class SalesAnalysisByCustomerView(LoginRequiredMixin, TemplateView):
+def get_params_from_request(request):
+    val = request.GET.get('params', None)
+    try:
+        d = {}
+        tuples = val.split('|')
+        for t in tuples:
+            res = t.split(':')
+            d[res[0]] = res[1]
+        return d
+    except Exception:
+        return None
+
+
+class SalesAnalysisByCustomerView(LoginRequiredMixin, FormView):
     template_name = "sereports/sa_by_cust.html"
+    form_class = QueryReportForm
 
     def get_context_data(self, **kwargs):
         context = super(SalesAnalysisByCustomerView, self).get_context_data(**kwargs)
@@ -185,6 +200,7 @@ class SalesAnalysisByCustomerView(LoginRequiredMixin, TemplateView):
             try:
                 query_id = report.report_number
                 query = Query.objects.get(pk=query_id)
+                # default parameters
                 query.params = report.dict_parameters  # taking parameters from hard coded
                 # TODO these should be the default parameters rather than the curent ones
                 res = query.execute()
@@ -201,3 +217,11 @@ class SalesAnalysisByCustomerView(LoginRequiredMixin, TemplateView):
                         'query': table_cls(data), 'header': header,
                         'params' : params})
         return context
+
+    @staticmethod
+    def get_instance_and_form(request, query_id):
+        query = get_object_or_404(Query, pk=query_id)
+        query.params = get_params_from_request(request)
+        form = QueryReportForm(request.POST if len(request.POST) else None, instance=query)
+        return query, form
+
