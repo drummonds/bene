@@ -67,8 +67,9 @@ class CustomerView(LoginRequiredMixin, ListView):
         # Generate graph
         file_name = '/tmp/customer/graph.svg'
         try:
-            bar_chart = pygal.Bar()  # Then create a bar graph object
+            bar_chart = pygal.StackedBarBar()  # Then create a bar graph object
             bar_chart.add('Sales', [row[1] for row in res.data])  # Add some values
+            bar_chart.add('O/S', [row[1]*0.2 for row in res.data])  # Add some values
             bar_chart.render_to_file(file_name)
         except:
             pass

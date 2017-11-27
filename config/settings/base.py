@@ -301,7 +301,7 @@ XERO_CONSUMER_SECRET =  env('XERO_CONSUMER_SECRET')
 XERO_CONSUMER_KEY = env('XERO_CONSUMER_KEY')
 
 # Version info
-VERSION = '0.6.14'
+VERSION = '0.6.15'
 
 # ######### CELERY CONFIGURATION
 # recommended settings: https://www.cloudamqp.com/docs/celery.html

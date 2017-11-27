@@ -35,8 +35,11 @@
     {% else %}
         <p>Report has no parameters.</p>
     {% endif %}
-    <div>
+    <div class=""text-center">
+        <div class=""btn-group">
         <input type="submit" value="Update" class="btn btn-default" id="save_button"/>
+        {% csrf_token %}
+        </div>
     </div>
     </form>
     <p>{% render_table report_data %}</p>
