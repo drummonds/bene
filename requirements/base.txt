@@ -50,7 +50,7 @@ celery==4.1
 # Your custom requirements go here
 
 # AWS
-boto3==1.4.7
+boto3==1.4.8
 
 # Reporting
 # I have made the django-sql-explorer more robust
@@ -80,7 +80,7 @@ numpy==1.13.3
 raven==6.3.0
 
 # for formatting tables
-django-tables2==1.14.2
+django-tables2==1.16.0
 requests==2.18.4
 tablib==0.12.1
 
