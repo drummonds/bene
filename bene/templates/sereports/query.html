@@ -3,8 +3,7 @@
 {% load render_table from django_tables2 %}
 {% block content %}
     <h1>Query {{ query_id }}</h1>
-    <p>This shows the results from a query. ID = {{ report_name }}.</p>
-
+      <p>This shows the results from a query. ID = {{ report_name }}.</p>
         <p>Button for full details go to the
             <a href="explorer_index'" alt="Explorer Tab">
                 explorer tab
@@ -17,6 +16,7 @@
               <button type="button" class="btn btn-primary">{{ report.button_name }} Report
               </button>
          </a>
-        <hr/>
+    </br>
+        <small> Printed at  {{ date_now|date:"r" }}.</small>
         <p>{% render_table query %}</p>
 {% endblock content %}

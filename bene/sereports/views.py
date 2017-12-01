@@ -67,7 +67,7 @@ class CustomerView(LoginRequiredMixin, ListView):
         # Generate graph
         file_name = '/tmp/customer/graph.svg'
         try:
-            bar_chart = pygal.StackedBarBar()  # Then create a bar graph object
+            bar_chart = pygal.StackedBar()  # Then create a bar graph object
             bar_chart.add('Sales', [row[1] for row in res.data])  # Add some values
             bar_chart.add('O/S', [row[1]*0.2 for row in res.data])  # Add some values
             bar_chart.render_to_file(file_name)
@@ -80,16 +80,20 @@ class CustomerView(LoginRequiredMixin, ListView):
 def monthly_sales_graph(request):
     # do whatever you have to do with your view
     # customize and prepare your chart
-    bar_chart = pygal.Bar(show_legend=False, human_readable=True,
+    bar_chart = pygal.StackedBar(show_legend=False, human_readable=True,
                           # x_label_rotation=20,
                           y_title='Sales (£,000)', height=200, width=800)  # Then create a bar graph object
     query = Query.objects.get(pk=24)  # Todo need to add paremeters
     # query.params = report.dict_parameters
-    res = query.execute()
+    res = query.execute()  # Returns ?
     bar_chart.title = 'Monthly Sales'
     months = 'JFMAMJJASOND'
     bar_chart.x_labels = [months[int(row[0][-2:])-1] for row in res.data]
-    bar_chart.add('Sales', [row[1]/1000 for row in res.data])  # Add some values
+    bar_chart.add('Sales 15', [row[1]/1000 if row[0].find('2015') != -1 else 0 for row in res.data])  # Add some values
+    bar_chart.add('Sales 16', [row[1]/1000 if row[0].find('2016') != -1 else 0 for row in res.data])  # Add some values
+    bar_chart.add('Sales 17', [row[1]/1000 if row[0].find('2017') != -1 else 0 for row in res.data])  # Add some values
+    bar_chart.add('Sales 18', [row[1]/1000 if row[0].find('2018') != -1 else 0 for row in res.data])  # Add some values
+    bar_chart.add('Sales 19', [row[1]/1000 if row[0].find('2019') != -1 else 0 for row in res.data])  # Add some values
     return bar_chart.render_django_response()
 
 
@@ -174,7 +178,9 @@ class QueryView(LoginRequiredMixin, TemplateView):
         except:
             report_name = 'Failed to convert report_name to query_id'
         table_cls = generate(data)
-        context.update({'report': report, 'report_name': report_name, 'query': table_cls(data), 'header': header})
+        context.update({'report': report, 'report_name': report_name,
+                        'date_now' : dt.datetime.now(),
+                        'query': table_cls(data), 'header': header})
         return context
 
 def get_params_from_request(request):
