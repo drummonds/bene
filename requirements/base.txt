@@ -14,7 +14,7 @@ whitenoise==3.3.1
 
 
 # Forms
-django-braces==1.11.0
+django-braces==1.12.0
 django-crispy-forms==1.7.0
 
 # Models
@@ -50,7 +50,7 @@ celery==4.1
 # Your custom requirements go here
 
 # AWS
-boto3==1.4.7
+boto3==1.5.6
 
 # Reporting
 # I have made the django-sql-explorer more robust
@@ -71,16 +71,16 @@ pyyaml==3.12
 unipath==1.1
 
 # Adding numpy and pandas for data manipulation
-pandas==0.21.0
+pandas==0.21.1
 numpy==1.13.3
 
 # Raven is the Sentry client
 # Not used locally but is required to run make migrations
 # --------------------------
-raven==6.3.0
+raven==6.4.0
 
 # for formatting tables
-django-tables2==1.14.2
+django-tables2==1.17.1
 requests==2.18.4
 tablib==0.12.1
 
