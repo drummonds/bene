@@ -14,17 +14,17 @@ whitenoise==3.3.1
 
 
 # Forms
-django-braces==1.11.0
+django-braces==1.12.0
 django-crispy-forms==1.7.0
 
 # Models
-django-model-utils==3.0.0
+django-model-utils==3.1.1
 
 # Images
-Pillow==4.3.0
+Pillow==5.0.0
 
 # Password storage
-argon2-cffi==16.3.0
+argon2-cffi==18.1.0
 
 # For user registration, either via email or social
 # Well-built with regular release cycles!
@@ -50,7 +50,7 @@ celery==4.1
 # Your custom requirements go here
 
 # AWS
-boto3==1.4.7
+boto3==1.5.14
 
 # Reporting
 # I have made the django-sql-explorer more robust
@@ -71,16 +71,16 @@ pyyaml==3.12
 unipath==1.1
 
 # Adding numpy and pandas for data manipulation
-pandas==0.21.0
-numpy==1.13.3
+pandas==0.22.0
+numpy==1.14.0
 
 # Raven is the Sentry client
 # Not used locally but is required to run make migrations
 # --------------------------
-raven==6.3.0
+raven==6.4.0
 
 # for formatting tables
-django-tables2==1.14.2
+django-tables2==1.17.1
 requests==2.18.4
 tablib==0.12.1
 
