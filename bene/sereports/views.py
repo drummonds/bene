@@ -83,7 +83,7 @@ def monthly_sales_graph(request):
     bar_chart = pygal.StackedBar(show_legend=False, human_readable=True,
                           # x_label_rotation=20,
                           y_title='Sales (£,000)', height=200, width=800)  # Then create a bar graph object
-    query = Query.objects.get(pk=24)  # Todo need to add paremeters
+    query = Query.objects.get(pk=24)  # Todo need to add parameters
     # query.params = report.dict_parameters
     res = query.execute()  # Returns ?
     bar_chart.title = 'Monthly Sales'
