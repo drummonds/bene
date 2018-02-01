@@ -3,7 +3,7 @@
 {% load render_table from django_tables2 %}
 {% block content %}
     <h1>{{ report_name }}</h1>
-    <a href="{% url 'query_detail' report_number %}download?name=excel&{{url_parameters }}"
+    <a href="{% url 'query_detail' report_number %}download?format=excel&{{url_parameters }}"
        alt="{{ report.name }}">
         <button type="button" class="btn btn-primary">{{ report.button_name }} Excel
         </button>
