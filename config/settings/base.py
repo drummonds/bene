@@ -302,7 +302,7 @@ XERO_CONSUMER_SECRET =  env('XERO_CONSUMER_SECRET')
 XERO_CONSUMER_KEY = env('XERO_CONSUMER_KEY')
 
 # Version info
-VERSION = '0.6.19'
+VERSION = '0.7.0'
 
 # ######### CELERY CONFIGURATION
 # recommended settings: https://www.cloudamqp.com/docs/celery.htmlBROKER_POOL_LIMIT = 1  # Will decrease connection usage

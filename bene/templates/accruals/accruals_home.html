@@ -1,7 +1,15 @@
 {% extends "base.html" %}
+{% load render_table from django_tables2 %}
 {% load static from staticfiles %}
 {% block content %}
-    <h1>Accruals page V{{ version }}</h1>
-    <p>This shows the state of the current Accruals</p>
-    <ol><li>General Accruals 2109</li><li>Factory Rent 2114</li></ol>
+  <h1>Accruals page V{{ version }}</h1>
+  <p>This shows the state of the current Accruals</p>
+  <ol>
+    <li>General Accruals 2109</li>
+    <li>Factory Rent 2114</li>
+  </ol>
+  <hr>
+  {# tutorial/templates/tutorial/people.html #}
+  <h1>List of accruals</h1>
+  {% render_table accruals %}
 {% endblock content %}
