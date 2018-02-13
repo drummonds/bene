@@ -3,7 +3,10 @@ from dateutil.parser import parse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.conf import settings
-from django.core.urlresolvers import reverse
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, RedirectView
 from requests_oauthlib import OAuth1Session
 

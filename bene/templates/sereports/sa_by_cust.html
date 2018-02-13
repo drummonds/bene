@@ -14,7 +14,7 @@
     </a>
     <hr/>
     <form role="form"
-          class="form-horizontal" {%  comment %}  %}action="{% url 'sereport:query' report.name %}"{% endcomment %}
+          class="form-horizontal" {%  comment %}  %}action="{% url 'sereports:query' report.name %}"{% endcomment %}
           method="post
           id=" editor">{% csrf_token %}
     {% if params %}

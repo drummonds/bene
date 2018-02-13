@@ -1,4 +1,7 @@
-from django.core.urlresolvers import reverse, resolve
+try:
+    from django.urls import reverse, resolve
+except ImportError:
+    from django.core.urlresolvers import reverse, resolve
 
 from test_plus.test import TestCase
 

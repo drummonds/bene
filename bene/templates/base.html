@@ -46,13 +46,13 @@
             </li>
             {% if request.user.is_authenticated %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="{% url 'sereport:home' %}" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="{% url 'sereports:home' %}" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Reports
                     </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="{% url 'sereport:customers' %}">Customers</a>
-                  <a class="dropdown-item" href="{% url 'sereport:remittance' %}">Remittance</a>
-                  <a class="dropdown-item" href="{% url 'sereport:filebaby-add' %}">Add file</a>
+                  <a class="dropdown-item" href="{% url 'sereports:customers' %}">Customers</a>
+                  <a class="dropdown-item" href="{% url 'sereports:remittance' %}">Remittance</a>
+                  <a class="dropdown-item" href="{% url 'sereports:filebaby-add' %}">Add file</a>
                   <a class="dropdown-item" href="{% url 'accruals:home' %}">~Accruals</a>
                 </div>
               </li>

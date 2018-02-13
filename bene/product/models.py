@@ -63,8 +63,8 @@ class Material(models.Model):
         return self.description
 
 class Sku(models.Model):
-    product = models.ForeignKey(Product)
-    variant = models.ForeignKey(Size, default='UNK')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variant = models.ForeignKey(Size, on_delete=models.SET_DEFAULT, default='UNK')
     colour = models.CharField(max_length = 30, blank = True)
     factory_sku_description = models.CharField(max_length = 200, blank = True)
     url = models.URLField( blank = True)
@@ -124,8 +124,8 @@ class Spec(models.Model):
         (SQUARE_2_INCH, '2" Square',),
         (STRIGHT_6_INCH, '6" Straight',),
     )
-    top = models.ForeignKey(Material, related_name='top')
-    bottom = models.ForeignKey(Material, related_name='bottom')
+    top = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='top')
+    bottom = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='bottom')
     filling = models.CharField(max_length = 135, blank = True,
                                       help_text="Type of filling , hollow fibre")
     filling_weight = models.DecimalField(max_digits = 10, decimal_places=2, blank = True,

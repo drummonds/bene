@@ -4,7 +4,7 @@
 {% block content %}
     <h1>Bene - reporting for Xero V{{ version }}</h1>
     <hr/>
-    <img src="{% url 'reports:monthly_sales_graph' %}" alt="Monthly sales for all customers">
+    <img src="{% url 'sereports:monthly_sales_graph' %}" alt="Monthly sales for all customers">
     <hr/>
     <p>{% render_table query %}</p>
 {% endblock content %}

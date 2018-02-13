@@ -62,7 +62,7 @@ class FilebabyFile(models.Model):
 
 class RemittanceFile(models.Model):
     """This holds a single user uploaded file"""
-    f = models.FileField(upload_to='/Remittance/')
+    f = models.FileField(upload_to='Remittance/')
     # photo = models.FileField(upload_to='candidate-photos')
     #f = models.FileField(upload_to='%Y/%m/%d')  # Date-based directories
     #f = models.FileField(upload_to=hashed_uploads_dirs)  # Callback defined

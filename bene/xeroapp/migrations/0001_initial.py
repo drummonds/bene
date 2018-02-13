@@ -64,7 +64,8 @@ class Migration(migrations.Migration):
                 ('quantity', models.DecimalField(decimal_places=4, max_digits=16, verbose_name='Qty')),
                 ('price', models.DecimalField(decimal_places=4, max_digits=16, verbose_name='Price')),
                 ('invoice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='xeroapp.Invoice')),
-                ('item', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='xeroapp.Item')),
+                ('item', models.ForeignKey(on_delete=models.CASCADE,
+                                        blank=True, null=True, to='xeroapp.Item')),
             ],
         ),
     ]

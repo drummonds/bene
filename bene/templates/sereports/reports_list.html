@@ -12,7 +12,7 @@
                 Explorer Tab</a>.
         </p>
         <hr/>
-        <img src="{% url 'reports:monthly_sales_graph' %}" alt="Monthly sales for all customers">
+        <img src="{% url 'sereports:monthly_sales_graph' %}" alt="Monthly sales for all customers">
         <h2>Standard Reports</h2>
         <p>These buttons are short cuts to the more important reports. For the full details go to the
             <a href="explorer_index'" alt="Explorer Tab">
@@ -20,7 +20,7 @@
             </a>.</p>
         <h2>
             {% for report in object_list %}
-                <a href="{% url 'sereport:query' report.name %}"
+                <a href="{% url 'sereports:query' report.name %}"
                    alt="{{ report.name }}">
                     <button type="button" class="btn btn-primary">{{ report.button_name }}
                     </button>

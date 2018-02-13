@@ -54,9 +54,7 @@ boto3==1.5.26
 
 # Reporting
 # I have made the django-sql-explorer more robust
-# this failed so reverting back to previous version
-git+git://github.com/drummonds/django-sql-explorer@abf3595#egg=django-sql-explorer
-# django-sql-explorer
+git+git://github.com/drummonds/django-sql-explorer@0c2c642#egg=django-sql-explorer==1.1.1b
 
 XlsxWriter==1.0.2
 

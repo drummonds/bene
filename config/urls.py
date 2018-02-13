@@ -22,9 +22,10 @@ urlpatterns = [
     url(settings.ADMIN_URL, admin.site.urls),
 
     # User management
-    url(r'^users/', include('bene.users.urls', namespace='users')),
-    url(r'^rep/', include('sereports.urls', namespace='sereport')),
-    url(r'^xeroapp/', include('xeroapp.urls', namespace='xeroapp')),
+    url(r'^users/', include('bene.users.urls')),
+    url(r'^rep/', include('sereports.urls')),
+    url(r'^xeroapp/', include('xeroapp.urls')),
+    url(r'^accruals/', include('accruals.urls')),
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
