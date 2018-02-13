@@ -38,7 +38,7 @@ def default_db_colour(app_name):
 
 
 def set_environment_variables(env_prefix):
-    if env_prefix == 'test':
+    if env_prefix == 'test':  # TODO move to settings
         settings = 'develop'
     else:
         settings = 'production'
@@ -269,7 +269,7 @@ def update_prod():
 @task
 def update_prod():
     """"Update the production environment with latest changes.  Removes UAT as this should now be complete.
-    THIS ONLY WORKS FOR CODE UPADATE NOT **HEROKU CONFIGURATION CHANGES**.  For a major change in how the build is 
+    THIS ONLY WORKS FOR CODE UPADATE NOT **HEROKU CONFIGURATION CHANGES**.  For a major change in how the build is
     created you need to build a UAT and then promote it to production.  See promote_uat"""
     start_time = time.time()
     local('fab update_app:prod')
