@@ -27,7 +27,6 @@ def remove_unused_db(env_prefix='uat'):
 def default_db_colour(app_name):
     """Return the default database colour of heroku application"""
     data = json.loads(local('heroku config --json --app {0}'.format(app_name), capture=True))
-    result = ''
     for k,v in data.items():
         if k.find('HEROKU_POSTGRESQL_') == 0:
             if v == data['DATABASE_URL']:
@@ -39,25 +38,31 @@ def default_db_colour(app_name):
 
 def set_environment_variables(env_prefix):
     if env_prefix == 'test':  # TODO move to settings
-        settings = 'develop'
+        which_settings = 'develop'
     else:
-        settings = 'production'
+        which_settings = 'production'
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
-    local(f"heroku config:set DJANGO_SETTINGS_MODULE=config.settings.{settings} --app {heroku_app}")
+    local(f"heroku config:set DJANGO_SETTINGS_MODULE=config.settings.{which_settings} --app {heroku_app}")
     local('heroku config:set PYTHONHASHSEED=random --app {}"'.format(heroku_app))
     local('heroku config:set DJANGO_ALLOWED_HOSTS="{1}.herokuapp.com" --app {1}'.
           format(os.environ['DJANGO_ALLOWED_HOSTS'], heroku_app))
     for config in ( 'DJANGO_SECRET_KEY', 'DJANGO_ADMIN_URL'
-        ,'DJANGO_AWS_ACCESS_KEY_ID', 'DJANGO_AWS_SECRET_ACCESS_KEY', 'DJANGO_AWS_STORAGE_BUCKET_NAME'
-        ,'DJANGO_MAILGUN_API_KEY', 'DJANGO_SERVER_EMAIL', 'MAILGUN_SENDER_DOMAIN'
-        ,'DJANGO_ACCOUNT_ALLOW_REGISTRATION', 'DJANGO_SENTRY_DSN'
-        ,'XERO_CONSUMER_SECRET', 'XERO_CONSUMER_KEY'):
+        , 'DJANGO_AWS_ACCESS_KEY_ID', 'DJANGO_AWS_SECRET_ACCESS_KEY',
+        , 'DJANGO_MAILGUN_API_KEY', 'DJANGO_SERVER_EMAIL', 'MAILGUN_SENDER_DOMAIN'
+        , 'DJANGO_ACCOUNT_ALLOW_REGISTRATION', 'DJANGO_SENTRY_DSN'
+        , 'XERO_CONSUMER_SECRET', 'XERO_CONSUMER_KEY'):
         local('heroku config:set {}={} --app {}'.format(config, os.environ[config], heroku_app))
+    local('heroku config:set {}={} --app {}'.format(
+        'DJANGO_AWS_STORAGE_BUCKET_NAME',
+        os.environ['DJANGO_AWS_STORAGE_BUCKET_PREFIX'] + '_' + env_prefix,
+        heroku_app))
+
 
 ##################################################
 # Tasks
 ##################################################
 
+# noinspection SpellCheckingInspection
 @task
 def create_newbuild(env_prefix='test', branch='master'):
     """This builds the database and waits for it be ready.  It is is safe to run and won't
@@ -77,7 +82,7 @@ def create_newbuild(env_prefix='test', branch='master'):
     # local(f'heroku addons:create guvscale --app {heroku_app}')
     try:
         local(f'heroku plugins:install heroku-cli-oauth')  # installed in local toolbelt not on app
-    except:
+    except SystemExit:
         print('Probably already installed')
     # Now need to create a token and add to guvscale
     # Does'nt work
@@ -88,7 +93,7 @@ def create_newbuild(env_prefix='test', branch='master'):
     # Load guvscale cli tool (may already be installed)
     try:
         local(f'heroku plugins:install heroku-guvscale')  # installed in local toolbelt not on app
-    except:
+    except SystemExit:
         print('Probably already installed')
     # start of configuring guvscale to autoscale
     # local(f'heroku guvscale:getconfig --app {heroku_app}')
@@ -122,8 +127,8 @@ def raw_update_app(env_prefix='uat', branch='master'):
     # Will add guvscale to spin workers up and down from 0
     local(f'heroku ps:scale worker=1 -a {heroku_app}')
     # Have used performance web=standard-1x and worker=standard-2x but adjusted app to used less memory
-    #local(f'heroku ps:resize web=standard-1x -a {heroku_app}')  # Resize web to be compatible with performance workers
-    #local(f'heroku ps:resize worker=standard-2x -a {heroku_app}')  # Resize workers
+    # local(f'heroku ps:resize web=standard-1x -a {heroku_app}')  # Resize web to be compatible with performance workers
+    # local(f'heroku ps:resize worker=standard-2x -a {heroku_app}')  # Resize workers
     # makemigrations should be run locally and the results checked into git
     local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
 
@@ -153,12 +158,12 @@ def create_new_db(env_prefix='uat'):
     colour = found.group(2)
     print(f'DB colour = {colour}, {db_name}')
     local('heroku pg:wait')  # It takes some time for DB so wait for it
-    return (colour, db_name)
+    return colour, db_name
 
 
 @task
 def transfer_database_from_production(env_prefix='test', clean=True):
-    """This is usally used for making a copy of the production database for a UAT staging
+    """This is usually used for making a copy of the production database for a UAT staging
     or test environment.  It can also be used to upgrade the production environment from one
     database plan to the next. """
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
@@ -211,7 +216,7 @@ def build_staging(env_prefix='uat'):
 def load_local_data(env_prefix='uat'):
     """Adapt this for own use.  This takes a data file in the local playpen directory (not in git)
     adds it temporarily to local git, pushes it to heroku and uploads.  Then removes the file from git.
-    Assumes that the master branch is being used and is uptodate.
+    Assumes that the master branch is being used and is up to date.
     Thanks to Jake Trent https://jaketrent.com/post/django-loaddata-heroku/"""
     local('git add playpen/products.json -f')  # Need to force this as playpen is ignored in .gitignore
     local('git commit -m "Added temporary database data"')
@@ -235,11 +240,11 @@ def build_app(env_prefix='uat'):
     start_time = time.time()
     try:
         local(f'fab kill_app:{env_prefix}')
-    except:
+    except SystemExit:
         if env_prefix != 'prod':
             pass # ignore errors in case original does not exist
         else:
-            raise Exception('Must stop if an errror when deleteing a production database.')
+            raise Exception('Must stop if an error when deleting a production database.')
     local(f'fab create_newbuild:env_prefix={env_prefix},branch={env_prefix}')
     local(f'fab transfer_database_from_production:{env_prefix}')
     # makemigrations should be run locally and the results checked into git

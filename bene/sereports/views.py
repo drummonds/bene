@@ -108,12 +108,12 @@ class RemittanceView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(RemittanceView, self).get_context_data(**kwargs)
-        context.update({'company': company_name, 'version': settings.VERSION, 'last_update': last_update})
+        context.update({'company': 'A company', 'version': settings.VERSION, 'last_update': 'an update'})
         return context
 
     def form_valid(self, form):
         form.save(commit=True)
-        messages.success(self.request, 'Remmitance file uploaded!', fail_silently=True)
+        messages.success(self.request, 'Remmittance file uploaded!', fail_silently=True)
         return super(RemittanceView, self).form_valid(form)
 
 

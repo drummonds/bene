@@ -11,6 +11,9 @@ class Company(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Companies'
+
 
 class Report(models.Model):
     name = models.CharField('Name of Report', blank=True, max_length=255)
