@@ -52,9 +52,13 @@ def set_environment_variables(env_prefix):
         , 'DJANGO_ACCOUNT_ALLOW_REGISTRATION', 'DJANGO_SENTRY_DSN'
         , 'XERO_CONSUMER_SECRET', 'XERO_CONSUMER_KEY'):
         local('heroku config:set {}={} --app {}'.format(config, os.environ[config], heroku_app))
+    if env_prefix == '':
+        bucket_name = os.environ['DJANGO_AWS_STORAGE_BUCKET_PREFIX'] + '-test'
+    else:
+        bucket_name = os.environ['DJANGO_AWS_STORAGE_BUCKET_PREFIX'] + '-' + env_prefix
     local('heroku config:set {}={} --app {}'.format(
         'DJANGO_AWS_STORAGE_BUCKET_NAME',
-        os.environ['DJANGO_AWS_STORAGE_BUCKET_PREFIX'] + '_' + env_prefix,
+        bucket_name,
         heroku_app))
 
 

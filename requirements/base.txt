@@ -84,3 +84,8 @@ tablib==0.12.1
 
 # for doing server side graphs
 pygal==2.4.0
+
+# Static and Media Storage
+# ------------------------------------------------
+django-storages==1.6.5
+

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load static from staticfiles %}
+{% block content %}
+  <h1>Remittance page</h1>
+  <p>Bucket = {{ bucket_name }} for ID = {{ AWS_ID }}</p>
+  <p>This shows the state of the current incoming remittances</p>
+  <hr>
+  {# tutorial/templates/tutorial/people.html #}
+  <h1>List of Remittances</h1>
+  {% render_table remittances %}
+{% endblock content %}

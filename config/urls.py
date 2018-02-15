@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^rep/', include('sereports.urls')),
     url(r'^xeroapp/', include('xeroapp.urls')),
     url(r'^accruals/', include('accruals.urls')),
+    url(r'^remittance/', include('remittance.urls')),
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here

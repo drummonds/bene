@@ -113,7 +113,7 @@ class RemittanceView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         form.save(commit=True)
-        messages.success(self.request, 'Remmittance file uploaded!', fail_silently=True)
+        messages.success(self.request, 'Remittance file uploaded!', fail_silently=True)
         return super(RemittanceView, self).form_valid(form)
 
 
