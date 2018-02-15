@@ -62,7 +62,7 @@ LOCAL_APPS = [
     'explorer',
     'sereports.apps.SEReportsConfig',
     'xeroapp.apps.XeroConfig',
-    'accruals.apps.AccrualsConfig',
+    'bene.accruals.apps.AccrualsConfig',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -286,7 +286,7 @@ ADMIN_URL = r'^admin/'
 
 # SQL Explorer custom settings
 EXPLORER_DATA_EXPORTERS =  [
-    ('excel', 'utils.sereports.ExcelExporter'),
+    ('excel', 'utils.reports.ExcelExporter'),
     ('csv', 'explorer.exporters.CSVExporter'),
     # ('excel', 'explorer.exporters.ExcelExporter'),
     ('json', 'explorer.exporters.JSONExporter'),
@@ -302,7 +302,7 @@ XERO_CONSUMER_SECRET =  env('XERO_CONSUMER_SECRET')
 XERO_CONSUMER_KEY = env('XERO_CONSUMER_KEY')
 
 # Version info
-VERSION = '0.7.0'
+VERSION = '0.7.1'
 
 # ######### CELERY CONFIGURATION
 # recommended settings: https://www.cloudamqp.com/docs/celery.htmlBROKER_POOL_LIMIT = 1  # Will decrease connection usage
