@@ -10,4 +10,9 @@ urlpatterns = [
         view=views.HomeView.as_view(),
         name='home'
     ),
+    url(
+        regex=r'^add$',
+        view=views.FileAddView.as_view(),
+        name='remittance-file-add'
+    ),
 ]

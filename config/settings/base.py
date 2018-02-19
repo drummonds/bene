@@ -334,6 +334,7 @@ AWS_QUERYSTRING_AUTH = False
 # AWS cache settings, don't change unless you know what you're doing:
 AWS_EXPIRY = 60 * 60 * 24 * 7
 
+
 # TODO See: https://github.com/jschneier/django-storages/issues/47
 # Revert the following and use str after the above-mentioned bug is fixed in
 # either django-storage-redux or boto
@@ -345,6 +346,8 @@ AWS_HEADERS = {
 # URL that handles the media served from MEDIA_ROOT, used for managing
 # stored files.
 MEDIA_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
 # Static Assets
