@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from . import views
+from bene.templates import views
 
 app_name = 'sereports'
 urlpatterns = [

@@ -6,6 +6,6 @@ class RemittanceFileForm(ModelForm):
     """Upload files with this form"""
     class Meta:
         model = RemittanceItem
-        exclude = ('md5',)
+
 
 

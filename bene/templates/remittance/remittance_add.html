@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load static from staticfiles %}
+{% block content %}
+  <h1>Add Remittance page</h1>
+  <h1>Upload a file</h1>
+  {% if form.non_field_errors %}
+    <div class="panel">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+
+  <form action="{% url 'remittance:remittance-file-add' %}" method="post" enctype="multipart/form-data">
+    {% if form.f.errors %}
+      <input name="orig_file" type="file" id="file" class="error"/>
+    {% else %}
+      <input name="orig_file" type="file" id="file"/>
+    {% endif %}
+
+    <input type="submit" id="submit" class="large button expand" value="Submit File">
+    {% csrf_token %}
+  </form>
+{% endblock content %}

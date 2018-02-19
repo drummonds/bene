@@ -6,38 +6,13 @@
   <p>Bucket = {{ bucket_name }} for ID = {{ AWS_ID }}</p>
   <p>This shows the state of the current incoming remittances</p>
   <hr>
-  <h1>Upload a file</h1>
-  {% if form.non_field_errors %}
-    <div class="panel">
-      {{ form.non_field_errors }}
-    </div>
-  {% endif %}
+  <h1></h1><a href="{% url 'remittance:remittance-file-add' %}">Upload a file</a></h1>
 
-  <form action="{% url 'remittance:remittance-file-add' %}" method="post" enctype="multipart/form-data">
-    <fieldset>
-      <legend>Add file</legend>
-
-      <div class="row" id="file_container">
-        <div class="large-6 columns">
-          {% if form.f.errors %}
-            <input name="f" type="file" id="file" class="error"/>
-          {% else %}
-            <input name="f" type="file" id="file"/>
-          {% endif %}
-        </div>
-      </div>
-
-    </fieldset>
-    <div class="large-6 columns">
-      <input type="submit" id="submit" class="large button expand" value="Submit File">
-    </div>
-    {% csrf_token %}
-  </form>
   <h1>List of Remittances</h1>
   {% render_table remittances %}
   <hr>
   <h2>List of files</h2>
-  {% render_table file_list %}
+  {% render_table object_list %}
 {% endblock content %}
 
 {% block extra_head %}

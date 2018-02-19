@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.storage import default_storage
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, FormView
+from django.views.generic import ListView, FormView
 
 import django_tables2 as tables
 
@@ -16,18 +16,16 @@ class ListTable(tables.Table):
     name = tables.Column()
 
 
-class HomeView(LoginRequiredMixin, TemplateView):
+class HomeView(LoginRequiredMixin, ListView):
     template_name = 'remittance/remittance_home.html'
-    redirect_field_name = ''
+    model = RemittanceItem
 
-    # model = Report TODO
-
-    def get_file_list(self):
+    def get_queryset(self):
         results = ['List of items from storage']
         results.append(f" Storage exists = {default_storage.exists('storage_test')}")
         dirs, files = default_storage.listdir('')
         results = results + ['**Dirs**'] + dirs  + ['**Files**'] + files
-        return results
+        return ListTable([{'name': x} for x in results])  # Convert list to a dictionary
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
@@ -36,7 +34,6 @@ class HomeView(LoginRequiredMixin, TemplateView):
                         'bucket_name': settings.AWS_STORAGE_BUCKET_NAME,
                         'AWS_ID': settings.AWS_ACCESS_KEY_ID,
                         'remittances': RemittanceItem.objects.all(),
-                        'file_list' : ListTable([{'name': x} for x in self.get_file_list()]),
                         })
         return context
 
@@ -44,7 +41,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
 class FileAddView(FormView):
     form_class = RemittanceFileForm
     success_url = reverse_lazy('home')
-    template_name = "remittance/remittance_home.html"
+    template_name = "remittance/remittance_add.html"
 
     def form_valid(self, form):
         form.save(commit=True)
