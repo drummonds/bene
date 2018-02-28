@@ -1,3 +1,6 @@
+"""
+This is the interface between celery and the Rabbit MQ AMQP addon and tsaks in Django.
+"""
 import os
 from celery import Celery
 from django.conf import settings
@@ -6,7 +9,7 @@ from raven import Client
 from raven.contrib.celery import register_signal, register_logger_signal
 
 from bene.xeroapp.update_models_from_xero import reload_data
-
+from bene.remittance.tasks import process_remittance
 
 client = Client(settings.SENTRY_DSN)
 
@@ -50,3 +53,7 @@ def debug_task(self):
 def reload_task(self, xero_values):
     reload_data(xero_values)
 
+
+@app.task(bind=True)
+def remittance_task(self, xero_values):
+    process_remittance(xero_values)
