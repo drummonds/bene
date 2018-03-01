@@ -63,7 +63,7 @@ LOCAL_APPS = [
     'sereports.apps.SEReportsConfig',
     'xeroapp.apps.XeroConfig',
     'accruals.apps.AccrualsConfig',
-    'remittance.apps.RemittanceConfig',
+    'remittance_doc.apps.RemittanceConfig',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

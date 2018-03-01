@@ -2,13 +2,13 @@
 
 from django.db import migrations, models
 import django.utils.timezone
-import remittance.models
+import remittance_doc.models
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('remittance', '0003_auto_20180219_1608'),
+        ('remittance_doc', '0003_auto_20180219_1608'),
     ]
 
     operations = [
@@ -20,6 +20,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='remittanceitem',
             name='orig_file',
-            field=models.FileField(null=True, upload_to=remittance.models.remittance_directory_path),
+            field=models.FileField(null=True, upload_to=remittance_doc.models.remittance_directory_path),
         ),
     ]

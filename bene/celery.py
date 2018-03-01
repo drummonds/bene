@@ -9,7 +9,7 @@ from raven import Client
 from raven.contrib.celery import register_signal, register_logger_signal
 
 from bene.xeroapp.update_models_from_xero import reload_data
-from bene.remittance.tasks import process_remittance
+from bene.remittance_doc.tasks import process_remittance
 
 client = Client(settings.SENTRY_DSN)
 

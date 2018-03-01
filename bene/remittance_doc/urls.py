@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 
 
-app_name = 'remittance'
+app_name = 'remittance_doc'
 urlpatterns = [
     url(
         regex=r'^$',

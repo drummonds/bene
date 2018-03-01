@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('remittance', '0002_remittanceitem_orig_file'),
+        ('remittance_doc', '0002_remittanceitem_orig_file'),
     ]
 
     operations = [

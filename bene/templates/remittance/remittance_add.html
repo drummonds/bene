@@ -10,7 +10,7 @@
     </div>
   {% endif %}
 
-  <form action="{% url 'remittance:remittance-file-add' %}" method="post" enctype="multipart/form-data">
+  <form action="{% url 'remittance_doc:remittance-file-add' %}" method="post" enctype="multipart/form-data">
     {% if form.f.errors %}
       <input name="orig_file" type="file" id="file" class="error"/>
     {% else %}

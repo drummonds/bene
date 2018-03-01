@@ -40,7 +40,7 @@ class HomeView(LoginRequiredMixin, ListView):
 
 class FileAddView(FormView):
     form_class = RemittanceFileForm
-    success_url = reverse_lazy('remittance:home')
+    success_url = reverse_lazy('remittance_doc:home')
     template_name = "remittance/remittance_add.html"
 
     def post(self, request, *args, **kwargs):

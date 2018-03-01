@@ -89,5 +89,6 @@ pygal==2.4.0
 # ------------------------------------------------
 django-storages==1.6.5
 
-# PDF conversion
+# Remittance processing
 pdfminer.six
+remittance==0.0.47

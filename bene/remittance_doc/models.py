@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from .utils import date_to_path
 from .pdf_to_txt import pdf_to_text
+from .fenwick_txt_to_yml import text_to_yaml
 
 def remittance_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/
@@ -48,10 +49,10 @@ class RemittanceItem(models.Model):
             raise ValidationError('File has already been added.')
         # do_something_else()
         # copy to text file
-        self.trial_copy()
         new_file = self.orig_file
         new_path, file_name = os.path.split(new_file.name)
         pdf_to_text(new_path, file_name)
+        text_to_yml(new_path, file_name)
 
 
     def trial_copy(self):

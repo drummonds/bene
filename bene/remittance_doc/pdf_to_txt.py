@@ -3,9 +3,6 @@ Generic PDF to Text converter which works for Fenwick PDF's.
 
 Asummes the file is name.pdf and so the output file is name.txt
 """
-from os import listdir
-from os.path import isfile, join
-import subprocess
 from django.core.files import File
 from django.core.files.storage import default_storage as storage
 import io

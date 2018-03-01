@@ -1,7 +1,7 @@
 import datetime as dt
 import unittest
 
-from bene.remittance.utils import date_to_path
+from bene.remittance_doc.utils import date_to_path
 
 class TestUtil(unittest.TestCase):
 
