@@ -1,11 +1,13 @@
 import os
 
 from django.core.exceptions import ValidationError
+from django.core.files import File
+from django.core.files.storage import default_storage as storage
 from django.db import models
 from django.utils import timezone
 
 from .utils import date_to_path
-
+from .pdf_to_txt import pdf_to_text
 
 def remittance_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/
@@ -43,5 +45,18 @@ class RemittanceItem(models.Model):
                 self.orig_name = 'Not parseable'
             super().save(*args, **kwargs)  # Call the "real" save() method.
         else:
-            raise ValidationError('File has alreayd been added.')
+            raise ValidationError('File has already been added.')
         # do_something_else()
+        # copy to text file
+        self.trial_copy()
+        new_file = self.orig_file
+        new_path, file_name = os.path.split(new_file.name)
+        pdf_to_text(new_path, file_name)
+
+
+    def trial_copy(self):
+        new_file = self.orig_file
+        new_path = os.path.split(new_file.name)[0]
+        with storage.open(new_path + '/hello_world.txt', 'w') as f:
+            myfile = File(f)
+            myfile.write('Hello World')
