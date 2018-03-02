@@ -9,17 +9,42 @@ import yaml
 from remittance import Remittance, RemittanceError, RemittanceDoc, RemittanceException, p
 from remittance import Invoice, InvoiceReversal, DebitNote, CreditNote, DebitNoteReversal
 
+class RemittanceParesError(Exception):
+    pass
+
 class ParseFenwicksHeader():
-    def __init__(self):
-        self.intro = {
-            0: 'FENWICK LIMITED  NORTHUMBERLAND STREET NEWCASTLE UPONTYNE NE99 1AR TELEPHONE 0191 232 5100',
-            2: 'REMITTANCE ADVICE',
-            12: 'DATE',
-            14: 'REFERENCE',
-            16: 'DESCRIPTION',
-            18: 'AMOUNT',
-            20: 'DISCOUNT',
+    """This is a prototype of a text parser that matches a template pattern with a text file.
+    All items in the dictionary should be found in the order specified.  However
+    allow a number of lines before and after to find the match.
+    Never going backwards though.  Ie not out of order
+    WOrks on a  list of strings doc.pages where doc is given as a parameter.
+    It identifies the starting position for the next parset by setting
+    doc.
+    """
+    def __init__(self, doc):
+        """The template is defined as a dictionary of line number to expression.
+        THe line number should actually be the offset from one number to the next.  So if
+        you have skipped a few lines you are still starting in the right place.
+        The numbers will be specific to the version of PDF to Text that is being used.
+        """
+
+        self.template = {
+            3: 'FENWICK LIMITED  NORTHUMBERLAND STREET NEWCASTLE UPONTYNE NE99 1AR TELEPHONE 0191 232 5100',
+            7: 'REMITTANCE ADVICE',
+            21: 'DATE',
+            23: 'REFERENCE',
+            25: 'DESCRIPTION',
+            27: 'AMOUNT',
+            29: 'DISCOUNT',
             21: ''}
+        self.index = 0
+        self._checked_ok = False
+        self.doc = doc
+        self.check()
+
+    @property
+    def checked_ok(self):
+        return self._checked_ok
 
     def find_offset(self, doc):
         # Sometimes there are a couple of extra lines so see which line matches the
@@ -31,6 +56,26 @@ class ParseFenwicksHeader():
         if result == -99:
             raise (RemittanceError('Tried to find key but not found in first few lines'))
         return result
+
+    def find_next_match(self, i, key, value):
+        """ start up to 5 lines before prediction position and allow 5 lines after."""
+        # Calculate where to start
+        if i == 0:
+
+
+    def check(self, doc, remittance):
+        for i, (key, value) in enumerate(self.intro.items()):
+            self.
+            line_index = key
+            line = doc.page[line_index + offset]
+            if line != value:
+                all_ok = False
+                print("Problem with line number {}, = '{}' should be '{}'".format(key, line, value))
+        doc.parse_lines_linenumber = 22 + offset
+        remittance.supplier_reference = doc.page[9 + offset].split()[-1]
+        if all_ok:
+            remittance.supplier = 'Fenwick'
+        self._checked_ok = False
 
     def check(self, doc, remittance):
         all_ok = True
@@ -149,18 +194,23 @@ class ParseFenwicksFooter():
         return all_ok  # ?
 
 
-def text_to_yaml(path_name, file_name):
+def text_to_yml(path_name, file_name):
     text_file_name = file_name[:-4]+'.txt'
     yml_file_name = file_name[:-4]+'.yml'
+    # Note storage.open seems to return a byte string
     with storage.open(path_name + '/' + text_file_name, 'r') as input_file:
-        text = input_file.read()
+        text = str(input_file.read(), 'utf-8')
     doc = RemittanceDoc()
     doc.append_page(text)
     ph = ParseFenwicksHeader()
     fenwicks = Remittance()
+    print('Offset for matching is = {}'.format(ph.find_offset(doc)))
+    print('Header checked, is ok = {}'.format(ph.check(doc, fenwicks)))
+    print('Fenwicks reference = {}'.format(fenwicks.supplier_reference))
     pli = ParseLineItems()
     pli.check(doc, fenwicks)
     pf = ParseFenwicksFooter()
+    print('Footer checked, is ok = {}'.format(pf.check(doc, fenwicks)))
     fenwicks.doc_self_check()
     with storage.open(path_name + '/' + text_file_name, 'w') as f:
         f.write(yaml.dump((fenwicks)))

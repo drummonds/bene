@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from .utils import date_to_path
 from .pdf_to_txt import pdf_to_text
-from .fenwick_txt_to_yml import text_to_yaml
+from .fenwick_txt_to_yml import text_to_yml
 
 def remittance_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/
