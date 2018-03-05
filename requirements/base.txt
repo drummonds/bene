@@ -50,7 +50,7 @@ celery==4.1
 # Your custom requirements go here
 
 # AWS
-boto3==1.5.26
+boto3==1.5.36
 
 # Reporting
 # I have made the django-sql-explorer more robust
@@ -70,7 +70,7 @@ unipath==1.1
 
 # Adding numpy and pandas for data manipulation
 pandas==0.22.0
-numpy==1.14.0
+numpy==1.14.1
 
 # Raven is the Sentry client
 # Not used locally but is required to run make migrations
