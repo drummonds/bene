@@ -61,11 +61,11 @@ class ParseFenwicksHeader():
         """ start up to 5 lines before prediction position and allow 5 lines after."""
         # Calculate where to start
         if i == 0:
+            pass   # TODO complete code
 
 
     def check(self, doc, remittance):
         for i, (key, value) in enumerate(self.intro.items()):
-            self.
             line_index = key
             line = doc.page[line_index + offset]
             if line != value:
