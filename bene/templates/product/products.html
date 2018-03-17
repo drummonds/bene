@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% load render_table from django_tables2 %}
+{% block content %}
+    <h1>Bene - Products</h1>
+    <hr/>
+    <img src="{% url 'product:product_sales' %}" alt="Product sales for all customers">
+    <hr/>
+    <p>{% render_table table %}</p>
+{% endblock content %}

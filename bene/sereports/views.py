@@ -45,7 +45,8 @@ class HomeView(LoginRequiredMixin, ListView):
             last_update = inv.updated_date_utc.strftime('%Y-%m-%d %H:%M')
         except Invoice.DoesNotExist:
             last_update = 'No data so no DB update'
-        context.update({'company': company_name, 'version': settings.VERSION, 'last_update': last_update})
+        context.update({'company': company_name, 'version': settings.VERSION,
+                        'last_update': last_update})
         return context
 
 
@@ -66,15 +67,6 @@ class CustomerView(LoginRequiredMixin, ListView):
             query = Query.objects.none()
             header = data = []
         table_cls = generate(data)
-        # Generate graph
-        file_name = '/tmp/customer/graph.svg'
-        try:
-            bar_chart = pygal.StackedBar()  # Then create a bar graph object
-            bar_chart.add('Sales', [row[1] for row in res.data])  # Add some values
-            bar_chart.add('O/S', [row[1]*0.2 for row in res.data])  # Add some values
-            bar_chart.render_to_file(file_name)
-        except:
-            pass
         context.update({'version': settings.VERSION, 'query': table_cls(data), 'header': header})
         return context
 
