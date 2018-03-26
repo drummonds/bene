@@ -15,7 +15,7 @@ whitenoise==3.3.1
 
 # Forms
 django-braces==1.12.0
-django-crispy-forms==1.7.0
+django-crispy-forms==1.7.2
 
 # Models
 django-model-utils==3.1.1
@@ -41,7 +41,7 @@ awesome-slugify==1.6.5
 pytz==2018.3
 
 # Redis support
-django-redis==4.8.0
+django-redis==4.9.0
 redis>=2.10.5
 
 # Celery support
@@ -50,7 +50,7 @@ celery==4.1
 # Your custom requirements go here
 
 # AWS
-boto3==1.5.26
+boto3==1.6.16
 
 # Reporting
 # I have made the django-sql-explorer more robust
@@ -70,15 +70,15 @@ unipath==1.1
 
 # Adding numpy and pandas for data manipulation
 pandas==0.22.0
-numpy==1.14.0
+numpy==1.14.2
 
 # Raven is the Sentry client
 # Not used locally but is required to run make migrations
 # --------------------------
-raven==6.5.0
+raven==6.6.0
 
 # for formatting tables
-django-tables2==1.19.0
+django-tables2==1.21.1
 requests==2.18.4
 tablib==0.12.1
 
@@ -90,5 +90,5 @@ pygal==2.4.0
 django-storages==1.6.5
 
 # Remittance processing
-pdfminer.six
+pdfminer.six==20170720
 remittance==0.0.47
