@@ -87,7 +87,7 @@ pygal==2.4.0
 
 # Static and Media Storage
 # ------------------------------------------------
-django-storages==1.6.5
+django-storages==1.6.6
 
 # Remittance processing
 pdfminer.six
