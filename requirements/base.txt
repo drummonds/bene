@@ -75,7 +75,7 @@ numpy==1.14.5
 # Raven is the Sentry client
 # Not used locally but is required to run make migrations
 # --------------------------
-raven==6.5.0
+raven==6.9.0
 
 # for formatting tables
 django-tables2==1.19.0
