@@ -90,5 +90,5 @@ pygal==2.4.0
 django-storages==1.7
 
 # Remittance processing
-pdfminer.six
+pdfminer.six==20170720
 remittance==0.0.47
