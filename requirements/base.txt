@@ -60,7 +60,7 @@ XlsxWriter==1.1.0
 
 # Xero requests
 pyxero==0.9.1
-requests_oauthlib==0.8.0
+requests_oauthlib==1.0.0
 
 # YAML support
 pyyaml==3.12
