@@ -78,7 +78,7 @@ numpy==1.15.3
 raven==6.9.0
 
 # for formatting tables
-django-tables2==1.19.0
+django-tables2==2.0.2
 requests==2.18.4
 tablib==0.12.1
 
