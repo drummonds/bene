@@ -9,7 +9,7 @@ psycopg2==2.8.1
 # WSGI Handler
 # ------------------------------------------------
 gevent==1.4.0
-gunicorn==19.7.1
+gunicorn==19.9.0
 
 # Configuration
 django-environ==0.4.4
