@@ -22,4 +22,4 @@ pytest-sugar==0.9.1
 Fabric3==1.14.post1
 python-dotenv==0.7.1
 
-psycopg2==2.7.4
+psycopg2==2.8.2
