@@ -50,7 +50,7 @@ celery==4.3.0
 # Your custom requirements go here
 
 # AWS
-boto3==1.5.26
+boto3==1.9.228
 
 # Reporting
 # I have made the django-sql-explorer more robust
