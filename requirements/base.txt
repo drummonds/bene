@@ -59,7 +59,7 @@ git+git://github.com/drummonds/django-sql-explorer@0c2c642#egg=django-sql-explor
 XlsxWriter==1.2.1
 
 # Xero requests
-pyxero==0.9.0
+pyxero==0.9.1
 requests_oauthlib==0.8.0
 
 # YAML support
