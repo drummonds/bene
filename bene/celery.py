@@ -26,10 +26,10 @@ register_signal(client)
 # to be ignored
 register_signal(client, ignore_expected=True)
 
-# set the default Django settings module for the 'celery' program.
-# TODO By default production settings are being loaded rather than the version that is required.
-# Try with out
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.production')
+# If no environment has been set then choose the productions settings.
+# This is actually an error as for any successful deployment the DJANGO_SETTINGS_MODULE should be set
+print(f'<><> Celery debug DJANGO_SETTINGS_MODULE = {os.environ["DJANGO_SETTINGS_MODULE"]}')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.production')
 app = Celery('bene')
 
 # Using a string here means the worker don't have to serialize
