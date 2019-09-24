@@ -60,8 +60,8 @@ LOCAL_APPS = [
     # Your stuff: custom apps go here
     'bene.product.apps.ProductConfig',
     'explorer',
-    'sereports.apps.SEReportsConfig',
-    'xeroapp.apps.XeroConfig',
+    'bene.sereports.apps.SEReportsConfig',
+    'bene.xeroapp.apps.XeroConfig',
     'bene.accruals.apps.AccrualsConfig',
 ]
 
@@ -302,7 +302,7 @@ XERO_CONSUMER_SECRET =  env('XERO_CONSUMER_SECRET')
 XERO_CONSUMER_KEY = env('XERO_CONSUMER_KEY')
 
 # Version info
-VERSION = '0.7.6'
+VERSION = '0.7.7'
 
 # ######### CELERY CONFIGURATION
 
