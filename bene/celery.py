@@ -5,6 +5,8 @@ import logging
 from raven import Client
 from raven.contrib.celery import register_signal, register_logger_signal
 
+print(f'<><> Celery debug Start of module processing')
+
 from bene.xeroapp.update_models_from_xero import reload_data
 
 
