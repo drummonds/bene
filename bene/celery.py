@@ -30,10 +30,8 @@ register_signal(client, ignore_expected=True)
 
 # If no environment has been set then choose the productions settings.
 # This is actually an error as for any successful deployment the DJANGO_SETTINGS_MODULE should be set
-print(f'<><> Celery debug DJANGO_SETTINGS_MODULE = {os.environ["DJANGO_SETTINGS_MODULE"]}')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.production')
 app = Celery('bene')
-print(f'<><> Created Celery app bene')
 
 # Using a string here means the worker don't have to serialize
 # the configuration object to child processes.
@@ -41,12 +39,9 @@ app.config_from_object('django.conf:settings')
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix.
 # app.config_from_object('django.conf:settings', namespace='CELERY')
-print(f'<><> Got config')
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks(settings.INSTALLED_APPS)
-
-print(f'<><> auto discovered tasks')
 
 @app.task(bind=True)
 def debug_task(self):
@@ -55,5 +50,7 @@ def debug_task(self):
 
 @app.task(bind=True)
 def reload_task(self, xero_values):
+    print(f'<><> reload_taks start')
     reload_data(xero_values)
 
+print(f'<><> Completed parsing celery.py')
