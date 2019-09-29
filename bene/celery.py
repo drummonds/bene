@@ -5,8 +5,6 @@ import logging
 from raven import Client
 from raven.contrib.celery import register_signal, register_logger_signal
 
-print(f'<><> Celery debug Start of module processing')
-
 from bene.xeroapp.update_models_from_xero import reload_data
 
 
@@ -50,7 +48,5 @@ def debug_task(self):
 
 @app.task(bind=True)
 def reload_task(self, xero_values):
-    print(f'<><> reload_taks start')
     reload_data(xero_values)
 
-print(f'<><> Completed parsing celery.py')

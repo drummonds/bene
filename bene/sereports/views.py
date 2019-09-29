@@ -24,8 +24,8 @@ from explorer.exporters import JSONExporter
 from .forms import FilebabyForm, RemittanceForm, QueryReportForm
 from .models import Report, Company
 from .models import FilebabyFile, RemittanceFile
-from utils.table_formatters import generate
-from xeroapp.models import Invoice
+from bene.utils.table_formatters import generate
+from bene.xeroapp.models import Invoice
 
 
 class HomeView(LoginRequiredMixin, ListView):
