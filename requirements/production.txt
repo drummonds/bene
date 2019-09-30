@@ -1,10 +1,6 @@
 # Pro-tip: Try not to put anything here. Avoid dependencies in
 #	production that aren't in development.
 -r base.txt
-# Python-PostgreSQL Database Adapter
-# If using Win for dev, this assumes Unix in prod
-# ------------------------------------------------
-psycopg2==2.8.3
 
 # WSGI Handler
 # ------------------------------------------------

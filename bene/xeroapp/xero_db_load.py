@@ -2,6 +2,7 @@ import datetime as dt
 from functools import wraps
 from numpy import isnan
 import pandas as pd
+import psutil
 from unipath import Path
 import uuid
 import yaml
@@ -143,7 +144,7 @@ def load_items(df):
             i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print(f'Load items {pc*10}% complete')
+                print(f'Load items {pc*10}% complete VM={psutil.virtual_memory()}')
                 #print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
 
@@ -219,7 +220,7 @@ VALUES
             i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print(f'Load invoices {pc*10}% complete')
+                print(f'Load invoices {pc*10}% complete VM={psutil.virtual_memory()}')
                 # print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
 
@@ -293,14 +294,17 @@ def abstract_lineitems_all(df, items, id_name, number_name):
         invoice_id = row[1][id_name]
         inv_number = row[1][number_name]
         for line in row[1]['LineItems']:
-            try:
-                id = line['LineItemID']
-            except KeyError:  # there is no line item ID
-                # but must have unique key so generate one here
-                # Maybe there is a better solution
-                id = str(uuid.uuid4())
+            id = line.get('LineItemID', str(uuid.uuid4()))  # there is no line item ID
+            # but must have unique key so generate one here
+            # Maybe there is a better solution
             item_id = get_item(line, items)
-            yield (id, invoice_id, item_id, line['Quantity'], line['UnitAmount'])
+            try:
+                quantity = line['Quantity']
+            except KeyError: # There is no quantity
+                quantity = 0
+                print(f'Unusual no quantity in this row of line items from Xero: {line}')
+            unit_amount=line.get('UnitAmount',1)
+            yield (id, invoice_id, item_id, quantity, unit_amount)
 
 def invoice_lineitems_all(df, items):
     yield from abstract_lineitems_all(df, items, 'InvoiceID', 'InvoiceNumber')
@@ -325,7 +329,7 @@ def load_invoice_items(df=None, all=None, items=None):
                 i+=1
             pc = int(10.0 * (i / num))  # percent complete
             if pc > marked_complete:
-                print(f'Load invoice items {pc*10}% complete')
+                print(f'Load invoice items {pc*10}% complete VM={psutil.virtual_memory()}')
                 #print('.'*(pc-marked_complete), end='', flush=True)
                 marked_complete = pc
         print('')
