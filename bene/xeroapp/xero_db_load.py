@@ -104,7 +104,7 @@ def contacts_all(c):
 
 
 def insert_contact(
-    cursor, id, name=None, number=0, first_name=None, last_name=None, email_address=None
+    cursor, id, name=None, number=0, first_name=None, last_name=None, email_address="none@none.com"
 ):
     sql = f"""
     INSERT INTO xeroapp_Contact 
