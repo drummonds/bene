@@ -299,7 +299,7 @@ def load_invoices(df=None, all=None):
             except Exception as e:
                 if "fk_xeroapp_contact_xerodb_id" in str(e):
                     #  insert contact and retry
-                    insert_contact(cursor, id, name='This contact missing but in invoice')
+                    insert_contact(cursor, contact_id, name='This contact missing but in invoice')
                     cursor.execute(sql, params)  # Use default error handling if another error occurs
                 else: # unknown error
                     cursor.handle_failure(e, sql, params)
