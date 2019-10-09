@@ -72,7 +72,7 @@ def reload_data(xero_values):
     #ct = read_in(ct_file_name)
     load_contacts(contacts)
     # Items
-    print(f'RD update items from Xero')
+    print(f'RD update items from Xero (product catalogue)')
     items  = pd.DataFrame(get_all(xero.items, 'Xero_Items'))
     #it = read_in(it_file_name)
     load_items(items)
