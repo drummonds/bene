@@ -112,7 +112,7 @@ def raw_update_app(env_prefix='uat', branch='master'):
     # Need to push the branch in git to the master branch in the remote heroku repository
     local(f'git push heroku {branch}:master')
     # Don't need to scale workers down as not using eg heroku ps:scale worker=0
-    if False:  # Using standard workers
+    if True:  # Using standard workers
         local(f'heroku ps:scale worker=1 -a {heroku_app}')
     else:  # Have used performance web=standard-1x and worker=standard-2x but adjusted app to used less memory
         local(f'heroku ps:resize web=standard-1x -a {heroku_app}')  # Resize web to be compatible with performance workers
