@@ -21,17 +21,19 @@ def get_all(xero_endpoint, file_root="Xero_data"):
     """ Gets all the data from one endpoint with a rate limit to make sure the XERO
     API rate limit is not exceeded."""
     print(f"Starting to get pages for {file_root}")
-    records_page = xero_endpoint.filter(page=1)
-    i = 2
-    print(f"Page 1 {file_root}")
+    i = 1
     api_counter = MAX_API_CALLS
     start_time = dt.datetime.now()
-    while len(records_page) == 100:
+    get_data = True
+    while get_data:
         if ((i - 1) % 5) == 0:
             print("")  # End of line
-        print(f" {i} {file_root}", end="")
+        print(f"Page {i} {file_root} with {len(records_page)} records", end="")
         records_page = xero_endpoint.filter(page=i)
-        for record in records_page:
+        get_data = len(records_page) == 100
+        for k, record in enumerate(records_page):
+            if file_root == "Xero_ContactGroups" and ((i == 1) and (k < 5)):
+                print(f' Record = {record}')
             yield (record)
         i += 1
         # Rate limiter functionality
@@ -47,7 +49,6 @@ def reload_data(xero_values):
     """Reloads all the data by downloading from Xero and updating the local copy database.
     This is done by iterating through each type of record."""
     # First convert stored xero values to credentials
-    print(f"RD reload data start")
     credentials = PublicCredentials(**xero_values)
     try:
         xero = PyXero(credentials)
@@ -60,6 +61,7 @@ def reload_data(xero_values):
     # Contact Groups
     print(f"RD update contact groups from Xero")
     for group in get_all(xero.contactgroups, "Xero_ContactGroups"):
+        print(f' Group = {group}')
         load_contact_group(group)
     # Contacts
     print(f"RD update contacts from Xero")

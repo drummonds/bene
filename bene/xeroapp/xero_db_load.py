@@ -89,6 +89,7 @@ def load_contact_group(record):
     """Given a dictionary for a single row will load the data into SQL"""
     with SQLExecute() as cursor:
         sql = f"""INSERT INTO xeroapp_ContactGroup ("xerodb_id", name) VALUES('{record["ContactGroupID"]}', '{record["Name"]}')"""
+        print(f' sql = {sql}')
         cursor.execute(sql)
 
 
