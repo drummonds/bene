@@ -28,8 +28,8 @@ def get_all(xero_endpoint, file_root="Xero_data"):
     while get_data:
         if ((i - 1) % 5) == 0:
             print("")  # End of line
-        print(f"Page {i} {file_root} with {len(records_page)} records", end="")
         records_page = xero_endpoint.filter(page=i)
+        print(f"Page {i} {file_root} with {len(records_page)} records", end="")
         get_data = len(records_page) == 100
         for k, record in enumerate(records_page):
             if file_root == "Xero_ContactGroups" and ((i == 1) and (k < 5)):
