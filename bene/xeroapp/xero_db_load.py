@@ -1,11 +1,4 @@
-import datetime as dt
-from functools import wraps
-from numpy import isnan
-import pandas as pd
-import psutil
-from unipath import Path
 import uuid
-import yaml
 
 from django.db import connection, IntegrityError
 
@@ -105,6 +98,7 @@ def insert_contact(
     first_name="No First Name",
     last_name="No Last Name",
     email_address="none@none.com",
+    count = 99
 ):
     sql = f"""
     INSERT INTO xeroapp_Contact 
@@ -122,18 +116,18 @@ def insert_contact(
         "last_name": last_name,
         "email_address": email_address,
     }
-    print(f' contact sql = {sql}')
+    if count < 3:
+        print(f'Insert contact sql = {sql}')
+        print(f' params = {params}')
     cursor.execute(sql, params)
 
 
-def load_contact(record):
+def load_contact(record, count = 99):
     with SQLExecute() as cursor:
-        number = record["AccountNumber"]
         try:
-            if isnan(number):
-                number = ""
-        except:
-            pass
+            number = record["AccountNumber"]
+        except KeyError:
+            number = ''
         insert_contact(
             cursor,
             record["ContactID"],
@@ -142,6 +136,7 @@ def load_contact(record):
             first_name=default_get(record, None, "FirstName"),
             last_name=default_get(record, None, "LastName"),
             email_address=default_get(record, None, "EmailAddress"),
+            count = count
         )
 
 
