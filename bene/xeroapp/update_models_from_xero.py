@@ -65,7 +65,7 @@ def reload_data(xero_values):
     # Contacts
     print(f"RD update contacts from Xero")
     for i, contact in get_all(xero.contacts, "Xero_Contacts"):
-        load_contact(contact, count=i)
+        load_contact(contact)
     # Items / product catalogue
     # Store product catalogue as a cache item for entering line items
     print(f"RD update items from Xero (product catalogue)")
