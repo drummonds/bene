@@ -118,6 +118,7 @@ def raw_update_app(env_prefix='uat', branch='master'):
         local(f'heroku ps:resize worker=standard-2x -a {heroku_app}')  # Resize workers
     local(f'heroku ps:scale worker=1 -a {heroku_app}')  # Make sure have one worker
     # makemigrations should be run locally and the results checked into git
+    local('heroku run "ls \tmp"')  # Force deletion of stale content types
     local('heroku run "yes \'yes\' | python manage.py migrate"')  # Force deletion of stale content types
 
 

@@ -47,6 +47,7 @@ def reload_data(xero_values):
     """Reloads all the data by downloading from Xero and updating the local copy database.
     This is done by iterating through each type of record."""
     # First convert stored xero values to credentials
+    print(f"RD reload data start")
     credentials = PublicCredentials(**xero_values)
     try:
         xero = PyXero(credentials)

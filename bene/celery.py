@@ -48,5 +48,6 @@ def debug_task(self):
 
 @app.task(bind=True)
 def reload_task(self, xero_values):
+    print(f"RD reload task start")
     reload_data(xero_values)
 
