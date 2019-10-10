@@ -54,7 +54,7 @@ class SQLExecute:
 
     def handle_failure(self, e, sql, params):
         if self.first_failures > 0:
-            print("# ~~~ Loading invoices failed")
+            print("# ~~~ Loading data into database failed")
             print(f"sql = {sql}")
             if params:
                 print(f"params = {params}")
@@ -133,12 +133,11 @@ def load_contact(record, count = 99):
             record["ContactID"],
             name=record["Name"],
             number=number,
-            first_name=default_get(record, None, "FirstName"),
-            last_name=default_get(record, None, "LastName"),
-            email_address=default_get(record, None, "EmailAddress"),
+            first_name=default_get(record, "No First Name", "FirstName"),
+            last_name=default_get(record, "No Last Name", "LastName"),
+            email_address=default_get(record, "none@none.com", "EmailAddress"),
             count = count
         )
-
 
 # ***************************
 # Inventory items or product catalogue
