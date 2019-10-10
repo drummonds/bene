@@ -97,8 +97,7 @@ def insert_contact(
     number=0,
     first_name="No First Name",
     last_name="No Last Name",
-    email_address="none@none.com",
-    count = 99
+    email_address="none@none.com"
 ):
     sql = f"""
     INSERT INTO xeroapp_Contact 
@@ -116,13 +115,10 @@ def insert_contact(
         "last_name": last_name,
         "email_address": email_address,
     }
-    if count < 3:
-        print(f'Insert contact sql = {sql}')
-        print(f' params = {params}')
     cursor.execute(sql, params)
 
 
-def load_contact(record, count = 99):
+def load_contact(record):
     with SQLExecute() as cursor:
         try:
             number = record["AccountNumber"]
@@ -135,16 +131,19 @@ def load_contact(record, count = 99):
             number=number,
             first_name=default_get(record, "No First Name", "FirstName"),
             last_name=default_get(record, "No Last Name", "LastName"),
-            email_address=default_get(record, "none@none.com", "EmailAddress"),
-            count = count
+            email_address=default_get(record, "none@none.com", "EmailAddress")
         )
 
 # ***************************
 # Inventory items or product catalogue
 # ***************************
 
+item_count = 0
 
 def load_item(record):
+    global item_count
+    if item_count < 3:
+        print(f'Starting load item {item_count}')
     with SQLExecute() as cursor:
         try:
             cost_price = record["PurchaseDetails"]["UnitPrice"]
@@ -163,6 +162,10 @@ def load_item(record):
             "cost_price": cost_price,
             "sales_price": sales_price,
         }
+        item_count += 1
+        if item_count < 3:
+            print(f'Insert item sql = {sql}')
+            print(f' params = {params}')
         cursor.execute(sql, params)
 
 

@@ -64,9 +64,7 @@ def reload_data(xero_values):
         load_contact_group(group)
     # Contacts
     print(f"RD update contacts from Xero")
-    for i, contact in enumerate(get_all(xero.contacts, "Xero_Contacts")):
-        if i < 3:
-            print(f' Contact {i} = {contact}')
+    for i, contact in get_all(xero.contacts, "Xero_Contacts"):
         load_contact(contact, count=i)
     # Items / product catalogue
     # Store product catalogue as a cache item for entering line items
@@ -74,7 +72,9 @@ def reload_data(xero_values):
     item_catalogue = []
     item_catalogue["Code"] = []
     item_catalogue["Description"] = []
-    for item in get_all(xero.items, "Xero_Items"):
+    for i,item in enumerate(get_all(xero.items, "Xero_Items")):
+        if i < 3:
+            print(f' item {i} = {item}')
         load_item(item)
         try:
             item_catalogue["Code"][item["Code"]] = item["ItemID"]
