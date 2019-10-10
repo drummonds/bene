@@ -33,7 +33,7 @@ def get_all(xero_endpoint, file_root="Xero_data"):
         get_data = len(records_page) == 100
         for k, record in enumerate(records_page):
             if file_root == "Xero_Contacts" and ((i == 1) and (k < 5)):
-                print(f' Record = {record}')
+                print(f" Record = {record}")
             yield (record)
         i += 1
         # Rate limiter functionality
@@ -64,7 +64,7 @@ def reload_data(xero_values):
         load_contact_group(group)
     # Contacts
     print(f"RD update contacts from Xero")
-    for i, contact in get_all(xero.contacts, "Xero_Contacts"):
+    for contact in get_all(xero.contacts, "Xero_Contacts"):
         load_contact(contact)
     # Items / product catalogue
     # Store product catalogue as a cache item for entering line items
@@ -72,9 +72,9 @@ def reload_data(xero_values):
     item_catalogue = []
     item_catalogue["Code"] = []
     item_catalogue["Description"] = []
-    for i,item in enumerate(get_all(xero.items, "Xero_Items")):
+    for i, item in enumerate(get_all(xero.items, "Xero_Items")):
         if i < 3:
-            print(f' item {i} = {item}')
+            print(f" item {i} = {item}")
         load_item(item)
         try:
             item_catalogue["Code"][item["Code"]] = item["ItemID"]
