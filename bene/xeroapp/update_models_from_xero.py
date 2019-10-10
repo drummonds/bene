@@ -61,11 +61,12 @@ def reload_data(xero_values):
     # Contact Groups
     print(f"RD update contact groups from Xero")
     for group in get_all(xero.contactgroups, "Xero_ContactGroups"):
-        print(f' Group = {group}')
         load_contact_group(group)
     # Contacts
     print(f"RD update contacts from Xero")
-    for contact in get_all(xero.contacts, "Xero_Contacts"):
+    for i, contact in enumerate(get_all(xero.contacts, "Xero_Contacts")):
+        if i < 3:
+            print(f' Contact {i} = {contact}')
         load_contact(contact)
     # Items / product catalogue
     # Store product catalogue as a cache item for entering line items
