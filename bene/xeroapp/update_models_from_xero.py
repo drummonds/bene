@@ -69,9 +69,9 @@ def reload_data(xero_values):
     # Items / product catalogue
     # Store product catalogue as a cache item for entering line items
     print(f"RD update items from Xero (product catalogue)")
-    item_catalogue = []
-    item_catalogue["Code"] = []
-    item_catalogue["Description"] = []
+    item_catalogue = {}
+    item_catalogue["Code"] = {}
+    item_catalogue["Description"] = {}
     for i, item in enumerate(get_all(xero.items, "Xero_Items")):
         if i < 3:
             print(f" item {i} = {item}")
