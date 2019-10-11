@@ -302,7 +302,6 @@ def abstract_lineitems_all(invoice_record, items):
             quantity = 0
             print(f"Unusual no quantity in this row of line items from Xero: {line}")
         unit_amount = line.get("UnitAmount", 1)
-        global invoice_count
         if invoice_count < 3:
             print(f'Parse items = {id}, {invoice_id}, {item_id}, {quantity}, {unit_amount}')
         yield (id, invoice_id, item_id, quantity, unit_amount)
