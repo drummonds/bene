@@ -8,6 +8,8 @@ from django.db import connection, IntegrityError
 # ***************************
 
 
+invoice_count = 0
+
 def truncate_data():
     """Currently have to truncate all data in order to upload new variants."""
     with connection.cursor() as cursor:
@@ -167,8 +169,6 @@ def load_item(record):
 # Generic invoices covers both invoices and credit notes
 # ***************************
 
-
-invoice_count = 0
 
 def load_invoice(record, transform=None):
     global invoice_count
