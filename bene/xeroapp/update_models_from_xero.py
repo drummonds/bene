@@ -94,7 +94,7 @@ def reload_data(xero_values):
         # The invoice includes all the invoice items
         load_invoice_items(
             invoice,
-            transform=None,
+            invoice_transform=None,
             get_items=invoice_lineitems_all,
             item_catalogue=item_catalogue,
         )
