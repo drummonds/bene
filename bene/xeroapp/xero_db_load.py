@@ -174,6 +174,7 @@ def load_invoice(record, transform=None):
     global invoice_count
     if invoice_count < 3:
         print(f'Starting load invoice {invoice_count}')
+        print(f' with record= {record}')
     sql = f"""
     INSERT INTO xeroapp_Invoice 
     (    xerodb_id, contact_id_id, currency_code, 
@@ -190,8 +191,10 @@ def load_invoice(record, transform=None):
          %s, %s, %s)"""
     if transform:
         record = transform(record)
+    if invoice_count < 3:
+        print(f' After transform record= {record}')
     with SQLExecute() as cursor:
-        contact_id = default_get(record, 0.0, "Contact", "ContactID")
+        contact_id = default_get(record, None, "Contact", "ContactID")
         due_date = default_get(record, None, "DueDate")
         payment_date = default_get(record, None, "ExpectedPaymentDate")
         planned_payment_date = default_get(record, None, "PlannedPaymentDate")
