@@ -218,7 +218,7 @@ def load_invoice(record, transform=None):
         )
         invoice_count += 1
         if invoice_count < 3:
-            print(f'Insert item sql = {sql}')
+            print(f'Insert invoice sql = {sql}')
             print(f' params = {params}')
         try:
             cursor.cursor.execute(sql, params)
@@ -286,6 +286,9 @@ def get_item(line, item_catalogue):
 
 def abstract_lineitems_all(invoice_record, items):
     """For a single invoice record extract all the lineitems"""
+    global invoice_count
+    if invoice_count < 3:
+        print(f'line items = {invoice_record["LineItems"]}')
     invoice_id = invoice_record["InvoiceID"]
     for line in invoice_record["LineItems"]:
         id = line.get(
@@ -299,6 +302,9 @@ def abstract_lineitems_all(invoice_record, items):
             quantity = 0
             print(f"Unusual no quantity in this row of line items from Xero: {line}")
         unit_amount = line.get("UnitAmount", 1)
+        global invoice_count
+        if invoice_count < 3:
+            print(f'Parse items = {id}, {invoice_id}, {item_id}, {quantity}, {unit_amount}')
         yield (id, invoice_id, item_id, quantity, unit_amount)
 
 
@@ -314,10 +320,14 @@ def load_invoice_items(
     invoice_record, invoice_transform=None, get_items=None, item_catalogue=None
 ):
     """For a single invoice in invoice_record, load all the items into the database"""
+    global invoice_count
+    if invoice_count < 3:
+        print(f'Starting load invoice items')
     if invoice_transform:
         invoice_record = invoice_transform(invoice_record)
+    if invoice_count < 3:
+        print(f'invoice_record after transform = {invoice_record}')
     with SQLExecute() as cursor:
-        old_invoice_id = ""
         for (id, invoice_id, item_id, qty, price) in get_items(
             invoice_record, item_catalogue
         ):
@@ -325,6 +335,7 @@ def load_invoice_items(
                 price)
                 VALUES(%s, %s, %s, %s, %s)"""
             params = (id, invoice_id, item_id, qty, price)
+            if invoice_count < 3:
+                print(f'Insert invoice sql = {sql}')
+                print(f' params = {params}')
             cursor.execute(sql, params)
-            if old_invoice_id != invoice_id:
-                old_invoice_id = invoice_id
