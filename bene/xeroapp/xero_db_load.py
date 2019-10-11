@@ -202,8 +202,8 @@ def load_invoice(record, transform=None):
         params = (
             record["InvoiceID"],
             contact_id,
-            record["CurrencyCode"],
-            record["CurrencyRate"],
+            record.get("CurrencyCode", "GBP"),
+            record.get("CurrencyRate", 1),
             record["Date"],
             record["SubTotal"],
             record["Total"],
@@ -319,7 +319,6 @@ def load_invoice_items(
     invoice_record, invoice_transform=None, get_items=None, item_catalogue=None
 ):
     """For a single invoice in invoice_record, load all the items into the database"""
-    print(f'start ** load invoice items')
     global invoice_count
     if invoice_count < 3:
         print(f'Starting load invoice items')
