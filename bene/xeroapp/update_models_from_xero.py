@@ -73,8 +73,6 @@ def reload_data(xero_values):
     item_catalogue["Code"] = {}
     item_catalogue["Description"] = {}
     for i, item in enumerate(get_all(xero.items, "Xero_Items")):
-        if i < 3:
-            print(f" item {i} = {item}")
         load_item(item)
         try:
             item_catalogue["Code"][item["Code"]] = item["ItemID"]
@@ -85,8 +83,11 @@ def reload_data(xero_values):
         except KeyError:
             pass  # Doesn't have a description
     # Invoices
+    print(f'Product catalogue = {item_catalogue}')
     print(f"RD update invoices from Xero")
-    for invoice in get_all(xero.invoices, "Xero_Invoices"):
+    for i, invoice in enumerate(get_all(xero.invoices, "Xero_Invoices")):
+        if i < 3:
+            print(f" invoice {i} = {invoice}")
         load_invoice(invoice, transform=None)
         # The invoice includes all the invoice items
         load_invoice_items(

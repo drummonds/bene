@@ -15,6 +15,9 @@ def truncate_data():
         cursor.execute(
             "TRUNCATE xeroapp_ContactGroup, xeroapp_Contact, xeroapp_Invoice, xeroapp_LineItem, xeroapp_Item"
         )
+    # Debugging
+    global invoice_count
+    invoice_count = 0
 
 
 def default_get(row, default, index_str, index_str2=""):
@@ -138,12 +141,7 @@ def load_contact(record):
 # Inventory items or product catalogue
 # ***************************
 
-item_count = 0
-
 def load_item(record):
-    global item_count
-    if item_count < 3:
-        print(f'Starting load item {item_count}')
     with SQLExecute() as cursor:
         try:
             cost_price = record["PurchaseDetails"]["UnitPrice"]
@@ -162,10 +160,6 @@ def load_item(record):
             "cost_price": cost_price,
             "sales_price": sales_price,
         }
-        item_count += 1
-        if item_count < 3:
-            print(f'Insert item sql = {sql}')
-            print(f' params = {params}')
         cursor.execute(sql, params)
 
 
@@ -174,7 +168,12 @@ def load_item(record):
 # ***************************
 
 
+invoice_count = 0
+
 def load_invoice(record, transform=None):
+    global invoice_count
+    if invoice_count < 3:
+        print(f'Starting load invoice {invoice_count}')
     sql = f"""
     INSERT INTO xeroapp_Invoice 
     (    xerodb_id, contact_id_id, currency_code, 
@@ -214,9 +213,14 @@ def load_invoice(record, transform=None):
             payment_date,
             planned_payment_date,
         )
+        invoice_count += 1
+        if invoice_count < 3:
+            print(f'Insert item sql = {sql}')
+            print(f' params = {params}')
         try:
             cursor.cursor.execute(sql, params)
         except Exception as e:
+            print(f' Problem with SQL exception = {str(e)}')
             if "fk_xeroapp_contact_xerodb_id" in str(e):
                 #  insert contact and retry
                 insert_contact(
