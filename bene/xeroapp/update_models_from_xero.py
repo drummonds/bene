@@ -89,6 +89,8 @@ def reload_data(xero_values):
         if i < 3:
             print(f" invoice {i} = {invoice}")
         load_invoice(invoice, transform=None)
+        if i < 3:
+            print(f" invoice items start {i}")
         # The invoice includes all the invoice items
         load_invoice_items(
             invoice,

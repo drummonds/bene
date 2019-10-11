@@ -319,6 +319,7 @@ def load_invoice_items(
     invoice_record, invoice_transform=None, get_items=None, item_catalogue=None
 ):
     """For a single invoice in invoice_record, load all the items into the database"""
+    print(f'start ** load invoice items')
     global invoice_count
     if invoice_count < 3:
         print(f'Starting load invoice items')
