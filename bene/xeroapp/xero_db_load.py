@@ -20,16 +20,16 @@ def truncate_data():
     invoice_count = 0
 
 
-def default_get(row, default, index_str, index_str2=""):
+def default_get(record, default, index_str, index_str2=""):
     """Like get from dictionary but gets 1 or 2 levels"""
     if index_str2:
         try:
-            result = row[1][index_str][index_str2]
+            result = record[index_str][index_str2]
         except KeyError:  # eg if missing
             result = default
     else:
         try:
-            result = row[1][index_str]
+            result = record[index_str]
         except KeyError:  # eg if missing
             result = default
     try:
