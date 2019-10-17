@@ -17,9 +17,14 @@ from .xero_db_load import (
 MAX_API_CALLS = 12  # Per 15 second period
 
 
-def get_all(xero_endpoint, file_root="Xero_data"):
+def get_all(get_method, file_root, paged=True):
     """ Gets all the data from one endpoint with a rate limit to make sure the XERO
-    API rate limit is not exceeded."""
+    API rate limit is not exceeded.
+    The exact method of how you get records is passed in as a parameter so that the code is easy to test
+    when you don't have an API
+    get_method: Is a function that returns a list of records.
+     It should have a named parameter page which gets paged data
+    file_root:  This is passed in for debugging purposes."""
     print(f"Starting to get pages for {file_root}")
     i = 1
     api_counter = MAX_API_CALLS
@@ -28,9 +33,13 @@ def get_all(xero_endpoint, file_root="Xero_data"):
     while get_data:
         if ((i - 1) % 5) == 0:
             print("")  # End of line
-        records_page = xero_endpoint.filter(page=i)
+        if paged:
+            records_page = get_method(page=i)
+            get_data = len(records_page) == 100
+        else:
+            records_page = get_method()
+            get_data = False  # If not paged all data is returned in one go eg items
         print(f"Page {i} {file_root} with {len(records_page)} records", end="")
-        get_data = len(records_page) == 100
         for k, record in enumerate(records_page):
             if file_root == "Xero_Contacts" and ((i == 1) and (k < 5)):
                 print(f" Record = {record}")
@@ -60,11 +69,11 @@ def reload_data(xero_values):
     truncate_data()
     # Contact Groups
     print(f"RD update contact groups from Xero")
-    for group in get_all(xero.contactgroups, "Xero_ContactGroups"):
+    for group in get_all(xero.contactgroups, "Xero_ContactGroups", paged=False):
         load_contact_group(group)
     # Contacts
     print(f"RD update contacts from Xero")
-    for contact in get_all(xero.contacts, "Xero_Contacts"):
+    for contact in get_all(xero.contacts.filter, "Xero_Contacts"):
         load_contact(contact)
     # Items / product catalogue
     # Store product catalogue as a cache item for entering line items
@@ -72,7 +81,7 @@ def reload_data(xero_values):
     item_catalogue = {}
     item_catalogue["Code"] = {}
     item_catalogue["Description"] = {}
-    for i, item in enumerate(get_all(xero.items, "Xero_Items")):
+    for i, item in enumerate(get_all(xero.items, "Xero_Items", paged=False)):
         load_item(item)
         try:
             item_catalogue["Code"][item["Code"]] = item["ItemID"]
@@ -85,7 +94,7 @@ def reload_data(xero_values):
     # Invoices
     print(f'Product catalogue = {item_catalogue}')
     print(f"RD update invoices from Xero")
-    for i, invoice in enumerate(get_all(xero.invoices, "Xero_Invoices")):
+    for i, invoice in enumerate(get_all(xero.invoices.filter, "Xero_Invoices")):
         if i < 3:
             print(f" invoice {i} = {invoice}")
         load_invoice(invoice, transform=None)
@@ -100,7 +109,7 @@ def reload_data(xero_values):
         )
     # Credit notes (overview)
     print(f"RD update credit notes from Xero")
-    for credit_note in get_all(xero.creditnotes, "Xero_CreditNotes"):
+    for credit_note in get_all(xero.creditnotes.filter, "Xero_CreditNotes"):
         load_invoice(credit_note, transform=credit_note_transform)
         load_invoice_items(
             credit_note,
