@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}User: {{ object.username }}{% endblock %}
+{% block title %}User: {{ this_user.username }}{% endblock %}
 
 {% block content %}
   <div class="container">
@@ -9,21 +9,21 @@
     <div class="row">
       <div class="col-sm-12">
 
-        <h2>{{ object.username }}</h2>
-          {% if object.name %}
-            <p>{{ object.name }}</p>
+        <h2>{{ this_user.username }}</h2>
+          {% if this_user.name %}
+            <p>{{ this_user.name }}</p>
           {% endif %}
         <hr>
-          {% if object.is_superuser %}
+          {% if this_user.is_superuser %}
             <h2>Super user powers</h2>
-            <p><a href="{% url 'admin' %}">Admin site using URL reverse lookup</a></p>
-            <p><a href="{{ settings.ADMIN_URL }}">Admin site using URL</a></p>
+            <p><a href="{% url 'admin:index' %}">Admin site</a></p>
+            <p>Media URL is: <a href="{{ MEDIA_URL }}"> {{ MEDIA_URL }} </a></p>
+            <p>AWS Bucket Name is: {{ AWSBucket }}</p>
           {% endif %}
-
       </div>
     </div>
 
-      {% if object == request.user %}
+      {% if this_user == request.user %}
         <!-- Action buttons -->
         <div class="row">
 

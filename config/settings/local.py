@@ -61,7 +61,7 @@ DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TEMPLATE_CONTEXT': True,
 }
 
-# django-extensions
+# django-extensions eg for listing reverse URL's
 # ------------------------------------------------------------------------------
 INSTALLED_APPS += ['django_extensions', ]
 

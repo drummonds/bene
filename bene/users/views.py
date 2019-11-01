@@ -1,7 +1,5 @@
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.urls import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,6 +9,7 @@ from .models import User
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
+    context_object_name = 'this_user'
     # These next two lines tell the view to index lookups by username
     slug_field = 'username'
     slug_url_kwarg = 'username'
@@ -22,6 +21,11 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self):
         return reverse('users:detail',
                        kwargs={'username': self.request.user.username})
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['AWSBucket'] = settings.AWS_STORAGE_BUCKET_NAME
+        return data
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
