@@ -18,7 +18,8 @@
             <h2>Super user powers</h2>
             <p><a href="{% url 'admin:index' %}">Admin site</a></p>
             <p>Media URL is: <a href="{{ MEDIA_URL }}"> {{ MEDIA_URL }} </a></p>
-            <p>AWS Bucket Name is: {{ AWSBucket }}</p>
+            <p>Media root is: <em>{{ MEDIA_ROOT }}</em></p>
+            <p>AWS Bucket Name is: <em>{{ AWSBucket }}</em></p>
           {% endif %}
       </div>
     </div>

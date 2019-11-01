@@ -1,6 +1,10 @@
 import datetime as dt
+import json
 import pandas as pd
+from pathlib import Path
 from time import sleep
+
+from django.conf import settings
 
 from xero import Xero as PyXero
 from xero.auth import PublicCredentials
@@ -33,12 +37,17 @@ def get_all(get_method, file_root, paged=True):
     while get_data:
         if ((i - 1) % 5) == 0:
             print("")  # End of line
+        records_page = get_method.filter(page=i)
+        if True:  #Write records to file in media_url
+            filename = dt.datetime.now().strftime(f"XERO_DEBUG_%Y-%m-%dT%H-%M-%S_{file_root}_page_{i}.json")
+            print(filename)
+            with open(Path(settings.MEDIA_ROOT) / filename, 'w') as f:
+                json.dump(records_page, f)
+
         if paged:
-            records_page = get_method(page=i)
             get_data = len(records_page) == 100
         else:
-            records_page = get_method()
-            get_data = False  # If not paged all data is returned in one go eg items
+            get_data = False  # If not paged all data is returned in one go eg items or contactgroups
         print(f"Page {i} {file_root} with {len(records_page)} records", end="")
         for k, record in enumerate(records_page):
             if file_root == "Xero_Contacts" and ((i == 1) and (k < 5)):
@@ -73,7 +82,7 @@ def reload_data(xero_values):
         load_contact_group(group)
     # Contacts
     print(f"RD update contacts from Xero")
-    for contact in get_all(xero.contacts.filter, "Xero_Contacts"):
+    for contact in get_all(xero.contacts, "Xero_Contacts"):
         load_contact(contact)
     # Items / product catalogue
     # Store product catalogue as a cache item for entering line items
@@ -94,7 +103,7 @@ def reload_data(xero_values):
     # Invoices
     print(f'Product catalogue = {item_catalogue}')
     print(f"RD update invoices from Xero")
-    for i, invoice in enumerate(get_all(xero.invoices.filter, "Xero_Invoices")):
+    for i, invoice in enumerate(get_all(xero.invoices, "Xero_Invoices")):
         if i < 3:
             print(f" invoice {i} = {invoice}")
         load_invoice(invoice, transform=None)
@@ -109,7 +118,7 @@ def reload_data(xero_values):
         )
     # Credit notes (overview)
     print(f"RD update credit notes from Xero")
-    for credit_note in get_all(xero.creditnotes.filter, "Xero_CreditNotes"):
+    for credit_note in get_all(xero.creditnotes, "Xero_CreditNotes"):
         load_invoice(credit_note, transform=credit_note_transform)
         load_invoice_items(
             credit_note,
