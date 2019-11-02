@@ -41,9 +41,12 @@ def get_all(get_method, file_root, paged=True):
         if True:  #Write records to file in media_url
             filename = dt.datetime.now().strftime(f"XERO_DEBUG_%Y-%m-%dT%H-%M-%S_{file_root}_page_{i}.json")
             print(filename)
-            with open(Path(settings.MEDIA_ROOT) / filename, 'w') as f:
-                json.dump(records_page, f)
-
+            try:
+                with open(Path(settings.MEDIA_ROOT) / filename, 'w') as f:
+                    json.dump(records_page, f)
+            except:
+                print('Failed to write file to S3')
+                print(f'Records_page = {records_page}')
         if paged:
             get_data = len(records_page) == 100
         else:
