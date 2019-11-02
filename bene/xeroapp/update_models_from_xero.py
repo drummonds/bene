@@ -5,6 +5,7 @@ from pathlib import Path
 from time import sleep
 
 from django.conf import settings
+from django.core.files.storage import default_storage
 
 from xero import Xero as PyXero
 from xero.auth import PublicCredentials
@@ -42,7 +43,7 @@ def get_all(get_method, file_root, paged=True):
             filename = dt.datetime.now().strftime(f"XERO_DEBUG_%Y-%m-%dT%H-%M-%S_{file_root}_page_{i}.json")
             print(filename)
             try:
-                with open(Path(settings.MEDIA_ROOT) / filename, 'w') as f:
+                with  default_storage.open(Path(settings.MEDIA_ROOT) / filename, 'w') as f:
                     json.dump(records_page, f)
             except:
                 print('Failed to write file to S3')
