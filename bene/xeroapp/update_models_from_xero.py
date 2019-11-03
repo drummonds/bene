@@ -50,7 +50,7 @@ def get_all(get_method, file_root, paged=True):
             print(filename)
             extended_filename = Path(settings.MEDIA_ROOT) / filename
             try:
-                with  default_storage.open(filename, 'w') as f:
+                with default_storage.open(filename, 'w') as f:
                     json.dump(records_page, f)
             except:
                 print('Failed to write file to S3')

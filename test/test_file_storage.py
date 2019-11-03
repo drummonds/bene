@@ -1,4 +1,7 @@
-import os
+import datetime as dt
+import json
+from pathlib import Path
+
 from django.conf import settings
 
 from django.core.files.base import ContentFile
@@ -19,6 +22,18 @@ print(path)
 
 with default_storage.open('squiggle2', 'w') as f:
     f.write('Hello djangonaut.\n')
+
+records = [["list"],[["another list"]]]
+file_root = 'ContactGroup'
+page = 0
+
+filename = dt.datetime.now().strftime(f"XERO_DEBUG_%Y-%m-%dT%H-%M-%S_{file_root}_page_{page}.json")
+
+print(f' Test filename for archiving {filename}')
+with default_storage.open(filename, 'w') as f:
+    json.dump(records,f)
+
+
 
 print(default_storage.size(path))
 
