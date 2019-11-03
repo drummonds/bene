@@ -31,6 +31,12 @@ def get_all(get_method, file_root, paged=True):
      It should have a named parameter page which gets paged data
     file_root:  This is passed in for debugging purposes."""
     print(f"Starting to get pages for {file_root}")
+    for x in ["AWS_ACCESS_KEY_ID", "AWS_STORAGE_BUCKET_NAME", "MEDIA_ROOT", "MEDIA_URL"]:
+        try:
+            value = getattr(settings, x)
+            print(f'{x:20} = {value}')
+        except AttributeError:
+            print(f'{x:20} Doesn''t exist')
     i = 1
     api_counter = MAX_API_CALLS
     start_time = dt.datetime.now()
@@ -42,8 +48,9 @@ def get_all(get_method, file_root, paged=True):
         if True:  #Write records to file in media_url
             filename = dt.datetime.now().strftime(f"XERO_DEBUG_%Y-%m-%dT%H-%M-%S_{file_root}_page_{i}.json")
             print(filename)
+            extended_filename = Path(settings.MEDIA_ROOT) / filename
             try:
-                with  default_storage.open(Path(settings.MEDIA_ROOT) / filename, 'w') as f:
+                with  default_storage.open(extended_filename, 'w') as f:
                     json.dump(records_page, f)
             except:
                 print('Failed to write file to S3')

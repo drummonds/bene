@@ -302,7 +302,7 @@ XERO_CONSUMER_SECRET =  env('XERO_CONSUMER_SECRET')
 XERO_CONSUMER_KEY = env('XERO_CONSUMER_KEY')
 
 # Version info
-VERSION = '0.8.27'
+VERSION = '0.8.28'
 
 # ######### CELERY CONFIGURATION
 
@@ -328,6 +328,7 @@ AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = env('DJANGO_AWS_STORAGE_BUCKET_NAME')
 AWS_AUTO_CREATE_BUCKET = True
 AWS_QUERYSTRING_AUTH = False
+AWS_DEFAULT_ACL = None  # Default options for new files and buckets are the buckets ACL
 #AWS_S3_CALLING_FORMAT = OrdinaryCallingFormat()
 
 # AWS cache settings, don't change unless you know what you're doing:
@@ -344,7 +345,7 @@ AWS_HEADERS = {
 
 # URL that handles the media served from MEDIA_ROOT, used for managing
 # stored files.
-MEDIA_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
+MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
