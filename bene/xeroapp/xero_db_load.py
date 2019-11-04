@@ -8,8 +8,6 @@ from django.db import connection, IntegrityError
 # ***************************
 
 
-invoice_count = 0
-
 def truncate_data():
     """Currently have to truncate all data in order to upload new variants."""
     with connection.cursor() as cursor:
@@ -17,9 +15,6 @@ def truncate_data():
         cursor.execute(
             "TRUNCATE xeroapp_ContactGroup, xeroapp_Contact, xeroapp_Invoice, xeroapp_LineItem, xeroapp_Item"
         )
-    # Debugging
-    global invoice_count
-    invoice_count = 0
 
 
 def default_get(record, default, index_str, index_str2=""):
@@ -42,11 +37,10 @@ def default_get(record, default, index_str, index_str2=""):
     return result
 
 
-# Wrapper for SQL execute that has error handling
-
-
 class SQLExecute:
-    def __init__(self, num_failures_to_report=3):
+    """Wrapper for SQL execute that has error handling, eg when data is missing or incomplete."""
+
+    def __init__(self, num_failures_to_report=10):
         self.cursor = connection.cursor()
         self.first_failures = num_failures_to_report
 
@@ -86,7 +80,8 @@ class SQLExecute:
 def load_contact_group(record):
     """Given a dictionary for a single row will load the data into SQL"""
     with SQLExecute() as cursor:
-        sql = f"""INSERT INTO xeroapp_ContactGroup ("xerodb_id", name) VALUES('{record["ContactGroupID"]}', '{record["Name"]}')"""
+        sql = f"""INSERT INTO xeroapp_ContactGroup ("xerodb_id", name) 
+        VALUES('{record["ContactGroupID"]}', '{record.get("Name","No name in Xero")}')"""
         cursor.execute(sql)
 
 
@@ -102,7 +97,7 @@ def insert_contact(
     number=0,
     first_name="No First Name",
     last_name="No Last Name",
-    email_address="none@none.com"
+    email_address="none@none.com",
 ):
     sql = f"""
     INSERT INTO xeroapp_Contact 
@@ -120,28 +115,27 @@ def insert_contact(
         "last_name": last_name,
         "email_address": email_address,
     }
-    cursor.execute(sql, params)
+    with SQLExecute() as cursor:
+        cursor.execute(sql, params)
 
 
 def load_contact(record):
     with SQLExecute() as cursor:
-        try:
-            number = record["AccountNumber"]
-        except KeyError:
-            number = ''
         insert_contact(
             cursor,
             record["ContactID"],
-            name=record["Name"],
-            number=number,
+            name=record.get("Name", "No Xero Name"),
+            number=record.get("AccountNumber",""),
             first_name=default_get(record, "No First Name", "FirstName"),
             last_name=default_get(record, "No Last Name", "LastName"),
-            email_address=default_get(record, "none@none.com", "EmailAddress")
+            email_address=default_get(record, "none@none.com", "EmailAddress"),
         )
+
 
 # ***************************
 # Inventory items or product catalogue
 # ***************************
+
 
 def load_item(record):
     with SQLExecute() as cursor:
@@ -157,8 +151,8 @@ def load_item(record):
         VALUES(%(id)s, %(code)s, %(name)s, %(cost_price)s, %(sales_price)s)"""
         params = {
             "id": record["ItemID"],
-            "code": record["Code"],
-            "name": record["Description"],
+            "code": record.get("Code", "No Xero code"),
+            "name": record.get("Description", "No Xero Description"),
             "cost_price": cost_price,
             "sales_price": sales_price,
         }
@@ -171,10 +165,6 @@ def load_item(record):
 
 
 def load_invoice(record, transform=None):
-    global invoice_count
-    if invoice_count < 3:
-        print(f'Starting load invoice {invoice_count}')
-        print(f' with record= {record}')
     sql = f"""
     INSERT INTO xeroapp_Invoice 
     (    xerodb_id, contact_id_id, currency_code, 
@@ -191,8 +181,6 @@ def load_invoice(record, transform=None):
          %s, %s, %s)"""
     if transform:
         record = transform(record)
-    if invoice_count < 3:
-        print(f' After transform record= {record}')
     with SQLExecute() as cursor:
         contact_id = default_get(record, None, "Contact", "ContactID")
         due_date = default_get(record, None, "DueDate")
@@ -208,22 +196,18 @@ def load_invoice(record, transform=None):
             record["SubTotal"],
             record["Total"],
             record["TotalTax"],
-            record["Status"],
+            record.get("Status", "No Xero status"),
             record["Type"],
             record["UpdatedDateUTC"],
-            record["InvoiceNumber"],
+            record.get("InvoiceNumber", "No Xero Invoice Number"),
             due_date,
             payment_date,
             planned_payment_date,
         )
-        invoice_count += 1
-        if invoice_count < 3:
-            print(f'Insert invoice sql = {sql}')
-            print(f' params = {params}')
         try:
             cursor.cursor.execute(sql, params)
         except Exception as e:
-            print(f' Problem with SQL exception = {str(e)}')
+            print(f" Problem with SQL exception = {str(e)}")
             if "fk_xeroapp_contact_xerodb_id" in str(e):
                 #  insert contact and retry
                 insert_contact(
@@ -286,25 +270,23 @@ def get_item(line, item_catalogue):
 
 def abstract_lineitems_all(invoice_record, items):
     """For a single invoice record extract all the lineitems"""
-    global invoice_count
-    if invoice_count < 3:
-        print(f'line items = {invoice_record["LineItems"]}')
     invoice_id = invoice_record["InvoiceID"]
-    for line in invoice_record["LineItems"]:
-        id = line.get(
-            "LineItemID", str(uuid.uuid4())
-        )  # there is no ID for each line entry
-        # but must have unique key so generate one here
-        item_id = get_item(line, items)  # Need to convert item name to an ID
-        try:
-            quantity = line["Quantity"]
-        except KeyError:  # There is no quantity
-            quantity = 0
-            print(f"Unusual no quantity in this row of line items from Xero: {line}")
-        unit_amount = line.get("UnitAmount", 1)
-        if invoice_count < 3:
-            print(f'Parse items = {id}, {invoice_id}, {item_id}, {quantity}, {unit_amount}')
-        yield (id, invoice_id, item_id, quantity, unit_amount)
+    try:
+        for line in invoice_record["LineItems"]:
+            id = line.get(
+                "LineItemID", str(uuid.uuid4())
+            )  # there is no ID for each line entry
+            # but must have unique key so generate one here
+            item_id = get_item(line, items)  # Need to convert item name to an ID
+            try:
+                quantity = line["Quantity"]
+            except KeyError:  # There is no quantity
+                quantity = 0
+                print(f"Unusual no quantity in this row of line items from Xero: {line}")
+            unit_amount = line.get("UnitAmount", 1)
+            yield (id, invoice_id, item_id, quantity, unit_amount)
+    except KeyError:
+        pass  # There are no line items
 
 
 def invoice_lineitems_all(invoice_record, item_catalogue):
@@ -319,13 +301,8 @@ def load_invoice_items(
     invoice_record, invoice_transform=None, get_items=None, item_catalogue=None
 ):
     """For a single invoice in invoice_record, load all the items into the database"""
-    global invoice_count
-    if invoice_count < 3:
-        print(f'Starting load invoice items')
     if invoice_transform:
         invoice_record = invoice_transform(invoice_record)
-    if invoice_count < 3:
-        print(f'invoice_record after transform = {invoice_record}')
     with SQLExecute() as cursor:
         for (id, invoice_id, item_id, qty, price) in get_items(
             invoice_record, item_catalogue
@@ -334,7 +311,4 @@ def load_invoice_items(
                 price)
                 VALUES(%s, %s, %s, %s, %s)"""
             params = (id, invoice_id, item_id, qty, price)
-            if invoice_count < 3:
-                print(f'Insert invoice sql = {sql}')
-                print(f' params = {params}')
             cursor.execute(sql, params)
