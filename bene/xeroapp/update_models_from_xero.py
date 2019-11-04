@@ -31,6 +31,7 @@ def get_all(get_method, file_root, paged=True):
      It should have a named parameter page which gets paged data
     file_root:  This is passed in for debugging purposes."""
     print(f"Starting to get pages for {file_root}")
+    dir_root =  dt.datetime.now().strftime(f"XERO_Get_All_%Y-%m-%dT%H-%M-%S")
     for x in ["AWS_ACCESS_KEY_ID", "AWS_STORAGE_BUCKET_NAME", "MEDIA_ROOT", "MEDIA_URL"]:
         try:
             value = getattr(settings, x)
@@ -50,7 +51,7 @@ def get_all(get_method, file_root, paged=True):
             print(filename)
             extended_filename = Path(settings.MEDIA_ROOT) / filename
             try:
-                with default_storage.open(filename, 'w') as f:
+                with default_storage.open(f'{dir_root}/{filename}', 'w') as f:
                     f.write(records_page)
             except:
                 print('Failed to write file to S3')
