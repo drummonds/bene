@@ -1,3 +1,4 @@
+import datetime as dt
 import json
 import uuid
 
@@ -107,6 +108,7 @@ class ItemTestCase(TestCase):
         self.assertEqual(3, len(records))
 
     def test_get_items(self):
-        for i, item in enumerate(get_all(dummy_get_items, "Xero_Items", paged=False)):
+        dir_root = dt.datetime.now().strftime(f"TEST_get_items_%Y-%m-%dT%H-%M-%S")
+        for i, item in enumerate(get_all(dummy_get_items, "Xero_Items", dir_root, paged=False)):
             load_item(item)
         self.assertEquals(3, len(Item.objects.all()))

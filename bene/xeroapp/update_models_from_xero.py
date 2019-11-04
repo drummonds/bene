@@ -22,7 +22,7 @@ from .xero_db_load import (
 MAX_API_CALLS = 12  # Per 15 second period
 
 
-def get_all(get_method, file_root, paged=True):
+def get_all(get_method, file_root, dir_root, paged=True):
     """ Gets all the data from one endpoint with a rate limit to make sure the XERO
     API rate limit is not exceeded.
     The exact method of how you get records is passed in as a parameter so that the code is easy to test
@@ -31,7 +31,6 @@ def get_all(get_method, file_root, paged=True):
      It should have a named parameter page which gets paged data
     file_root:  This is passed in for debugging purposes."""
     print(f"Starting to get pages for {file_root}")
-    dir_root =  dt.datetime.now().strftime(f"XERO_Get_All_%Y-%m-%dT%H-%M-%S")
     for x in ["AWS_ACCESS_KEY_ID", "AWS_STORAGE_BUCKET_NAME", "MEDIA_ROOT", "MEDIA_URL"]:
         try:
             value = getattr(settings, x)
@@ -88,13 +87,15 @@ def reload_data(xero_values):
         return
     # Get rid of old data
     truncate_data()
+    # Get a directory to store all the data
+    dir_root =  dt.datetime.now().strftime(f"XERO_Get_All_%Y-%m-%dT%H-%M-%S")
     # Contact Groups
     print(f"RD update contact groups from Xero")
-    for group in get_all(xero.contactgroups, "Xero_ContactGroups", paged=False):
+    for group in get_all(xero.contactgroups, "Xero_ContactGroups", dir_root, paged=False):
         load_contact_group(group)
     # Contacts
     print(f"RD update contacts from Xero")
-    for contact in get_all(xero.contacts, "Xero_Contacts"):
+    for contact in get_all(xero.contacts, "Xero_Contacts", dir_root):
         load_contact(contact)
     # Items / product catalogue
     # Store product catalogue as a cache item for entering line items
@@ -102,7 +103,7 @@ def reload_data(xero_values):
     item_catalogue = {}
     item_catalogue["Code"] = {}
     item_catalogue["Description"] = {}
-    for i, item in enumerate(get_all(xero.items, "Xero_Items", paged=False)):
+    for i, item in enumerate(get_all(xero.items, "Xero_Items", dir_root, paged=False)):
         load_item(item)
         try:
             item_catalogue["Code"][item["Code"]] = item["ItemID"]
@@ -115,7 +116,7 @@ def reload_data(xero_values):
     # Invoices
     print(f'Product catalogue = {item_catalogue}')
     print(f"RD update invoices from Xero")
-    for i, invoice in enumerate(get_all(xero.invoices, "Xero_Invoices")):
+    for i, invoice in enumerate(get_all(xero.invoices, "Xero_Invoices", dir_root)):
         if i < 3:
             print(f" invoice {i} = {invoice}")
         load_invoice(invoice, transform=None)
@@ -130,7 +131,7 @@ def reload_data(xero_values):
         )
     # Credit notes (overview)
     print(f"RD update credit notes from Xero")
-    for credit_note in get_all(xero.creditnotes, "Xero_CreditNotes"):
+    for credit_note in get_all(xero.creditnotes, "Xero_CreditNotes", dir_root):
         load_invoice(credit_note, transform=credit_note_transform)
         load_invoice_items(
             credit_note,
