@@ -10,6 +10,9 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 import environ
 import os
 
+# Version info
+VERSION = '0.8.35'
+
 ROOT_DIR = environ.Path(__file__) - 3  # (bene/config/settings/base.py - 3 = bene/)
 APPS_DIR = ROOT_DIR.path('bene')
 
@@ -300,9 +303,6 @@ EXPLORER_DATA_EXPORTERS =  [
 
 XERO_CONSUMER_SECRET =  env('XERO_CONSUMER_SECRET')
 XERO_CONSUMER_KEY = env('XERO_CONSUMER_KEY')
-
-# Version info
-VERSION = '0.8.33'
 
 # ######### CELERY CONFIGURATION
 

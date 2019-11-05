@@ -135,7 +135,7 @@ def reload_data(xero_values):
         load_invoice(credit_note, transform=credit_note_transform)
         load_invoice_items(
             credit_note,
-            transform=credit_note_transform,
+            invoice_transform=credit_note_transform,
             get_items=credit_note_lineitems_all,
             item_catalogue=item_catalogue,
         )
