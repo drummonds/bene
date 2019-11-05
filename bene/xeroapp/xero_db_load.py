@@ -224,8 +224,8 @@ def credit_note_transform(record):
     """Transform a credit note so that it looks lke an invoice"""
     record["InvoiceID"] = record["CreditNoteID"]
     record["SubTotal"] = -record["SubTotal"]
-    record["Total"] = (-record["Total"],)
-    record["TotalTax"] = (-record["TotalTax"],)
+    record["Total"] = -record["Total"]
+    record["TotalTax"] = -record["TotalTax"]
     record["InvoiceNumber"] = record["CreditNoteNumber"]
     return record
 

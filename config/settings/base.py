@@ -11,7 +11,7 @@ import environ
 import os
 
 # Version info
-VERSION = '0.8.35'
+VERSION = '0.8.37'
 
 ROOT_DIR = environ.Path(__file__) - 3  # (bene/config/settings/base.py - 3 = bene/)
 APPS_DIR = ROOT_DIR.path('bene')
