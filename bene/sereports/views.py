@@ -96,6 +96,7 @@ def monthly_sales_graph(request):
     bar_chart.add('Sales 17', [row[1]/1000 if row[0].find('2017') != -1 else 0 for row in res.data])  # Add some values
     bar_chart.add('Sales 18', [row[1]/1000 if row[0].find('2018') != -1 else 0 for row in res.data])  # Add some values
     bar_chart.add('Sales 19', [row[1]/1000 if row[0].find('2019') != -1 else 0 for row in res.data])  # Add some values
+    bar_chart.add('Sales 20', [row[1]/1000 if row[0].find('2020') != -1 else 0 for row in res.data])  # Add some values
     return bar_chart.render_django_response()
 
 
