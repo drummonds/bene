@@ -16,7 +16,7 @@ django-debug-toolbar==2.2
 ipdb==0.13.2
 
 pytest-django==3.9.0
-pytest-sugar==0.9.2
+pytest-sugar==0.9.3
 
 # my scripts
 Fabric3==1.14.post1
