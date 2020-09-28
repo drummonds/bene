@@ -14,7 +14,7 @@ whitenoise==5.2.0
 
 
 # Forms
-django-braces==1.13.0
+django-braces==1.14.0
 django-crispy-forms==1.7.2
 
 # Models
