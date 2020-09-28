@@ -38,7 +38,7 @@ django-allauth==0.42.0
 awesome-slugify==1.6.5
 
 # Time zones support
-pytz==2019.2
+pytz==2020.1
 
 # Redis support
 django-redis==4.10.0
