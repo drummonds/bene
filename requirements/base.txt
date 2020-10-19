@@ -45,7 +45,7 @@ django-redis==4.12.1
 redis>=2.10.5
 
 # Celery support
-celery==4.3.0
+celery==5.0.1
 
 # Your custom requirements go here
 
