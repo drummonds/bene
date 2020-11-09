@@ -3,7 +3,7 @@
 
 # Python-PostgreSQL Database Adapter
 # If using Win for dev, this assumes Unix in test/prod
-psycopg2==2.8.3
+psycopg2==2.8.6
 
 coverage==4.5.4
 flake8==3.7.8
