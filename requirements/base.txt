@@ -70,7 +70,7 @@ unipath==1.1
 
 # Adding numpy and pandas for data manipulation
 pandas==1.1.4
-numpy==1.17.2
+numpy==1.19.4
 
 # Raven is the Sentry client
 # Not used locally but is required to run make migrations
