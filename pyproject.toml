@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "bene"
+version = "0.0.1"
+description = "Extended reporting for Xero"
+authors = ["Humphrey <hum3@drummond.info>"]
+
+[tool.poetry.dependencies]
+python = "^3.9.5"
+Fabric3 = "^1.14.post1"
+python-dotenv = "^0.17.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

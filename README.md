@@ -8,17 +8,15 @@ A reporting sytem and interface to Xero
 License  
 GPLv3
 
-# Settings
+## Settings
 
 
 Moved to
 [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
 
-Basic Commands
-==============
+## Basic Commands
 
-Setting Up Your Users
----------------------
+### Setting Up Your Users
 
 -   To create a **normal user account**, just go to Sign Up and fill out
     the form. Once you submit it, you'll see a "Verify Your E-mail
@@ -33,8 +31,7 @@ For convenience, you can keep your normal user logged in on Chrome and
 your superuser logged in on Firefox (or similar), so that you can see
 how the site behaves for both kinds of users.
 
-Test coverage
--------------
+## Test coverage
 
 To run the tests, check your test coverage, and generate an HTML
 coverage report:
@@ -47,8 +44,7 @@ coverage report:
 
     $ py.test
 
-Live reloading and Sass CSS compilation
----------------------------------------
+## Live reloading and Sass CSS compilation
 
 Moved to [Live reloading and SASS
 compilation](http://cookiecutter-django.readthedocs.io/en/latest/live-reloading-and-sass-compilation.html).
@@ -87,8 +83,9 @@ application.
 
 You must set the DSN url in production.
 
-# Deployment
+## Deployment
 
+Requirements:
 
 The following details how to deploy this application.
 
@@ -99,7 +96,7 @@ See detailed [cookiecutter-django Heroku
 documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html).
 
 
-# Local deployment
+## Local deployment
 
 Having set up the file you need to store your local settings in a .env file.  Then you will need 
 the following settings.
@@ -115,20 +112,38 @@ is to backup the heroku data to a local file and the restore to the local data f
 (making a copy of your previous database before you start. Restore all data and confirm email
 by updating DB)
 
-# Build chain
+## Build chain
+
 To build the project you need to do the following:
 
 1. Download from github the project
-1. Build the bene virtual environment with python 3.6
-1. Copy the .env or fill it in from the example
-1. Install [Heroku CLI][] (was part of toolbelt)
+2. Build the bene virtual environment with python 3.6+
+   1. install homebrew
+   2. `brew install pyenv`
+   3. `pyenv doctor` check ok
+   4. `pyenv install 3.9.5`  or I had to use `CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl)" pyenv install 3.9.5pyu` latest desired version supported by heroku
+   5. `pyenv versions` check it has installed correctly
+   ```
+   poetry shell
+   fab --list
+   ```
+   To check that all installed ok.
+3. Copy the .env or fill it in from the example  need to edit heroku_prefix and add herok api
+4. Install [Heroku CLI][] (was part of toolbelt)
     1. Download and install software
-    1. logout of command window if logged in and log backin so that
+    2. logout of command window if logged in and log backin so that
     new path is used
     1. set up app again eg workon bene and cd
-    1. heroku login to store user id
+    2. heroku login to store user id
+ 1. Test build with `fab create_newuild`
      
 
+### Building the environment with poetry
+You can set up the local environment with poetry.
+
+- install poetry
+- The pyproject.toml file has the development build required
+- 
 
 [Heroku CLI]: https://devcenter.heroku.com/articles/heroku-cli#download-and-install
 

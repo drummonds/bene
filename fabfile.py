@@ -44,7 +44,7 @@ def set_environment_variables(env_prefix):
         settings = 'production'
     heroku_app = '{0}-{1}'.format(os.environ['HEROKU_PREFIX'], env_prefix)
     local(f"heroku config:set DJANGO_SETTINGS_MODULE=config.settings.{settings} --app {heroku_app}")
-    local('heroku config:set PYTHONHASHSEED=random --app {}"'.format(heroku_app))
+    # default from 3.4 local('heroku config:set PYTHONHASHSEED=random --app {}'.format(heroku_app))
     local('heroku config:set DJANGO_ALLOWED_HOSTS="{1}.herokuapp.com" --app {1}'.
           format(os.environ['DJANGO_ALLOWED_HOSTS'], heroku_app))
     for config in ( 'DJANGO_SECRET_KEY', 'DJANGO_ADMIN_URL'
