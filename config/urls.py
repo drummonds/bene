@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
-from sereports.views import HomeView
+from bene.sereports.views import HomeView
 
 urlpatterns = [
     #url(r'^', include('sereports.urls')),
@@ -23,10 +23,9 @@ urlpatterns = [
 
     # User management
     url(r'^users/', include('bene.users.urls')),
-    url(r'^rep/', include('sereports.urls')),
-    url(r'^xeroapp/', include('xeroapp.urls')),
-    url(r'^accruals/', include('accruals.urls')),
-    url(r'^remittance/', include('remittance_doc.urls')),
+    url(r'^rep/', include('bene.sereports.urls')),
+    url(r'^xeroapp/', include('bene.xeroapp.urls')),
+    url(r'^accruals/', include('bene.accruals.urls')),
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here

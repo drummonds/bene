@@ -99,7 +99,7 @@ documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-on
 ## Local deployment
 
 Having set up the file you need to store your local settings in a .env file.  Then you will need 
-the following settings (in a.bat for convenience).
+the following settings (this is automated for Windows in the file `a.bat`).
 
     set DJANGO_READ_DOT_ENV_FILE=True
     set DJANGO_SETTINGS_MODULE=config.settings.local

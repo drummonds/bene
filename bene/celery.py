@@ -29,7 +29,8 @@ register_signal(client)
 # to be ignored
 register_signal(client, ignore_expected=True)
 
-# set the default Django settings module for the 'celery' program.
+# If no environment has been set then choose the productions settings.
+# This is actually an error as for any successful deployment the DJANGO_SETTINGS_MODULE should be set
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.production')
 app = Celery('bene')
 
@@ -42,7 +43,6 @@ app.config_from_object('django.conf:settings')
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks(settings.INSTALLED_APPS)
-
 
 @app.task(bind=True)
 def debug_task(self):

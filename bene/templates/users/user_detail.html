@@ -1,36 +1,44 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}User: {{ object.username }}{% endblock %}
+{% block title %}User: {{ this_user.username }}{% endblock %}
 
 {% block content %}
-<div class="container">
+  <div class="container">
 
-  <div class="row">
-    <div class="col-sm-12">
+    <div class="row">
+      <div class="col-sm-12">
 
-      <h2>{{ object.username }}</h2>
-      {% if object.name %}
-        <p>{{ object.name }}</p>
-      {% endif %}
+        <h2>{{ this_user.username }}</h2>
+          {% if this_user.name %}
+            <p>{{ this_user.name }}</p>
+          {% endif %}
+        <hr>
+          {% if this_user.is_superuser %}
+            <h2>Super user powers</h2>
+            <p><a href="{% url 'admin:index' %}">Admin site</a></p>
+            <p>Media URL is: <a href="{{ MEDIA_URL }}"> {{ MEDIA_URL }} </a></p>
+            <p>Media root is: <em>{{ MEDIA_ROOT }}</em></p>
+            <p>AWS Bucket Name is: <em>{{ AWSBucket }}</em></p>
+          {% endif %}
+      </div>
     </div>
+
+      {% if this_user == request.user %}
+        <!-- Action buttons -->
+        <div class="row">
+
+          <div class="col-sm-12">
+            <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
+            <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
+            <!-- Your Stuff: Custom user template urls -->
+          </div>
+
+        </div>
+        <!-- End Action buttons -->
+      {% endif %}
+
+
   </div>
-
-{% if object == request.user %}
-<!-- Action buttons -->
-<div class="row">
-
-  <div class="col-sm-12">
-    <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
-    <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
-    <!-- Your Stuff: Custom user template urls -->
-  </div>
-
-</div>
-<!-- End Action buttons -->
-{% endif %}
-
-
-</div>
 {% endblock content %}
 

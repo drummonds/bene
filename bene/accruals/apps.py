@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class AccrualsConfig(AppConfig):
-    name = 'accruals'
+    name = 'bene.accruals'
     verbose_name = 'Accruals'

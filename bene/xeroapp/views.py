@@ -16,8 +16,8 @@ from xero.exceptions import XeroException, XeroBadRequest
 
 from bene.celery import reload_task
 from .models import Invoice
-from sereports.models import Company  # This could be bene.sereports but Django likes
-# this better and needs to match settings
+from bene.sereports.models import Company  # This could be bene.serports but Django likes this better and needs to match
+# settings
 
 # You should use redis or a file based persistent
 # storage handler if you are running multiple servers.

@@ -6,7 +6,7 @@ wheel==0.36.2
 
 
 # Django
-django==2.2.21 # pyup: >=1.10,<1.11
+django==2.2.21 
 
 # Configuration
 django-environ==0.4.5
@@ -87,7 +87,15 @@ pygal==2.4.0
 
 # Static and Media Storage
 # ------------------------------------------------
-django-storages==1.7.1
+django-storages==1.7.2
+
+# For checking memory usage
+psutil==5.6.3
+
+# Python-PostgreSQL Database Adapter
+# If using Win for dev, this assumes Unix in prod
+# ------------------------------------------------
+psycopg2==2.8.3
 
 # Remittance processing
 pdfminer.six==20181108
