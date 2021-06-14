@@ -10,103 +10,327 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Material',
+            name="Material",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('description', models.CharField(blank=True, max_length=250)),
-                ('material', models.CharField(blank=True, max_length=135)),
-                ('thread_count', models.DecimalField(blank=True, decimal_places=2, help_text='thread count per inch', max_digits=10)),
-                ('weight', models.DecimalField(blank=True, decimal_places=2, help_text='grams per square meter', max_digits=10)),
-                ('coating', models.CharField(blank=True, help_text='Description of any coating applied', max_length=135)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("description", models.CharField(blank=True, max_length=250)),
+                ("material", models.CharField(blank=True, max_length=135)),
+                (
+                    "thread_count",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        help_text="thread count per inch",
+                        max_digits=10,
+                    ),
+                ),
+                (
+                    "weight",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        help_text="grams per square meter",
+                        max_digits=10,
+                    ),
+                ),
+                (
+                    "coating",
+                    models.CharField(
+                        blank=True,
+                        help_text="Description of any coating applied",
+                        max_length=135,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('descriptive_content', models.CharField(max_length=200)),
-                ('factory_description', models.CharField(blank=True, max_length=200)),
-                ('sage_description', models.CharField(blank=True, max_length=200)),
-                ('sage_category', models.IntegerField(null=True)),
-                ('material', models.CharField(blank=True, max_length=100)),
-                ('ebay_material', models.CharField(blank=True, max_length=100)),
-                ('ebay_features', models.CharField(blank=True, max_length=255)),
-                ('ebay_type', models.CharField(blank=True, max_length=100)),
-                ('keywords', models.CharField(blank=True, default='matress;matrass;mattrass', max_length=100)),
-                ('bullet_point_1', models.CharField(blank=True, default='Point 1', max_length=135)),
-                ('bullet_point_2', models.CharField(blank=True, default='Point 1', max_length=135)),
-                ('bullet_point_3', models.CharField(blank=True, default='Point 1', max_length=135)),
-                ('bullet_point_4', models.CharField(blank=True, default='Point 1', max_length=135)),
-                ('bullet_point_5', models.CharField(blank=True, default='Point 1', max_length=135)),
-                ('manufacturer_description', models.TextField(blank=True, default='Manuf desc', max_length=2000)),
-                ('in_the_box', models.CharField(blank=True, default='1 Single', max_length=135)),
-                ('url', models.URLField(blank=True, default='')),
-                ('product_type', models.CharField(choices=[('TPR', 'Topper'), ('MP', 'Mattress Protector')], default='MP', max_length=3)),
-                ('product_code_root', models.CharField(blank=True, default='', max_length=16)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("descriptive_content", models.CharField(max_length=200)),
+                ("factory_description", models.CharField(blank=True, max_length=200)),
+                ("sage_description", models.CharField(blank=True, max_length=200)),
+                ("sage_category", models.IntegerField(null=True)),
+                ("material", models.CharField(blank=True, max_length=100)),
+                ("ebay_material", models.CharField(blank=True, max_length=100)),
+                ("ebay_features", models.CharField(blank=True, max_length=255)),
+                ("ebay_type", models.CharField(blank=True, max_length=100)),
+                (
+                    "keywords",
+                    models.CharField(
+                        blank=True, default="matress;matrass;mattrass", max_length=100
+                    ),
+                ),
+                (
+                    "bullet_point_1",
+                    models.CharField(blank=True, default="Point 1", max_length=135),
+                ),
+                (
+                    "bullet_point_2",
+                    models.CharField(blank=True, default="Point 1", max_length=135),
+                ),
+                (
+                    "bullet_point_3",
+                    models.CharField(blank=True, default="Point 1", max_length=135),
+                ),
+                (
+                    "bullet_point_4",
+                    models.CharField(blank=True, default="Point 1", max_length=135),
+                ),
+                (
+                    "bullet_point_5",
+                    models.CharField(blank=True, default="Point 1", max_length=135),
+                ),
+                (
+                    "manufacturer_description",
+                    models.TextField(blank=True, default="Manuf desc", max_length=2000),
+                ),
+                (
+                    "in_the_box",
+                    models.CharField(blank=True, default="1 Single", max_length=135),
+                ),
+                ("url", models.URLField(blank=True, default="")),
+                (
+                    "product_type",
+                    models.CharField(
+                        choices=[("TPR", "Topper"), ("MP", "Mattress Protector")],
+                        default="MP",
+                        max_length=3,
+                    ),
+                ),
+                (
+                    "product_code_root",
+                    models.CharField(blank=True, default="", max_length=16),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Size',
+            name="Size",
             fields=[
-                ('variant', models.CharField(max_length=3, primary_key=True, serialize=False)),
-                ('sage_size', models.CharField(max_length=4)),
-                ('bed_size', models.CharField(max_length=100)),
-                ('imperial_width', models.DecimalField(blank=True, decimal_places=2, help_text='Width of product in inches', max_digits=10, null=True)),
-                ('imperial_length', models.DecimalField(blank=True, decimal_places=2, help_text='Length of product in inches', max_digits=10, null=True)),
-                ('metric_width', models.DecimalField(blank=True, decimal_places=2, help_text='Width of product in cm', max_digits=10, null=True)),
-                ('metric_length', models.DecimalField(blank=True, decimal_places=2, help_text='Length of product in cm', max_digits=10, null=True)),
-                ('amazon', models.CharField(blank=True, max_length=100)),
-                ('ebay', models.CharField(blank=True, max_length=100)),
-                ('description_long', models.CharField(max_length=100)),
-                ('comment', models.CharField(blank=True, max_length=255)),
+                (
+                    "variant",
+                    models.CharField(max_length=3, primary_key=True, serialize=False),
+                ),
+                ("sage_size", models.CharField(max_length=4)),
+                ("bed_size", models.CharField(max_length=100)),
+                (
+                    "imperial_width",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        help_text="Width of product in inches",
+                        max_digits=10,
+                        null=True,
+                    ),
+                ),
+                (
+                    "imperial_length",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        help_text="Length of product in inches",
+                        max_digits=10,
+                        null=True,
+                    ),
+                ),
+                (
+                    "metric_width",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        help_text="Width of product in cm",
+                        max_digits=10,
+                        null=True,
+                    ),
+                ),
+                (
+                    "metric_length",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        help_text="Length of product in cm",
+                        max_digits=10,
+                        null=True,
+                    ),
+                ),
+                ("amazon", models.CharField(blank=True, max_length=100)),
+                ("ebay", models.CharField(blank=True, max_length=100)),
+                ("description_long", models.CharField(max_length=100)),
+                ("comment", models.CharField(blank=True, max_length=255)),
             ],
         ),
         migrations.CreateModel(
-            name='Sku',
+            name="Sku",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('colour', models.CharField(blank=True, max_length=30)),
-                ('factory_sku_description', models.CharField(blank=True, max_length=200)),
-                ('url', models.URLField(blank=True)),
-                ('vendor_product_id', models.CharField(blank=True, max_length=30)),
-                ('barcode', models.CharField(blank=True, max_length=100, unique=True)),
-                ('asin', models.CharField(blank=True, max_length=100)),
-                ('slf_cost_price', models.DecimalField(decimal_places=2, max_digits=10, null=True)),
-                ('cost_price', models.DecimalField(blank=True, decimal_places=2, max_digits=10)),
-                ('rrp', models.DecimalField(blank=True, decimal_places=2, max_digits=10)),
-                ('length', models.DecimalField(blank=True, decimal_places=2, max_digits=10)),
-                ('width', models.DecimalField(blank=True, decimal_places=2, max_digits=10)),
-                ('height', models.DecimalField(blank=True, decimal_places=2, max_digits=10)),
-                ('weight', models.DecimalField(blank=True, decimal_places=2, max_digits=10)),
-                ('qty_per_box', models.IntegerField(blank=True, help_text='This is the number in a standard shipping container box at the factory', null=True)),
-                ('keywords', models.CharField(blank=True, max_length=100)),
-                ('launch_date', models.DateField(blank=True)),
-                ('release_date', models.DateField(blank=True)),
-                ('bullet_point_1', models.CharField(blank=True, max_length=135)),
-                ('bullet_point_2', models.CharField(blank=True, max_length=135)),
-                ('bullet_point_3', models.CharField(blank=True, max_length=135)),
-                ('bullet_point_4', models.CharField(blank=True, max_length=135)),
-                ('bullet_point_5', models.CharField(blank=True, max_length=135)),
-                ('in_the_box', models.CharField(blank=True, max_length=135)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='product.Product')),
-                ('variant', models.ForeignKey(default='UNK', on_delete=django.db.models.deletion.CASCADE, to='product.Size')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("colour", models.CharField(blank=True, max_length=30)),
+                (
+                    "factory_sku_description",
+                    models.CharField(blank=True, max_length=200),
+                ),
+                ("url", models.URLField(blank=True)),
+                ("vendor_product_id", models.CharField(blank=True, max_length=30)),
+                ("barcode", models.CharField(blank=True, max_length=100, unique=True)),
+                ("asin", models.CharField(blank=True, max_length=100)),
+                (
+                    "slf_cost_price",
+                    models.DecimalField(decimal_places=2, max_digits=10, null=True),
+                ),
+                (
+                    "cost_price",
+                    models.DecimalField(blank=True, decimal_places=2, max_digits=10),
+                ),
+                (
+                    "rrp",
+                    models.DecimalField(blank=True, decimal_places=2, max_digits=10),
+                ),
+                (
+                    "length",
+                    models.DecimalField(blank=True, decimal_places=2, max_digits=10),
+                ),
+                (
+                    "width",
+                    models.DecimalField(blank=True, decimal_places=2, max_digits=10),
+                ),
+                (
+                    "height",
+                    models.DecimalField(blank=True, decimal_places=2, max_digits=10),
+                ),
+                (
+                    "weight",
+                    models.DecimalField(blank=True, decimal_places=2, max_digits=10),
+                ),
+                (
+                    "qty_per_box",
+                    models.IntegerField(
+                        blank=True,
+                        help_text="This is the number in a standard shipping container box at the factory",
+                        null=True,
+                    ),
+                ),
+                ("keywords", models.CharField(blank=True, max_length=100)),
+                ("launch_date", models.DateField(blank=True)),
+                ("release_date", models.DateField(blank=True)),
+                ("bullet_point_1", models.CharField(blank=True, max_length=135)),
+                ("bullet_point_2", models.CharField(blank=True, max_length=135)),
+                ("bullet_point_3", models.CharField(blank=True, max_length=135)),
+                ("bullet_point_4", models.CharField(blank=True, max_length=135)),
+                ("bullet_point_5", models.CharField(blank=True, max_length=135)),
+                ("in_the_box", models.CharField(blank=True, max_length=135)),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="product.Product",
+                    ),
+                ),
+                (
+                    "variant",
+                    models.ForeignKey(
+                        default="UNK",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="product.Size",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Spec',
+            name="Spec",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quilting_pattern', models.CharField(choices=[('UNKNOWN', 'Unkown'), ('DIA 3"', '3" Diamond'), ('SQU 2"', '2" Square'), ('STR 6"', '6" Straight')], default='UNKNOWN', max_length=10)),
-                ('fixing', models.CharField(choices=[('ELASTIC', 'Elastic strip'), ('SKIRT', 'Elasticed skirt')], default='ELASTIC', max_length=10)),
-                ('filling', models.CharField(blank=True, help_text='Type of filling , hollow fibre', max_length=135)),
-                ('filling_weight', models.DecimalField(blank=True, decimal_places=2, help_text='grams per square meter', max_digits=10)),
-                ('bottom', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bottom', to='product.Material')),
-                ('top', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='top', to='product.Material')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "quilting_pattern",
+                    models.CharField(
+                        choices=[
+                            ("UNKNOWN", "Unkown"),
+                            ('DIA 3"', '3" Diamond'),
+                            ('SQU 2"', '2" Square'),
+                            ('STR 6"', '6" Straight'),
+                        ],
+                        default="UNKNOWN",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "fixing",
+                    models.CharField(
+                        choices=[
+                            ("ELASTIC", "Elastic strip"),
+                            ("SKIRT", "Elasticed skirt"),
+                        ],
+                        default="ELASTIC",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "filling",
+                    models.CharField(
+                        blank=True,
+                        help_text="Type of filling , hollow fibre",
+                        max_length=135,
+                    ),
+                ),
+                (
+                    "filling_weight",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        help_text="grams per square meter",
+                        max_digits=10,
+                    ),
+                ),
+                (
+                    "bottom",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="bottom",
+                        to="product.Material",
+                    ),
+                ),
+                (
+                    "top",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="top",
+                        to="product.Material",
+                    ),
+                ),
             ],
         ),
     ]

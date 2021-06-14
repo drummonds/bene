@@ -15,7 +15,7 @@ whitenoise==5.2.0
 
 # Forms
 django-braces==1.14.0
-django-crispy-forms==1.11.2
+django-crispy-forms==1.12.0
 
 # Models
 django-model-utils==4.1.1
@@ -41,7 +41,7 @@ awesome-slugify==1.6.5
 pytz==2021.1
 
 # Redis support
-django-redis==4.12.1
+django-redis==5.0.0
 redis>=2.10.5
 
 # Celery support
@@ -50,7 +50,7 @@ celery==5.1.0
 # Your custom requirements go here
 
 # AWS
-boto3==1.17.84
+boto3==1.17.93
 
 # Reporting
 # I have made the django-sql-explorer more robust
