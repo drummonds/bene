@@ -8,9 +8,9 @@ from xlsxwriter.utility import xl_rowcol_to_cell, xl_range
 
 
 class ExcelExporter(BaseExporter):
-    name = 'Excel'
-    content_type = 'application/vnd.ms-excel'
-    file_extension = '.xlsx'
+    name = "Excel"
+    content_type = "application/vnd.ms-excel"
+    file_extension = ".xlsx"
 
     def _get_output(self, res, **kwargs):
         if self.query.id == 1:
@@ -21,8 +21,15 @@ class ExcelExporter(BaseExporter):
     def sales_day_book_output(self, res, **kwargs):
         output = BytesIO()
 
-        header_dict = {'inv_number': 'Number', 'name':'Name', 'number': 'A/C',
-                       'inv_date': 'Date', 'nett': 'Goods', 'tax': 'VAT', 'gross': 'Total'}
+        header_dict = {
+            "inv_number": "Number",
+            "name": "Name",
+            "number": "A/C",
+            "inv_date": "Date",
+            "nett": "Goods",
+            "tax": "VAT",
+            "gross": "Total",
+        }
 
         def header_lookup(name):
             try:
@@ -37,16 +44,22 @@ class ExcelExporter(BaseExporter):
         title = self.query.title[:31]
 
         ws = wb.add_worksheet(name=title)
-        for range, width in [('A:A', 9), ('B:B', 11), ('C:C', 6), ('D:D', 37), ('E:G', 9)]:
+        for range, width in [
+            ("A:A", 9),
+            ("B:B", 11),
+            ("C:C", 6),
+            ("D:D", 37),
+            ("E:G", 9),
+        ]:
             ws.set_column(range, width)
         # Write headers
         row = 0
         col = 0
-        header_style = wb.add_format({'bold': True})
-        total_style = wb.add_format({'bold': True, 'num_format': '#,##0.00'})
+        header_style = wb.add_format({"bold": True})
+        total_style = wb.add_format({"bold": True, "num_format": "#,##0.00"})
         total_style.set_top()
         total_style.set_bottom()
-        std_format = wb.add_format({'num_format': '#,##0.00'})
+        std_format = wb.add_format({"num_format": "#,##0.00"})
         for header in res.header_strings:
             ws.write(row, col, header_lookup(header), header_style)
             col += 1
@@ -68,13 +81,18 @@ class ExcelExporter(BaseExporter):
             col = 0
         # Write Footers
         for sum_col in (4, 5, 6):
-            ws.write_formula(row, sum_col, f'=sum({xl_range(1,sum_col, row-1, sum_col)})', total_style)
+            ws.write_formula(
+                row,
+                sum_col,
+                f"=sum({xl_range(1,sum_col, row-1, sum_col)})",
+                total_style,
+            )
         wb.close()
         return output
 
-
     def default_output(self, res, **kwargs):
         import xlsxwriter
+
         output = BytesIO()
 
         wb = xlsxwriter.Workbook(output)
@@ -88,7 +106,7 @@ class ExcelExporter(BaseExporter):
         # Write headers
         row = 0
         col = 0
-        header_style = wb.add_format({'bold': True})
+        header_style = wb.add_format({"bold": True})
         for header in res.header_strings:
             ws.write(row, col, header, header_style)
             col += 1
@@ -111,5 +129,3 @@ class ExcelExporter(BaseExporter):
 
         wb.close()
         return output
-
-
