@@ -9,43 +9,60 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('xeroapp', '0001_initial'),
+        ("xeroapp", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='invoice',
-            name='amount_credited',
-            field=models.DecimalField(decimal_places=2, default=0, max_digits=16, verbose_name='AmountCredited'),
+            model_name="invoice",
+            name="amount_credited",
+            field=models.DecimalField(
+                decimal_places=2,
+                default=0,
+                max_digits=16,
+                verbose_name="AmountCredited",
+            ),
         ),
         migrations.AddField(
-            model_name='invoice',
-            name='amount_due',
-            field=models.DecimalField(decimal_places=2, default=0, max_digits=16, verbose_name='AmountDue'),
+            model_name="invoice",
+            name="amount_due",
+            field=models.DecimalField(
+                decimal_places=2, default=0, max_digits=16, verbose_name="AmountDue"
+            ),
         ),
         migrations.AddField(
-            model_name='invoice',
-            name='amount_paid',
-            field=models.DecimalField(decimal_places=2, default=0, max_digits=16, verbose_name='AmountPaid'),
+            model_name="invoice",
+            name="amount_paid",
+            field=models.DecimalField(
+                decimal_places=2, default=0, max_digits=16, verbose_name="AmountPaid"
+            ),
         ),
         migrations.AddField(
-            model_name='invoice',
-            name='due_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='DueDate'),
+            model_name="invoice",
+            name="due_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="DueDate"
+            ),
         ),
         migrations.AddField(
-            model_name='invoice',
-            name='expected_payment_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='ExpectedPaymentDate'),
+            model_name="invoice",
+            name="expected_payment_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="ExpectedPaymentDate"
+            ),
         ),
         migrations.AddField(
-            model_name='invoice',
-            name='fully_paid_on_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='FullyPaidOnDate'),
+            model_name="invoice",
+            name="fully_paid_on_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="FullyPaidOnDate"
+            ),
         ),
         migrations.AddField(
-            model_name='invoice',
-            name='planned_payment_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='PlannedPaymentDate'),
+            model_name="invoice",
+            name="planned_payment_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="PlannedPaymentDate"
+            ),
         ),
     ]
