@@ -9,43 +9,84 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('xeroapp', '0002_auto_20170917_2132'),
+        ("xeroapp", "0002_auto_20170917_2132"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='invoice',
-            name='amount_credited',
-            field=models.DecimalField(blank=True, decimal_places=2, default=0, max_digits=16, null=True, verbose_name='AmountCredited'),
+            model_name="invoice",
+            name="amount_credited",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                default=0,
+                max_digits=16,
+                null=True,
+                verbose_name="AmountCredited",
+            ),
         ),
         migrations.AlterField(
-            model_name='invoice',
-            name='amount_due',
-            field=models.DecimalField(blank=True, decimal_places=2, default=0, max_digits=16, null=True, verbose_name='AmountDue'),
+            model_name="invoice",
+            name="amount_due",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                default=0,
+                max_digits=16,
+                null=True,
+                verbose_name="AmountDue",
+            ),
         ),
         migrations.AlterField(
-            model_name='invoice',
-            name='amount_paid',
-            field=models.DecimalField(blank=True, decimal_places=2, default=0, max_digits=16, null=True, verbose_name='AmountPaid'),
+            model_name="invoice",
+            name="amount_paid",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                default=0,
+                max_digits=16,
+                null=True,
+                verbose_name="AmountPaid",
+            ),
         ),
         migrations.AlterField(
-            model_name='invoice',
-            name='due_date',
-            field=models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True, verbose_name='DueDate'),
+            model_name="invoice",
+            name="due_date",
+            field=models.DateTimeField(
+                blank=True,
+                default=django.utils.timezone.now,
+                null=True,
+                verbose_name="DueDate",
+            ),
         ),
         migrations.AlterField(
-            model_name='invoice',
-            name='expected_payment_date',
-            field=models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True, verbose_name='ExpectedPaymentDate'),
+            model_name="invoice",
+            name="expected_payment_date",
+            field=models.DateTimeField(
+                blank=True,
+                default=django.utils.timezone.now,
+                null=True,
+                verbose_name="ExpectedPaymentDate",
+            ),
         ),
         migrations.AlterField(
-            model_name='invoice',
-            name='fully_paid_on_date',
-            field=models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True, verbose_name='FullyPaidOnDate'),
+            model_name="invoice",
+            name="fully_paid_on_date",
+            field=models.DateTimeField(
+                blank=True,
+                default=django.utils.timezone.now,
+                null=True,
+                verbose_name="FullyPaidOnDate",
+            ),
         ),
         migrations.AlterField(
-            model_name='invoice',
-            name='planned_payment_date',
-            field=models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True, verbose_name='PlannedPaymentDate'),
+            model_name="invoice",
+            name="planned_payment_date",
+            field=models.DateTimeField(
+                blank=True,
+                default=django.utils.timezone.now,
+                null=True,
+                verbose_name="PlannedPaymentDate",
+            ),
         ),
     ]
