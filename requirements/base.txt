@@ -10,7 +10,7 @@ django==2.2.21 # pyup: >=1.10,<1.11
 
 # Configuration
 django-environ==0.8.0
-whitenoise==5.2.0
+whitenoise==5.3.0
 
 
 # Forms
