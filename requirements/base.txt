@@ -63,7 +63,7 @@ pyxero==0.9.3
 requests_oauthlib==1.3.0
 
 # YAML support
-pyyaml==5.4.1
+pyyaml==6.0
 
 # Path support
 unipath==1.1
