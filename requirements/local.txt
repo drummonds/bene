@@ -15,7 +15,7 @@ django-debug-toolbar==3.2.2
 # improved REPL
 ipdb==0.13.9
 
-pytest-django==4.3.0
+pytest-django==4.4.0
 pytest-sugar==0.9.4
 
 # my scripts
