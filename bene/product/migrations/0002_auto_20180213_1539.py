@@ -7,13 +7,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('product', '0001_initial'),
+        ("product", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='sku',
-            name='variant',
-            field=models.ForeignKey(default='UNK', on_delete=django.db.models.deletion.SET_DEFAULT, to='product.Size'),
+            model_name="sku",
+            name="variant",
+            field=models.ForeignKey(
+                default="UNK",
+                on_delete=django.db.models.deletion.SET_DEFAULT,
+                to="product.Size",
+            ),
         ),
     ]
