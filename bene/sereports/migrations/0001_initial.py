@@ -9,24 +9,54 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Company',
+            name="Company",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(blank=True, max_length=255, verbose_name='Name of Company')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        blank=True, max_length=255, verbose_name="Name of Company"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Report',
+            name="Report",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(blank=True, max_length=255, verbose_name='Name of Report')),
-                ('button_name', models.CharField(blank=True, max_length=255, verbose_name='Button report name')),
-                ('report_number', models.IntegerField(verbose_name='Account number')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        blank=True, max_length=255, verbose_name="Name of Report"
+                    ),
+                ),
+                (
+                    "button_name",
+                    models.CharField(
+                        blank=True, max_length=255, verbose_name="Button report name"
+                    ),
+                ),
+                ("report_number", models.IntegerField(verbose_name="Account number")),
             ],
         ),
     ]

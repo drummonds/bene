@@ -8,43 +8,50 @@ from django.views import defaults as default_views
 from sereports.views import HomeView
 
 urlpatterns = [
-    #url(r'^', include('sereports.urls')),
+    # url(r'^', include('sereports.urls')),
+    url(regex=r"^$", view=HomeView.as_view(), name="home"),
+    # url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
     url(
-        regex=r'^$',
-        view=HomeView.as_view(),
-        name='home'
-     ),
-
-                  #url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
-    url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
-
+        r"^about/$",
+        TemplateView.as_view(template_name="pages/about.html"),
+        name="about",
+    ),
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
-
     # User management
-    url(r'^users/', include('bene.users.urls')),
-    url(r'^rep/', include('sereports.urls')),
-    url(r'^xeroapp/', include('xeroapp.urls')),
-    url(r'^accruals/', include('accruals.urls')),
-    url(r'^accounts/', include('allauth.urls')),
-
+    url(r"^users/", include("bene.users.urls")),
+    url(r"^rep/", include("sereports.urls")),
+    url(r"^xeroapp/", include("xeroapp.urls")),
+    url(r"^accruals/", include("accruals.urls")),
+    url(r"^accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
-    url(r'^explorer/', include('explorer.urls')),
-
-
+    url(r"^explorer/", include("explorer.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
     # these url in browser to see how these error pages look like.
     urlpatterns += [
-        url(r'^400/$', default_views.bad_request, kwargs={'exception': Exception('Bad Request!')}),
-        url(r'^403/$', default_views.permission_denied, kwargs={'exception': Exception('Permission Denied')}),
-        url(r'^404/$', default_views.page_not_found, kwargs={'exception': Exception('Page not Found')}),
-        url(r'^500/$', default_views.server_error),
+        url(
+            r"^400/$",
+            default_views.bad_request,
+            kwargs={"exception": Exception("Bad Request!")},
+        ),
+        url(
+            r"^403/$",
+            default_views.permission_denied,
+            kwargs={"exception": Exception("Permission Denied")},
+        ),
+        url(
+            r"^404/$",
+            default_views.page_not_found,
+            kwargs={"exception": Exception("Page not Found")},
+        ),
+        url(r"^500/$", default_views.server_error),
     ]
-    if 'debug_toolbar' in settings.INSTALLED_APPS:
+    if "debug_toolbar" in settings.INSTALLED_APPS:
         import debug_toolbar
+
         urlpatterns = [
-            url(r'^__debug__/', include(debug_toolbar.urls)),
+            url(r"^__debug__/", include(debug_toolbar.urls)),
         ] + urlpatterns
