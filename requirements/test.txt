@@ -5,7 +5,7 @@
 # If using Win for dev, this assumes Unix in test/prod
 psycopg2==2.9.2
 
-coverage==5.5
+coverage==6.2
 flake8==3.9.2
 django-test-plus==2.2.0
 factory-boy==3.2.0
