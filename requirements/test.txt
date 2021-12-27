@@ -3,13 +3,13 @@
 
 # Python-PostgreSQL Database Adapter
 # If using Win for dev, this assumes Unix in test/prod
-psycopg2==2.8.6
+psycopg2==2.9.2
 
-coverage==5.5
-flake8==3.9.2
+coverage==6.2
+flake8==4.0.1
 django-test-plus==2.2.0
-factory-boy==3.2.0
+factory-boy==3.2.1
 
 # pytest
-pytest-django==4.3.0
+pytest-django==4.5.2
 pytest-sugar==0.9.4
