@@ -56,7 +56,7 @@ boto3==1.20.37
 # I have made the django-sql-explorer more robust
 git+git://github.com/drummonds/django-sql-explorer@0c2c642#egg=django-sql-explorer==1.1.1b
 
-XlsxWriter==1.4.3
+XlsxWriter==3.0.2
 
 # Xero requests
 pyxero==0.9.2
