@@ -7,17 +7,32 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='AccrualsTable',
+            name="AccrualsTable",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('expense_nc', models.CharField(blank=True, default='', max_length=4, verbose_name='Expense NC')),
-                ('accruals_nc', models.CharField(max_length=4, verbose_name='Accruals NC')),
-                ('comment', models.CharField(max_length=255, verbose_name='Comment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "expense_nc",
+                    models.CharField(
+                        blank=True, default="", max_length=4, verbose_name="Expense NC"
+                    ),
+                ),
+                (
+                    "accruals_nc",
+                    models.CharField(max_length=4, verbose_name="Accruals NC"),
+                ),
+                ("comment", models.CharField(max_length=255, verbose_name="Comment")),
             ],
         ),
     ]
