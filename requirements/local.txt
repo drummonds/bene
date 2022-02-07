@@ -1,25 +1,25 @@
 # Local development dependencies go here
 -r base.txt
 
-coverage==5.5
-django-coverage-plugin==1.8.0
+coverage==6.3
+django-coverage-plugin==2.0.2
 
-Sphinx==4.0.2
-django-extensions==3.1.3
-Werkzeug==2.0.1
+Sphinx==4.4.0
+django-extensions==3.1.5
+Werkzeug==2.0.2
 django-test-plus==2.2.0
-factory-boy==3.2.0
+factory-boy==3.2.1
 
-django-debug-toolbar==3.2.1
+django-debug-toolbar==3.2.4
 
 # improved REPL
-ipdb==0.13.8
+ipdb==0.13.9
 
-pytest-django==4.3.0
+pytest-django==4.5.2
 pytest-sugar==0.9.4
 
 # my scripts
 Fabric3==1.14.post1
-python-dotenv==0.17.1
+python-dotenv==0.19.2
 
-psycopg2==2.8.6
+psycopg2==2.9.3
