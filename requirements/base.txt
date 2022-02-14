@@ -79,7 +79,7 @@ raven==6.10.0
 
 # for formatting tables
 django-tables2==2.4.1
-requests==2.25.1
+requests==2.27.1
 tablib==3.0.0
 
 # for doing server side graphs
