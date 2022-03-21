@@ -83,4 +83,4 @@ requests==2.27.1
 tablib==3.2.0
 
 # for doing server side graphs
-pygal==2.4.0
+pygal==3.0.0
