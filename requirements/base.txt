@@ -28,7 +28,7 @@ argon2-cffi==21.3.0
 
 # For user registration, either via email or social
 # Well-built with regular release cycles!
-django-allauth==0.44.0
+django-allauth==0.50.0
 
 # On Windows, you must download/install psycopg2 manually
 # from http://www.lfd.uci.edu/~gohlke/pythonlibs/#psycopg
